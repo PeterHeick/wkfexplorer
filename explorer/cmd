@@ -1,0 +1,8 @@
+mkdir -p src/assets/images
+mkdir -p src/assets/styles
+mkdir -p src/components
+mkdir -p src/store/modules
+mkdir -p src/utils
+mkdir -p src/views
+mkdir -p src/router
+

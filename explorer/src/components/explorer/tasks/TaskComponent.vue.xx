@@ -1,0 +1,39 @@
+<template>
+  <div v-if="taskNode.name === shownNode">
+    {{ taskNode.name }}
+  </div>
+</template>
+<script lang="ts">
+import { ItreeNode } from '@/types/interfaces';
+import { defineComponent } from 'vue'
+
+export default defineComponent({
+  props: {
+    taskNode:
+    {
+      type: Object as () => ItreeNode,
+      default: () => { return {} as ItreeNode }
+    },
+    shownNode:
+    {
+      type: String,
+      default: ''
+    }
+
+  },
+  setup(props) {
+    return {
+    }
+  },
+  methods: {
+    handleChange(newVal: any, oldVal: any) {
+      console.log("Changed in taskComponent");
+    }
+  },
+  watch: {
+    taskNode(newVal, oldVal) {
+      this.handleChange(newVal, oldVal)
+    }
+  }
+})
+</script>
