@@ -26,19 +26,23 @@ export default function init_app(app: express.Application, data: Idata) {
     })
   );
   app.get("/", (req, res) => {
+    console.log('\n--- /');
     console.log(`Send index.html ${docRoot}`);
     res.sendFile(path.join(docRoot, "index.html"));
   });
   //res.sendFile(path.join(__dirname, docRoot, 'index.html'))
   app.get("/uacenv", (req: any, res: any) => {
+    console.log('\n--- /uacenv');
     console.log('Send: ', JSON.stringify(data.uacenv));
     res.status(200).json(data.uacenv);
   });
   app.get("/uac", (req: any, res: any) => {
+    console.log('\n--- /uac');
     res.status(200).json(wkf);
   });
 
   app.get("/api/config"), (req: any, res: any) => {
+    console.log('\n--- /api/config');
     let env = "";
     try {
       env = req.query.uacenv;
@@ -50,6 +54,7 @@ export default function init_app(app: express.Application, data: Idata) {
   }
 
   app.get("/test/listadv", (req: any, res: any) => {
+    console.log('\n--- /test/listadv');
     console.log(`/uac found: ${JSON.stringify(req.query)}`);
 
     let env = "";
@@ -87,6 +92,7 @@ export default function init_app(app: express.Application, data: Idata) {
     res.status(200).json(sorted);
   });
   app.get("/uac/listadv", (req: any, res: any) => {
+    console.log('\n--- /uac/listadv');
     let env = "";
     try {
       env = req.query.uacenv;

@@ -83,6 +83,17 @@ function parse(workflow: ItreeNode[], wkf: IworkflowNode[], name: string): numbe
       summary: wkfNode.summary,
       version: wkfNode.version,
       opswiseGroups: wkfNode.opswiseGroups,
+      // remoteServer: wkfNode.remoteServer,
+      agent: wkfNode.agent,
+      credentials: wkfNode.credentials,
+      runAsSudo: wkfNode.runAsSudo,
+      resolveNameImmediately: wkfNode.resolveNameImmediately,
+      timeZonePref: wkfNode.timeZonePref,
+      resPriority: wkfNode.resPriority,
+      startHeld: wkfNode.startHeld,
+      exclusiveWithSelf: wkfNode.exclusiveWithSelf,
+      agentCluster: wkfNode.agentCluster || "",
+
       color: "white",
       isVisible: false,
       workflow: []

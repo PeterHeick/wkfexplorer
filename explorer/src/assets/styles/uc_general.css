@@ -1,0 +1,11 @@
+.uc-field {
+  background-color: rgb(255,255,255);
+  outline-color: rgb(40,40,40);
+  border: 1px solid rgb(184,184,184);
+  padding: 2px 9px 2px 9px;
+  display: inline-block;
+}
+
+td {
+  display: table-cell;
+}

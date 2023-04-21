@@ -2,6 +2,9 @@
  @import url('https://fonts.googleapis.com/css2?/family=Open+Sans:wght@300;400;600;700&display=swap');
 */
 @import url("https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined");
+@import 'uc_skin_styles.css';
+@import 'skin_styles_ph.css';
+@import 'uc_general.css';
 
 body {
     font-family: 'Open Sans';
@@ -62,3 +65,4 @@ body {
   width: 200px;
   border: 1px solid black;
 }
+

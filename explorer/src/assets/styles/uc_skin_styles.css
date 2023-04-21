@@ -1,0 +1,382 @@
+.formTitle, .formTitleRTL, .formTitleFocused, .formTitleFocusedRTL, .formTitleDisabled, .formTitleDisabledRTL, .formTitleError, .formTitleErrorRTL, .formTitleErrorFocused, .formTitleErrorFocusedRTL, .formTitleErrorFocusedOver, .formTitleErrorFocusedOverRTL, .formTitleErrorDisabled, .formTitleErrorDisabldRTL, .formTitlePending, .formTitlePendingRTL, .formTitlePendingFocused, .formTitlePendingFocusedRTL, .formTitlePendingDisabled, .formTitlePendingDisabledRTL, .formTitlePendingError, .formTitlePendingErrorRTL, .formCell, .formCellRTL, .formCellFocused, .formCellFocusedRTL, .formCellDisabled, .formCellDisabledRTL, .formCellError, .formCellErrorRTL, .formCellErrorDisabled, .formCellErrorDisabledRTL, .formCellPending, .formCellPendingRTL, .formCellPendingFocused, .formCellPendingFocusedRTL, .formCellPendingDisabled, .formCellPendingDisabledRTL, .formCellPendingError, .formCellPendingErrorRTL, .formHint, .formHintRTL, .formHintOver, .formHintOverRTL, .formHintDisabled, .formHintDisabledRTL, .headerItem, .headerItemRTL, .headerItemOver, .headerItemOverRTL, .headerItemDisabled, .headerItemDisabledRTL, .headerItemError, .headerItemErrorRTL, .nativeSelectItem, .nativeSelectItemRTL, .nativeSelectItemOver, .nativeSelectItemOverRTL, .nativeSelectItemFocused, .nativeSelectItemFocusedRTL, .nativeSelectItemFocusedOver, .nativeSelectItemFocusedOverRTL, .nativeSelectItemDisabled, .nativeSelectItemDisabledRTL, .nativeSelectItemError, .nativeSelectItemErrorRTL, .nativeSelectItemErrorOver, .nativeSelectItemErrorOverRTL, .nativeSelectItemErrorFocused, .nativeSelectItemErrorFocusedRTL, .nativeSelectItemErrorFocusedOver, .nativeSelectItemErrorFocusedOverRTL, .nativeSelectItemPending, .nativeSelectItemPendingRTL, .nativeSelectItemPendingFocused, .nativeSelectItemPendingFocusedRTL, .nativeSelectItemPendingDisabled, .nativeSelectItemPendingDisabledRTL, .nativeSelectItemPendingError, .nativeSelectItemPendingErrorRTL, .staticTextItem, .staticTextItemRTL, .staticTextItemFocused, .staticTextItemFocusedRTL, .staticTextItemDisabled, .staticTextItemDisabledRTL, .staticTextItemError, .staticTextItemErrorRTL, .staticTextItemPending, .staticTextItemPendingRTL, .staticTextItemPendingFocused, .staticTextItemPendingFocusedRTL, .staticTextItemPendingDisabled, .staticTextItemPendingDisabledRTL, .staticTextItemPendingError, .staticTextItemPendingErrorRTL, .uploadItem, .uploadItemRTL, .uploadItemFocused, .uploadItemFocusedRTL, .uploadItemDisabled, .uploadItemDisabledRTL, .uploadItemError, .uploadItemErrorRTL, .uploadItemPending, .uploadItemPendingRTL, .uploadItemPendingFocused, .uploadItemPendingFocusedRTL, .uploadItemPendingDisabled, .uploadItemPendingDisabledRTL, .uploadItemPendingError, .uploadItemPendingErrorRTL, .uploadItemHint, .uploadItemHintRTL, .uploadItemDisabledHint, .uploadItemDisabledHintRTL {
+    font-size: 14px;
+}
+
+.pickListCell, .pickListCellRTL, .pickListCellOver, .pickListCellOverRTL, .pickListCellSelected, .pickListCellSelectedRTL, .pickListCellSelectedOver, .pickListCellSelectedOverRTL, .pickListCellDisabled, .pickListCellDisabledRTL, .pickListCellDark, .pickListCellDarkRTL, .pickListCellOverDark, .pickListCellOverDarkRTL, .pickListCellSelectedDark, .pickListCellSelectedDarkRTL, .pickListCellSelectedOverDark, .pickListCellSelectedOverDarkRTL, .pickListCellDisabledDark, .pickListCellDisabledDarkRTL, .pickListCellPending, .pickListCellPendingRTL, .pickListCellPendingOver, .pickListCellPendingOverRTL, .pickListCellPendingSelected, .pickListCellPendingSelectedRTL, .pickListCellPendingSelectedOver, .pickListCellPendingSelectedOverRTL, .pickListCellPendingDisabled, .pickListCellPendingDisabledRTL, .pickListCellPendingDark, .pickListCellPendingDarkRTL, .pickListCellPendingOverDark, .pickListCellPendingOverDarkRTL, .pickListCellPendingSelectedDark, .pickListCellPendingSelectedDarkRTL, .pickListCellPendingSelectedOverDark, .pickListCellPendingSelectedOverDarkRTL, .pickListCellPendingDisabledDark, .pickListCellPendingDisabledDarkRTL, .pickListCellDeselected, .pickListCellDeselectedRTL, .pickListCellDeselectedOver, .pickListCellDeselectedOverRTL, .pickListCellDeselectedSelected, .pickListCellDeselectedSelectedRTL, .pickListCellDeselectedSelectedOver, .pickListCellDeselectedSelectedOverRTL, .pickListCellDeselectedDisabled, .pickListCellDeselectedDisabledRTL, .pickListCellDeselectedDark, .pickListCellDeselectedDarkRTL, .pickListCellDeselectedOverDark, .pickListCellDeselectedOverDarkRTL, .pickListCellDeselectedSelectedDark, .pickListCellDeselectedSelectedDarkRTL, .pickListCellDeselectedSelectedOverDark, .pickListCellDeselectedSelectedOverDarkRTL, .pickListCellDeselectedDisabledDark, .pickListCellDeselectedDisabledDarkRTL {
+    font-size: 14px;
+}
+
+.calMonthDayHeaderOver, .calMonthDayHeaderOverDark, .calMonthDayHeaderSelected, .calMonthDayHeaderSelectedDark, .calMonthDayHeaderSelectedOver, .calMonthDayHeaderSelectedOverDark {
+    background-color: rgb(240, 240, 240);
+}
+
+.calMonthDayBodyOver, .calMonthDayBodyOverDark, .calMonthDayBodySelected, .calMonthDayBodySelectedDark, .calMonthDayBodySelectedOver, .calMonthDayBodySelectedOverDark {
+    background-color: rgb(255, 255, 255);
+}
+
+.calMonthOtherDayHeaderSelected, .calMonthOtherDayHeaderSelectedOver, .calMonthOtherDayHeaderOver, .calMonthOtherDayHeaderOverDark {
+    background-color: rgb(208, 208, 208);
+}
+
+.calMonthOtherDayBodyOver, .calMonthOtherDayBodyOverDark {
+    background-color: rgb(255, 255, 255);
+}
+
+a.calMonthEventLink:link {
+    color: black;
+}
+
+a.calMonthEventLink:visited {
+    color: black;
+}
+
+a.calMonthEventLink:hover {
+    color: black;
+}
+
+a.calMonthEventLink:active {
+    color: black;
+}
+
+.menuIconFieldSelected img, .menuSelected img, .menuIconFieldOver img, .menuOver img {
+    filter: brightness(100%);
+}
+
+.windowBackground {
+    border: 1px solid rgb(208, 208, 208);
+    box-shadow: rgba(0, 0, 0, 0.05) 5px 5px 15px 0px;
+}
+
+.windowBody {
+    background-color: rgb(255, 255, 255);
+    border-top: 1px solid rgb(208, 208, 208);
+    padding: 0px 2px 2px;
+}
+
+.textItemLiteReadOnlyOver, .textItemLiteReadOnly, .textItemLiteReadOnlyRTL, .textItemLiteReadOnlyOver, .textItemLiteReadOnlyOverRTL, .textItemLiteReadOnlyFocused, .textItemLiteReadOnlyFocusedRTL, .textItemLiteReadOnlyFocusedOver, .textItemLiteReadOnlyFocusedOverRTL, .textItemLiteReadOnlyDisabled, .textItemLiteReadOnlyDisabledRTL, .textItemLiteReadOnlyError, .textItemLiteReadOnlyErrorRTL, .textItemLiteReadOnlyErrorOver, .textItemLiteReadOnlyErrorOverRTL, .textItemLiteReadOnlyErrorFocused, .textItemLiteReadOnlyErrorFocusedRTL, .textItemLiteReadOnlyErrorFocusedOver, .textItemLiteReadOnlyErrorFocusedOverRTL, .textItemLiteReadOnlyErrorDisabled, .textItemLiteReadOnlyErrorDisabledRTL, .textItemLiteReadOnlyPending, .textItemLiteReadOnlyPendingRTL, .textItemLiteReadOnlyPendingOver, .textItemLiteReadOnlyPendingOverRTL, .textItemLiteReadOnlyPendingFocused, .textItemLiteReadOnlyPendingFocusedRTL, .textItemLiteReadOnlyPendingFocusedOver, .textItemLiteReadOnlyPendingFocusedOverRTL, .textItemLiteReadOnlyPendingDisabled, .textItemLiteReadOnlyPendingDisabledRTL, .textItemLiteReadOnlyPendingError, .textItemLiteReadOnlyPendingErrorRTL, .textItemLiteReadOnlyHint, .textItemLiteReadOnlyHintRTL, .textItemLiteReadOnlyDisabledHint, .textItemLiteReadOnlyDisabledHintRTL, .selectItemLiteTextReadOnlyOver, .selectItemLiteTextReadOnly, .selectItemLiteTextReadOnlyRTL, .selectItemLiteTextReadOnlyFocused, .selectItemLiteTextReadOnlyFocusedRTL, .selectItemLiteTextReadOnlyDisabled, .selectItemLiteTextReadOnlyDisabledRTL, .selectItemLiteTextReadOnlyError, .selectItemLiteTextReadOnlyErrorRTL, .selectItemLiteTextReadOnlyErrorFocused, .selectItemLiteTextReadOnlyErrorFocusedRTL, .selectItemLiteTextReadOnlyErrorDisabled, .selectItemLiteTextReadOnlyErrorDisabledRTL, .selectItemLiteTextReadOnlyPending, .selectItemLiteTextReadOnlyPendingRTL, .selectItemLiteTextReadOnlyPendingFocused, .selectItemLiteTextReadOnlyPendingFocusedRTL, .selectItemLiteTextReadOnlyPendingDisabled, .selectItemLiteTextReadOnlyPendingDisabledRTL, .selectItemLiteTextReadOnlyPendingError, .selectItemLiteTextReadOnlyPendingErrorRTL, .selectItemLiteTextReadOnlyHint, .selectItemLiteTextReadOnlyHintRTL, .selectItemLiteTextReadOnlyDisabledHint, .selectItemLiteTextReadOnlyDisabledHintRTL, .textAreaItemLiteReadOnlyOver, .textAreaItemLiteReadOnly, .textAreaItemLiteReadOnlyRTL, .textAreaItemLiteReadOnlyOver, .textAreaItemLiteReadOnlyOverRTL, .textAreaItemLiteReadOnlyFocused, .textAreaItemLiteReadOnlyFocusedRTL, .textAreaItemLiteReadOnlyFocusedOver, .textAreaItemLiteReadOnlyFocusedOverRTL, .textAreaItemLiteReadOnlyDisabled, .textAreaItemLiteReadOnlyDisabledRTL, .textAreaItemLiteReadOnlyError, .textAreaItemLiteReadOnlyErrorRTL, .textAreaItemLiteReadOnlyErrorOver, .textAreaItemLiteReadOnlyErrorOverRTL, .textAreaItemLiteReadOnlyErrorFocused, .textAreaItemLiteReadOnlyErrorFocusedRTL, .textAreaItemLiteReadOnlyErrorFocusedOver, .textAreaItemLiteReadOnlyErrorFocusedOverRTL, .textAreaItemLiteReadOnlyErrorDisabled, .textAreaItemLiteReadOnlyErrorDisabledRTL, .textAreaItemLiteReadOnlyPending, .textAreaItemLiteReadOnlyPendingRTL, .textAreaItemLiteReadOnlyPendingOver, .textAreaItemLiteReadOnlyPendingOverRTL, .textAreaItemLiteReadOnlyPendingFocused, .textAreaItemLiteReadOnlyPendingFocusedRTL, .textAreaItemLiteReadOnlyPendingFocusedOver, .textAreaItemLiteReadOnlyPendingFocusedOverRTL, .textAreaItemLiteReadOnlyPendingDisabled, .textAreaItemLiteReadOnlyPendingDisabledRTL, .textAreaItemLiteReadOnlyPendingError, .textAreaItemLiteReadOnlyPendingErrorRTL, .textAreaItemLiteReadOnlyHint, .textAreaItemLiteReadOnlyHintRTL, .textAreaItemLiteReadOnlyDisabledHint, .textAreaItemLiteReadOnlyDisabledHintRTL, .monospaceTextAreaItemLiteOver, .monospaceTextAreaItemLite, .monospaceTextAreaItemLiteRTL, .monospaceTextAreaItemLiteOver, .monospaceTextAreaItemLiteOverRTL, .monospaceTextAreaItemLiteFocused, .monospaceTextAreaItemLiteFocusedRTL, .monospaceTextAreaItemLiteFocusedOver, .monospaceTextAreaItemLiteFocusedOverRTL, .monospaceTextAreaItemLiteDisabled, .monospaceTextAreaItemLiteDisabledRTL, .monospaceTextAreaItemLiteError, .monospaceTextAreaItemLiteErrorRTL, .monospaceTextAreaItemLiteErrorOver, .monospaceTextAreaItemLiteErrorOverRTL, .monospaceTextAreaItemLiteErrorFocused, .monospaceTextAreaItemLiteErrorFocusedRTL, .monospaceTextAreaItemLiteErrorFocusedOver, .monospaceTextAreaItemLiteErrorFocusedOverRTL, .monospaceTextAreaItemLiteErrorDisabled, .monospaceTextAreaItemLiteErrorDisabledRTL, .monospaceTextAreaItemLitePending, .monospaceTextAreaItemLitePendingRTL, .monospaceTextAreaItemLitePendingOver, .monospaceTextAreaItemLitePendingOverRTL, .monospaceTextAreaItemLitePendingFocused, .monospaceTextAreaItemLitePendingFocusedRTL, .monospaceTextAreaItemLitePendingFocusedOver, .monospaceTextAreaItemLitePendingFocusedOverRTL, .monospaceTextAreaItemLitePendingDisabled, .monospaceTextAreaItemLitePendingDisabledRTL, .monospaceTextAreaItemLitePendingError, .monospaceTextAreaItemLitePendingErrorRTL, .monospaceTextAreaItemLiteHint, .monospaceTextAreaItemLiteHintRTL, .monospaceTextAreaItemLiteDisabledHint, .monospaceTextAreaItemLiteDisabledHintRTL, .monospaceTextAreaItemLiteReadOnlyOver, .monospaceTextAreaItemLiteReadOnly, .monospaceTextAreaItemLiteReadOnlyRTL, .monospaceTextAreaItemLiteReadOnlyOver, .monospaceTextAreaItemLiteReadOnlyOverRTL, .monospaceTextAreaItemLiteReadOnlyFocused, .monospaceTextAreaItemLiteReadOnlyFocusedRTL, .monospaceTextAreaItemLiteReadOnlyFocusedOver, .monospaceTextAreaItemLiteReadOnlyFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyDisabled, .monospaceTextAreaItemLiteReadOnlyDisabledRTL, .monospaceTextAreaItemLiteReadOnlyError, .monospaceTextAreaItemLiteReadOnlyErrorRTL, .monospaceTextAreaItemLiteReadOnlyErrorOver, .monospaceTextAreaItemLiteReadOnlyErrorOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocused, .monospaceTextAreaItemLiteReadOnlyErrorFocusedRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOver, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorDisabled, .monospaceTextAreaItemLiteReadOnlyErrorDisabledRTL, .monospaceTextAreaItemLiteReadOnlyPending, .monospaceTextAreaItemLiteReadOnlyPendingRTL, .monospaceTextAreaItemLiteReadOnlyPendingOver, .monospaceTextAreaItemLiteReadOnlyPendingOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocused, .monospaceTextAreaItemLiteReadOnlyPendingFocusedRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOver, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingDisabled, .monospaceTextAreaItemLiteReadOnlyPendingDisabledRTL, .monospaceTextAreaItemLiteReadOnlyPendingError, .monospaceTextAreaItemLiteReadOnlyPendingErrorRTL, .monospaceTextAreaItemLiteReadOnlyHint, .monospaceTextAreaItemLiteReadOnlyHintRTL, .monospaceTextAreaItemLiteReadOnlyDisabledHint, .monospaceTextAreaItemLiteReadOnlyDisabledHintRTL {
+    color: rgb(40, 40, 40);
+    font-family: RobotoLight;
+    font-size: 14px;
+    padding: 2px 9px;
+    outline: none;
+    text-decoration: none;
+    border-radius: 0px;
+}
+
+.monospaceTextAreaItemLiteOver, .monospaceTextAreaItemLite, .monospaceTextAreaItemLiteRTL, .monospaceTextAreaItemLiteOver, .monospaceTextAreaItemLiteOverRTL, .monospaceTextAreaItemLiteFocused, .monospaceTextAreaItemLiteFocusedRTL, .monospaceTextAreaItemLiteFocusedOver, .monospaceTextAreaItemLiteFocusedOverRTL, .monospaceTextAreaItemLiteDisabled, .monospaceTextAreaItemLiteDisabledRTL, .monospaceTextAreaItemLiteError, .monospaceTextAreaItemLiteErrorRTL, .monospaceTextAreaItemLiteErrorOver, .monospaceTextAreaItemLiteErrorOverRTL, .monospaceTextAreaItemLiteErrorFocused, .monospaceTextAreaItemLiteErrorFocusedRTL, .monospaceTextAreaItemLiteErrorFocusedOver, .monospaceTextAreaItemLiteErrorFocusedOverRTL, .monospaceTextAreaItemLiteErrorDisabled, .monospaceTextAreaItemLiteErrorDisabledRTL, .monospaceTextAreaItemLitePending, .monospaceTextAreaItemLitePendingRTL, .monospaceTextAreaItemLitePendingOver, .monospaceTextAreaItemLitePendingOverRTL, .monospaceTextAreaItemLitePendingFocused, .monospaceTextAreaItemLitePendingFocusedRTL, .monospaceTextAreaItemLitePendingFocusedOver, .monospaceTextAreaItemLitePendingFocusedOverRTL, .monospaceTextAreaItemLitePendingDisabled, .monospaceTextAreaItemLitePendingDisabledRTL, .monospaceTextAreaItemLitePendingError, .monospaceTextAreaItemLitePendingErrorRTL, .monospaceTextAreaItemLiteHint, .monospaceTextAreaItemLiteHintRTL, .monospaceTextAreaItemLiteDisabledHint, .monospaceTextAreaItemLiteDisabledHintRTL, .monospaceTextAreaItemLiteReadOnlyOver, .monospaceTextAreaItemLiteReadOnly, .monospaceTextAreaItemLiteReadOnlyRTL, .monospaceTextAreaItemLiteReadOnlyOver, .monospaceTextAreaItemLiteReadOnlyOverRTL, .monospaceTextAreaItemLiteReadOnlyFocused, .monospaceTextAreaItemLiteReadOnlyFocusedRTL, .monospaceTextAreaItemLiteReadOnlyFocusedOver, .monospaceTextAreaItemLiteReadOnlyFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyDisabled, .monospaceTextAreaItemLiteReadOnlyDisabledRTL, .monospaceTextAreaItemLiteReadOnlyError, .monospaceTextAreaItemLiteReadOnlyErrorRTL, .monospaceTextAreaItemLiteReadOnlyErrorOver, .monospaceTextAreaItemLiteReadOnlyErrorOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocused, .monospaceTextAreaItemLiteReadOnlyErrorFocusedRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOver, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorDisabled, .monospaceTextAreaItemLiteReadOnlyErrorDisabledRTL, .monospaceTextAreaItemLiteReadOnlyPending, .monospaceTextAreaItemLiteReadOnlyPendingRTL, .monospaceTextAreaItemLiteReadOnlyPendingOver, .monospaceTextAreaItemLiteReadOnlyPendingOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocused, .monospaceTextAreaItemLiteReadOnlyPendingFocusedRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOver, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingDisabled, .monospaceTextAreaItemLiteReadOnlyPendingDisabledRTL, .monospaceTextAreaItemLiteReadOnlyPendingError, .monospaceTextAreaItemLiteReadOnlyPendingErrorRTL, .monospaceTextAreaItemLiteReadOnlyHint, .monospaceTextAreaItemLiteReadOnlyHintRTL, .monospaceTextAreaItemLiteReadOnlyDisabledHint, .monospaceTextAreaItemLiteReadOnlyDisabledHintRTL {
+    font-family: "Lucida Console", Monaco, monospace;
+}
+
+.selectItemLiteTextReadOnlyOver, .selectItemLiteTextReadOnly, .selectItemLiteTextReadOnlyRTL, .selectItemLiteTextReadOnlyFocused, .selectItemLiteTextReadOnlyFocusedRTL, .selectItemLiteTextReadOnlyDisabled, .selectItemLiteTextReadOnlyDisabledRTL, .selectItemLiteTextReadOnlyError, .selectItemLiteTextReadOnlyErrorRTL, .selectItemLiteTextReadOnlyErrorFocused, .selectItemLiteTextReadOnlyErrorFocusedRTL, .selectItemLiteTextReadOnlyErrorDisabled, .selectItemLiteTextReadOnlyErrorDisabledRTL, .selectItemLiteTextReadOnlyPending, .selectItemLiteTextReadOnlyPendingRTL, .selectItemLiteTextReadOnlyPendingFocused, .selectItemLiteTextReadOnlyPendingFocusedRTL, .selectItemLiteTextReadOnlyPendingDisabled, .selectItemLiteTextReadOnlyPendingDisabledRTL, .selectItemLiteTextReadOnlyPendingError, .selectItemLiteTextReadOnlyPendingErrorRTL, .selectItemLiteTextReadOnlyHint, .selectItemLiteTextReadOnlyHintRTL, .selectItemLiteTextReadOnlyDisabledHint, .selectItemLiteTextReadOnlyDisabledHintRTL {
+    outline: none;
+    border: none;
+    padding-right: 0px;
+    background-color: rgb(232, 232, 232);
+}
+
+.textItemLiteReadOnlyOver, .textItemLiteReadOnly, .textItemLiteReadOnlyRTL, .textItemLiteReadOnlyFocused, .textItemLiteReadOnlyFocusedRTL, .textItemLiteReadOnlyDisabled, .textItemLiteReadOnlyDisabledRTL, .textItemLiteReadOnlyError, .textItemLiteReadOnlyErrorRTL, .textItemLiteReadOnlyErrorOver, .textItemLiteReadOnlyErrorOverRTL, .textItemLiteReadOnlyErrorFocused, .textItemLiteReadOnlyErrorFocusedRTL, .textItemLiteReadOnlyErrorFocusedOver, .textItemLiteReadOnlyErrorFocusedOverRTL, .textItemLiteReadOnlyErrorDisabled, .textItemLiteReadOnlyErrorDisabledRTL, .textItemLiteReadOnlyPending, .textItemLiteReadOnlyPendingRTL, .textItemLiteReadOnlyPendingFocused, .textItemLiteReadOnlyPendingFocusedRTL, .textItemLiteReadOnlyPendingDisabled, .textItemLiteReadOnlyPendingDisabledRTL, .textItemLiteReadOnlyPendingError, .textItemLiteReadOnlyPendingErrorRTL, .textItemLiteReadOnlyHint, .textItemLiteReadOnlyHintRTL, .textItemLiteReadOnlyDisabledHint, .textItemLiteReadOnlyDisabledHintRTL, .textAreaItemLiteReadOnlyOver, .textAreaItemLiteReadOnly, .textAreaItemLiteReadOnlyRTL, .textAreaItemLiteReadOnlyFocused, .textAreaItemLiteReadOnlyFocusedRTL, .textAreaItemLiteReadOnlyDisabled, .textAreaItemLiteReadOnlyDisabledRTL, .textAreaItemLiteReadOnlyError, .textAreaItemLiteReadOnlyErrorRTL, .textAreaItemLiteReadOnlyErrorOver, .textAreaItemLiteReadOnlyErrorOverRTL, .textAreaItemLiteReadOnlyErrorFocused, .textAreaItemLiteReadOnlyErrorFocusedRTL, .textAreaItemLiteReadOnlyErrorFocusedOver, .textAreaItemLiteReadOnlyErrorFocusedOverRTL, .textAreaItemLiteReadOnlyErrorDisabled, .textAreaItemLiteReadOnlyErrorDisabledRTL, .textAreaItemLiteReadOnlyPending, .textAreaItemLiteReadOnlyPendingRTL, .textAreaItemLiteReadOnlyPendingFocused, .textAreaItemLiteReadOnlyPendingFocusedRTL, .textAreaItemLiteReadOnlyPendingDisabled, .textAreaItemLiteReadOnlyPendingDisabledRTL, .textAreaItemLiteReadOnlyPendingError, .textAreaItemLiteReadOnlyPendingErrorRTL, .textAreaItemLiteReadOnlyHint, .textAreaItemLiteReadOnlyHintRTL, .textAreaItemLiteReadOnlyDisabledHint, .textAreaItemLiteReadOnlyDisabledHintRTL, .monospaceTextAreaItemLiteOver, .monospaceTextAreaItemLite, .monospaceTextAreaItemLiteRTL, .monospaceTextAreaItemLiteFocused, .monospaceTextAreaItemLiteFocusedRTL, .monospaceTextAreaItemLiteDisabled, .monospaceTextAreaItemLiteDisabledRTL, .monospaceTextAreaItemLiteError, .monospaceTextAreaItemLiteErrorRTL, .monospaceTextAreaItemLiteErrorOver, .monospaceTextAreaItemLiteErrorOverRTL, .monospaceTextAreaItemLiteErrorFocused, .monospaceTextAreaItemLiteErrorFocusedRTL, .monospaceTextAreaItemLiteErrorFocusedOver, .monospaceTextAreaItemLiteErrorFocusedOverRTL, .monospaceTextAreaItemLiteErrorDisabled, .monospaceTextAreaItemLiteErrorDisabledRTL, .monospaceTextAreaItemLitePending, .monospaceTextAreaItemLitePendingRTL, .monospaceTextAreaItemLitePendingFocused, .monospaceTextAreaItemLitePendingFocusedRTL, .monospaceTextAreaItemLitePendingDisabled, .monospaceTextAreaItemLitePendingDisabledRTL, .monospaceTextAreaItemLitePendingError, .monospaceTextAreaItemLitePendingErrorRTL, .monospaceTextAreaItemLiteHint, .monospaceTextAreaItemLiteHintRTL, .monospaceTextAreaItemLiteDisabledHint, .monospaceTextAreaItemLiteDisabledHintRTL, .monospaceTextAreaItemLiteReadOnlyOver, .monospaceTextAreaItemLiteReadOnly, .monospaceTextAreaItemLiteReadOnlyRTL, .monospaceTextAreaItemLiteReadOnlyFocused, .monospaceTextAreaItemLiteReadOnlyFocusedRTL, .monospaceTextAreaItemLiteReadOnlyDisabled, .monospaceTextAreaItemLiteReadOnlyDisabledRTL, .monospaceTextAreaItemLiteReadOnlyError, .monospaceTextAreaItemLiteReadOnlyErrorRTL, .monospaceTextAreaItemLiteReadOnlyErrorOver, .monospaceTextAreaItemLiteReadOnlyErrorOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocused, .monospaceTextAreaItemLiteReadOnlyErrorFocusedRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOver, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorDisabled, .monospaceTextAreaItemLiteReadOnlyErrorDisabledRTL, .monospaceTextAreaItemLiteReadOnlyPending, .monospaceTextAreaItemLiteReadOnlyPendingRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocused, .monospaceTextAreaItemLiteReadOnlyPendingFocusedRTL, .monospaceTextAreaItemLiteReadOnlyPendingDisabled, .monospaceTextAreaItemLiteReadOnlyPendingDisabledRTL, .monospaceTextAreaItemLiteReadOnlyPendingError, .monospaceTextAreaItemLiteReadOnlyPendingErrorRTL, .monospaceTextAreaItemLiteReadOnlyHint, .monospaceTextAreaItemLiteReadOnlyHintRTL, .monospaceTextAreaItemLiteReadOnlyDisabledHint, .monospaceTextAreaItemLiteReadOnlyDisabledHintRTL {
+    border: 1px solid rgb(184, 184, 184);
+    box-shadow: none;
+    transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+    background-color: rgb(232, 232, 232);
+    border-radius: 0px;
+}
+
+.monospaceTextAreaItemLiteOver, .monospaceTextAreaItemLite, .monospaceTextAreaItemLiteRTL, .monospaceTextAreaItemLiteFocused, .monospaceTextAreaItemLiteFocusedRTL, .monospaceTextAreaItemLiteDisabled, .monospaceTextAreaItemLiteDisabledRTL, .monospaceTextAreaItemLiteError, .monospaceTextAreaItemLiteErrorRTL, .monospaceTextAreaItemLitePending, .monospaceTextAreaItemLitePendingRTL, .monospaceTextAreaItemLitePendingFocused, .monospaceTextAreaItemLitePendingFocusedRTL, .monospaceTextAreaItemLitePendingDisabled, .monospaceTextAreaItemLitePendingDisabledRTL, .monospaceTextAreaItemLitePendingError, .monospaceTextAreaItemLitePendingErrorRTL, .monospaceTextAreaItemLiteHint, .monospaceTextAreaItemLiteHintRTL, .monospaceTextAreaItemLiteDisabledHint, .monospaceTextAreaItemLiteDisabledHintRTL {
+    background-color: rgb(255, 255, 255);
+}
+
+.textItemLiteReadOnlyErrorFocused, .textItemLiteReadOnlyErrorFocusedRTL, .textItemLiteReadOnlyErrorFocusedOver, .textItemLiteReadOnlyErrorFocusedOverRTL, .textItemLiteReadOnlyFocused, .textItemLiteReadOnlyFocusedRTL, .textItemLiteReadOnlyFocusedOver, .textItemLiteReadOnlyFocusedOverRTL, .textItemLiteReadOnlyPendingFocused, .textItemLiteReadOnlyPendingFocusedRTL, .textItemLiteReadOnlyPendingFocusedOver, .textItemLiteReadOnlyPendingFocusedOverRTL, .textAreaItemLiteReadOnlyErrorFocused, .textAreaItemLiteReadOnlyErrorFocusedRTL, .textAreaItemLiteReadOnlyErrorFocusedOver, .textAreaItemLiteReadOnlyErrorFocusedOverRTL, .textAreaItemLiteReadOnlyFocused, .textAreaItemLiteReadOnlyFocusedRTL, .textAreaItemLiteReadOnlyFocusedOver, .textAreaItemLiteReadOnlyFocusedOverRTL, .textAreaItemLiteReadOnlyPendingFocused, .textAreaItemLiteReadOnlyPendingFocusedRTL, .textAreaItemLiteReadOnlyPendingFocusedOver, .textAreaItemLiteReadOnlyPendingFocusedOverRTL, .monospaceTextAreaItemLiteErrorFocused, .monospaceTextAreaItemLiteErrorFocusedRTL, .monospaceTextAreaItemLiteErrorFocusedOver, .monospaceTextAreaItemLiteErrorFocusedOverRTL, .monospaceTextAreaItemLiteFocused, .monospaceTextAreaItemLiteFocusedRTL, .monospaceTextAreaItemLiteFocusedOver, .monospaceTextAreaItemLiteFocusedOverRTL, .monospaceTextAreaItemLitePendingFocused, .monospaceTextAreaItemLitePendingFocusedRTL, .monospaceTextAreaItemLitePendingFocusedOver, .monospaceTextAreaItemLitePendingFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocused, .monospaceTextAreaItemLiteReadOnlyErrorFocusedRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOver, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyFocused, .monospaceTextAreaItemLiteReadOnlyFocusedRTL, .monospaceTextAreaItemLiteReadOnlyFocusedOver, .monospaceTextAreaItemLiteReadOnlyFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocused, .monospaceTextAreaItemLiteReadOnlyPendingFocusedRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOver, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOverRTL {
+    outline: none;
+    color: rgb(40, 40, 40);
+    border-color: rgb(21, 127, 204);
+    background-color: rgb(232, 232, 232);
+    box-shadow: none;
+}
+
+.monospaceTextAreaItemLiteErrorFocused, .monospaceTextAreaItemLiteErrorFocusedRTL, .monospaceTextAreaItemLiteErrorFocusedOver, .monospaceTextAreaItemLiteErrorFocusedOverRTL, .monospaceTextAreaItemLiteFocused, .monospaceTextAreaItemLiteFocusedRTL, .monospaceTextAreaItemLiteFocusedOver, .monospaceTextAreaItemLiteFocusedOverRTL, .monospaceTextAreaItemLitePendingFocused, .monospaceTextAreaItemLitePendingFocusedRTL, .monospaceTextAreaItemLitePendingFocusedOver, .monospaceTextAreaItemLitePendingFocusedOverRTL {
+    background-color: rgb(255, 255, 255);
+}
+
+.textItemLiteReadOnlyOver, .textItemLiteReadOnlyOverRTL, .textItemLiteReadOnlyErrorOver, .textItemLiteReadOnlyErrorOverRTL, .textItemLiteReadOnlyErrorFocusedOver, .textItemLiteReadOnlyErrorFocusedOverRTL, .textItemLiteReadOnlyPendingOver, .textItemLiteReadOnlyPendingOverRTL, .textItemLiteReadOnlyPendingFocusedOver, .textItemLiteReadOnlyPendingFocusedOverRTL, .textAreaItemLiteReadOnlyOver, .textAreaItemLiteReadOnlyOverRTL, .textAreaItemLiteReadOnlyErrorOver, .textAreaItemLiteReadOnlyErrorOverRTL, .textAreaItemLiteReadOnlyPendingOver, .textAreaItemLiteReadOnlyPendingOverRTL, .textAreaItemLiteReadOnlyPendingFocusedOver, .textAreaItemLiteReadOnlyPendingFocusedOverRTL, .monospaceTextAreaItemLiteOver, .monospaceTextAreaItemLiteOverRTL, .monospaceTextAreaItemLiteErrorOver, .monospaceTextAreaItemLiteErrorOverRTL, .monospaceTextAreaItemLitePendingOver, .monospaceTextAreaItemLitePendingOverRTL, .monospaceTextAreaItemLitePendingFocusedOver, .monospaceTextAreaItemLitePendingFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyOver, .monospaceTextAreaItemLiteReadOnlyOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorOver, .monospaceTextAreaItemLiteReadOnlyErrorOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingOver, .monospaceTextAreaItemLiteReadOnlyPendingOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOver, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOverRTL {
+    box-shadow: rgb(21, 127, 204) 0px 0px 5px 0px;
+    border: 1px solid rgb(21, 127, 204);
+    background-color: rgb(232, 232, 232);
+    color: rgb(40, 40, 40);
+}
+
+.monospaceTextAreaItemLiteOver, .monospaceTextAreaItemLiteOverRTL, .monospaceTextAreaItemLiteErrorOver, .monospaceTextAreaItemLiteErrorOverRTL, .monospaceTextAreaItemLitePendingOver, .monospaceTextAreaItemLitePendingOverRTL, .monospaceTextAreaItemLitePendingFocusedOver, .monospaceTextAreaItemLitePendingFocusedOverRTL {
+    background-color: rgb(255, 255, 255);
+}
+
+.textItemLiteReadOnlyErrorFocusedOver, .textItemLiteReadOnlyErrorFocusedOverRTL, .textItemLiteReadOnlyFocusedOver, .textItemLiteReadOnlyFocusedOverRTL, .textItemLiteReadOnlyPendingFocusedOver, .textItemLiteReadOnlyPendingFocusedOverRTL, .textAreaItemLiteReadOnlyFocusedOver, .textAreaItemLiteReadOnlyFocusedOverRTL, .textAreaItemLiteReadOnlyErrorFocusedOver, .textAreaItemLiteReadOnlyErrorFocusedOverRTL, .textAreaItemLiteReadOnlyPendingFocusedOver, .textAreaItemLiteReadOnlyPendingFocusedOverRTL, .monospaceTextAreaItemLiteFocusedOver, .monospaceTextAreaItemLiteFocusedOverRTL, .monospaceTextAreaItemLiteErrorFocusedOver, .monospaceTextAreaItemLiteErrorFocusedOverRTL, .monospaceTextAreaItemLitePendingFocusedOver, .monospaceTextAreaItemLitePendingFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyFocusedOver, .monospaceTextAreaItemLiteReadOnlyFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOver, .monospaceTextAreaItemLiteReadOnlyErrorFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOver, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOverRTL {
+    outline: none;
+    box-shadow: rgb(21, 127, 204) 0px 0px 5px 0px, rgb(21, 127, 204) 0px 0px 5px 0px inset;
+    border: 1px solid rgb(21, 127, 204);
+}
+
+.textItemLiteReadOnlyPending, .textItemLiteReadOnlyPendingRTL, .textItemLiteReadOnlyPendingOver, .textItemLiteReadOnlyPendingOverRTL, .textItemLiteReadOnlyPendingFocused, .textItemLiteReadOnlyPendingFocusedRTL, .textItemLiteReadOnlyPendingFocusedOver, .textItemLiteReadOnlyPendingFocusedOverRTL, .textItemLiteReadOnlyPendingError, .textItemLiteReadOnlyPendingErrorRTL, .selectItemLiteTextReadOnlyPending, .selectItemLiteTextReadOnlyPendingRTL, .selectItemLiteTextReadOnlyPendingFocused, .selectItemLiteTextReadOnlyPendingFocusedRTL, .selectItemLiteTextReadOnlyPendingError, .selectItemLiteTextReadOnlyPendingErrorRTL, .textAreaItemLiteReadOnlyPending, .textAreaItemLiteReadOnlyPendingRTL, .textAreaItemLiteReadOnlyPendingOver, .textAreaItemLiteReadOnlyPendingOverRTL, .textAreaItemLiteReadOnlyPendingFocused, .textAreaItemLiteReadOnlyPendingFocusedRTL, .textAreaItemLiteReadOnlyPendingFocusedOver, .textAreaItemLiteReadOnlyPendingFocusedOverRTL, .textAreaItemLiteReadOnlyPendingError, .textAreaItemLiteReadOnlyPendingErrorRTL, .monospaceTextAreaItemLitePending, .monospaceTextAreaItemLitePendingRTL, .monospaceTextAreaItemLitePendingOver, .monospaceTextAreaItemLitePendingOverRTL, .monospaceTextAreaItemLitePendingFocused, .monospaceTextAreaItemLitePendingFocusedRTL, .monospaceTextAreaItemLitePendingFocusedOver, .monospaceTextAreaItemLitePendingFocusedOverRTL, .monospaceTextAreaItemLitePendingError, .monospaceTextAreaItemLitePendingErrorRTL, .monospaceTextAreaItemLiteReadOnlyPending, .monospaceTextAreaItemLiteReadOnlyPendingRTL, .monospaceTextAreaItemLiteReadOnlyPendingOver, .monospaceTextAreaItemLiteReadOnlyPendingOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocused, .monospaceTextAreaItemLiteReadOnlyPendingFocusedRTL, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOver, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOverRTL, .monospaceTextAreaItemLiteReadOnlyPendingError, .monospaceTextAreaItemLiteReadOnlyPendingErrorRTL {
+    color: rgb(0, 102, 204);
+}
+
+.textItemLiteReadOnlyPending::-webkit-input-placeholder, .textItemLiteReadOnlyPendingRTL::-webkit-input-placeholder, .textItemLiteReadOnlyPendingOver::-webkit-input-placeholder, .textItemLiteReadOnlyPendingOverRTL::-webkit-input-placeholder, .textItemLiteReadOnlyPendingFocused::-webkit-input-placeholder, .textItemLiteReadOnlyPendingFocusedRTL::-webkit-input-placeholder, .textItemLiteReadOnlyPendingFocusedOver::-webkit-input-placeholder, .textItemLiteReadOnlyPendingFocusedOverRTL::-webkit-input-placeholder, .textItemLiteReadOnlyPendingError::-webkit-input-placeholder, .textItemLiteReadOnlyPendingErrorRTL::-webkit-input-placeholder, .selectItemLiteTextReadOnlyPending::-webkit-input-placeholder, .selectItemLiteTextReadOnlyPendingRTL::-webkit-input-placeholder, .selectItemLiteTextReadOnlyPendingFocused::-webkit-input-placeholder, .selectItemLiteTextReadOnlyPendingFocusedRTL::-webkit-input-placeholder, .selectItemLiteTextReadOnlyPendingError::-webkit-input-placeholder, .selectItemLiteTextReadOnlyPendingErrorRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPending::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingOver::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingOverRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingFocused::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingFocusedRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingFocusedOver::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingFocusedOverRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingError::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingErrorRTL::-webkit-input-placeholder, .monospaceTextAreaItemLitePending::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingRTL::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingOver::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingOverRTL::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingFocused::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingFocusedRTL::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingFocusedOver::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingFocusedOverRTL::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingError::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingErrorRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPending::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingOver::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingOverRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingFocused::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingFocusedRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOver::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingFocusedOverRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingError::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingErrorRTL::-webkit-input-placeholder {
+    color: rgb(0, 102, 204);
+    opacity: 1;
+    text-overflow: ellipsis;
+}
+
+.textItemLiteReadOnlyDisabled, .textItemLiteReadOnlyDisabledRTL, .textItemLiteReadOnlyPendingDisabled, .textItemLiteReadOnlyPendingDisabledRTL, .textItemLiteReadOnlyDisabledHint, .textItemLiteReadOnlyDisabledHintRTL, .textItemLiteReadOnlyErrorDisabled, .textItemLiteReadOnlyErrorDisabledRTL, .textAreaItemLiteReadOnlyDisabled, .textAreaItemLiteReadOnlyDisabledRTL, .textAreaItemLiteReadOnlyPendingDisabled, .textAreaItemLiteReadOnlyPendingDisabledRTL, .textAreaItemLiteReadOnlyDisabledHint, .textAreaItemLiteReadOnlyDisabledHintRTL, .textAreaItemLiteReadOnlyErrorDisabled, .textAreaItemLiteReadOnlyErrorDisabledRTL, .textAreaItemLiteReadOnlyErrorDisabledHint, .textAreaItemLiteReadOnlyErrorDisabledHintRTL, .monospaceTextAreaItemLiteDisabled, .monospaceTextAreaItemLiteDisabledRTL, .monospaceTextAreaItemLitePendingDisabled, .monospaceTextAreaItemLitePendingDisabledRTL, .monospaceTextAreaItemLiteDisabledHint, .monospaceTextAreaItemLiteDisabledHintRTL, .monospaceTextAreaItemLiteErrorDisabled, .monospaceTextAreaItemLiteErrorDisabledRTL, .monospaceTextAreaItemLiteErrorDisabledHint, .monospaceTextAreaItemLiteErrorDisabledHintRTL, .monospaceTextAreaItemLiteReadOnlyDisabled, .monospaceTextAreaItemLiteReadOnlyDisabledRTL, .monospaceTextAreaItemLiteReadOnlyPendingDisabled, .monospaceTextAreaItemLiteReadOnlyPendingDisabledRTL, .monospaceTextAreaItemLiteReadOnlyDisabledHint, .monospaceTextAreaItemLiteReadOnlyDisabledHintRTL, .monospaceTextAreaItemLiteReadOnlyErrorDisabled, .monospaceTextAreaItemLiteReadOnlyErrorDisabledRTL, .monospaceTextAreaItemLiteReadOnlyErrorDisabledHint, .monospaceTextAreaItemLiteReadOnlyErrorDisabledHintRTL {
+    background-color: rgb(226, 226, 226);
+    border: 1px solid rgb(184, 184, 184);
+    color: rgb(171, 171, 171);
+}
+
+.textItemLiteReadOnlyDisabled, .textItemLiteReadOnlyDisabledRTL, .textItemLiteReadOnlyPendingDisabled, .textItemLiteReadOnlyPendingDisabledRTL, .textItemLiteReadOnlyDisabledHint, .textItemLiteReadOnlyDisabledHintRTL, .textItemLiteReadOnlyErrorDisabled, .textItemLiteReadOnlyErrorDisabledRTL, .selectItemLiteTextReadOnlyDisabled, .selectItemLiteTextReadOnlyDisabledRTL, .selectItemLiteTextReadOnlyPendingDisabled, .selectItemLiteTextReadOnlyPendingDisabledRTL, .selectItemLiteTextReadOnlyDisabledHint, .selectItemLiteTextReadOnlyDisabledHintRTL, .selectItemLiteTextReadOnlyErrorDisabled, .selectItemLiteTextReadOnlyErrorDisabledRTL, .textAreaItemLiteReadOnlyDisabled, .textAreaItemLiteReadOnlyDisabledRTL, .textAreaItemLiteReadOnlyPendingDisabled, .textAreaItemLiteReadOnlyPendingDisabledRTL, .textAreaItemLiteReadOnlyDisabledHint, .textAreaItemLiteReadOnlyDisabledHintRTL, .textAreaItemLiteReadOnlyErrorDisabled, .textAreaItemLiteReadOnlyErrorDisabledRTL, .monospaceTextAreaItemLiteDisabled, .monospaceTextAreaItemLiteDisabledRTL, .monospaceTextAreaItemLitePendingDisabled, .monospaceTextAreaItemLitePendingDisabledRTL, .monospaceTextAreaItemLiteDisabledHint, .monospaceTextAreaItemLiteDisabledHintRTL, .monospaceTextAreaItemLiteErrorDisabled, .monospaceTextAreaItemLiteErrorDisabledRTL, .monospaceTextAreaItemLiteReadOnlyDisabled, .monospaceTextAreaItemLiteReadOnlyDisabledRTL, .monospaceTextAreaItemLiteReadOnlyPendingDisabled, .monospaceTextAreaItemLiteReadOnlyPendingDisabledRTL, .monospaceTextAreaItemLiteReadOnlyDisabledHint, .monospaceTextAreaItemLiteReadOnlyDisabledHintRTL, .monospaceTextAreaItemLiteReadOnlyErrorDisabled, .monospaceTextAreaItemLiteReadOnlyErrorDisabledRTL {
+    color: rgb(171, 171, 171);
+    background-color: rgb(226, 226, 226);
+}
+
+.textItemLiteReadOnlyDisabled::-webkit-input-placeholder, .textItemLiteReadOnlyDisabledRTL::-webkit-input-placeholder, .textItemLiteReadOnlyPendingDisabled::-webkit-input-placeholder, .textItemLiteReadOnlyPendingDisabledRTL::-webkit-input-placeholder, .textItemLiteReadOnlyDisabledHint::-webkit-input-placeholder, .textItemLiteReadOnlyDisabledHintRTL::-webkit-input-placeholder, .textItemLiteReadOnlyErrorDisabled::-webkit-input-placeholder, .textItemLiteReadOnlyErrorDisabledRTL::-webkit-input-placeholder, .selectItemLiteTextReadOnlyDisabled::-webkit-input-placeholder, .selectItemLiteTextReadOnlyDisabledRTL::-webkit-input-placeholder, .selectItemLiteTextReadOnlyPendingDisabled::-webkit-input-placeholder, .selectItemLiteTextReadOnlyPendingDisabledRTL::-webkit-input-placeholder, .selectItemLiteTextReadOnlyDisabledHint::-webkit-input-placeholder, .selectItemLiteTextReadOnlyDisabledHintRTL::-webkit-input-placeholder, .selectItemLiteTextReadOnlyErrorDisabled::-webkit-input-placeholder, .selectItemLiteTextReadOnlyErrorDisabledRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyDisabled::-webkit-input-placeholder, .textAreaItemLiteReadOnlyDisabledRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingDisabled::-webkit-input-placeholder, .textAreaItemLiteReadOnlyPendingDisabledRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyDisabledHint::-webkit-input-placeholder, .textAreaItemLiteReadOnlyDisabledHintRTL::-webkit-input-placeholder, .textAreaItemLiteReadOnlyErrorDisabled::-webkit-input-placeholder, .textAreaItemLiteReadOnlyErrorDisabledRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteDisabled::-webkit-input-placeholder, .monospaceTextAreaItemLiteDisabledRTL::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingDisabled::-webkit-input-placeholder, .monospaceTextAreaItemLitePendingDisabledRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteDisabledHint::-webkit-input-placeholder, .monospaceTextAreaItemLiteDisabledHintRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteErrorDisabled::-webkit-input-placeholder, .monospaceTextAreaItemLiteErrorDisabledRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyDisabled::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyDisabledRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingDisabled::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyPendingDisabledRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyDisabledHint::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyDisabledHintRTL::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyErrorDisabled::-webkit-input-placeholder, .monospaceTextAreaItemLiteReadOnlyErrorDisabledRTL::-webkit-input-placeholder {
+    color: rgb(204, 204, 204);
+    opacity: 1;
+    text-overflow: ellipsis;
+}
+
+.textItemLiteReadOnlyHint, .textItemLiteReadOnlyHintRTL, .selectItemLiteTextReadOnlyHint, .selectItemLiteTextReadOnlyHintRTL, .textAreaItemLiteReadOnlyHint, .textAreaItemLiteReadOnlyHintRTL, .monospaceTextAreaItemLiteHint, .monospaceTextAreaItemLiteHintRTL, .monospaceTextAreaItemLiteReadOnlyHint, .monospaceTextAreaItemLiteReadOnlyHintRTL {
+    color: rgb(153, 153, 153);
+}
+
+.textItemLiteReadOnlyError, .textItemLiteReadOnlyErrorRTL, .selectItemLiteTextReadOnlyError, .selectItemLiteTextReadOnlyErrorRTL, .textAreaItemLiteReadOnlyError, .textAreaItemLiteReadOnlyErrorRTL, .monospaceTextAreaItemLiteError, .monospaceTextAreaItemLiteErrorRTL, .monospaceTextAreaItemLiteReadOnlyError, .monospaceTextAreaItemLiteReadOnlyErrorRTL {
+    border: 1px solid rgb(184, 184, 184);
+}
+
+.consoleTime, .consoleTimeAltCol, .consoleTimeDark, .consoleTimeDarkAltCol, .consoleTimeOver, .consoleTimeOverAltCol, .consoleTimeOverDark, .consoleTimeOverDarkAltCol, .consoleTimeSelected, .consoleTimeSelectedAltCol, .consoleTimeSelectedDark, .consoleTimeSelectedDarkAltCol, .consoleTimeSelectedOver, .consoleTimeSelectedOverAltCol, .consoleTimeSelectedOverDark, .consoleTimeSelectedOverDarkAltCol {
+    font-family: RobotoLight;
+    font-size: 14px;
+}
+
+.consoleInfo, .consoleInfoDark, .consoleInfoOver, .consoleInfoOverDark, .consoleInfoSelected, .consoleInfoSelectedDark, .consoleInfoSelectedOver, .consoleInfoSelectedOverDark {
+    font-family: RobotoLight;
+    font-size: 14px;
+}
+
+.consoleError, .consoleErrorDark, .consoleErrorOver, .consoleErrorOverDark, .consoleErrorSelected, .consoleErrorSelectedDark, .consoleErrorSelectedOver, .consoleErrorSelectedOverDark {
+    color: rgb(143, 34, 39);
+    font-family: RobotoLight;
+    font-size: 14px;
+}
+
+.systemDetailsProperty, .systemDetailsPropertyDark, .systemDetailsPropertyOver, .systemDetailsPropertyOverDark, .systemDetailsPropertySelected, .systemDetailsPropertySelectedDark, .systemDetailsPropertySelectedOver, .systemDetailsPropertySelectedOverDark {
+    font-family: RobotoLight;
+    font-size: 13px;
+    background-color: rgb(250, 250, 250);
+    color: rgb(0, 0, 0);
+}
+
+.systemDetailsValue, .systemDetailsValueAltCol, .systemDetailsValueDark, .systemDetailsValueDarkAltCol, .systemDetailsValueOver, .systemDetailsValueOverAltCol, .systemDetailsValueOverDark, .systemDetailsValueOverDarkAltCol, .systemDetailsValueSelected, .systemDetailsValueSelectedAltCol, .systemDetailsValueSelectedDark, .systemDetailsValueSelectedDarkAltCol, .systemDetailsValueSelectedOver, .systemDetailsValueSelectedOverAltCol, .systemDetailsValueSelectedOverDark, .systemDetailsValueSelectedOverDarkAltCol {
+    font-family: RobotoLight;
+    font-size: 13px;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0, 0, 0);
+}
+
+.pickerSourceLabel, .pickerTargetLabel {
+    color: rgb(97, 97, 97);
+    font-family: RobotoLight;
+    font-size: 14px;
+    font-weight: bold;
+    background-color: rgb(240, 240, 240);
+}
+
+.pickerNameLabel {
+    color: black;
+    font-family: RobotoLight;
+    font-size: 14px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgb(171, 171, 171);
+}
+
+.listQualifyingTimes, .listQualifyingTimesAltCol, .listQualifyingTimesOver, .listQualifyingTimesOverAltCol, .listQualifyingTimesSelected, .listQualifyingTimesSelectedAltCol, .listQualifyingTimesSelectedOver, .listQualifyingTimesSelectedOverAltCol, .listQualifyingTimesDark, .listQualifyingTimesDarkAltCol, .listQualifyingTimesOverDark, .listQualifyingTimesOverDarkAltCol, .listQualifyingTimesSelectedDark, .listQualifyingTimesSelectedDarkAltCol, .listQualifyingTimesSelectedOverDark, .listQualifyingTimesSelectedOverDarkAltCol {
+    font-family: "Lucida Console", Monaco, monospace;
+    font-size: 14px;
+}
+
+.listQualifyingTimesDark, .listQualifyingTimesDarkAltCol, .listQualifyingTimesOverDark, .listQualifyingTimesOverDarkAltCol, .listQualifyingTimesSelectedDark, .listQualifyingTimesSelectedDarkAltCol, .listQualifyingTimesSelectedOverDark, .listQualifyingTimesSelectedOverDarkAltCol {
+    background-color: rgb(214, 232, 255);
+}
+
+.ucTimeComponentFormTitle, .ucTimeComponentFormTitleRTL, .ucTimeComponentFormTitleFocused, .ucTimeComponentFormTitleFocusedRTL, .ucTimeComponentFormTitleDisabled, .ucTimeComponentFormTitleDisabledRTL, .ucTimeComponentFormTitleError, .ucTimeComponentFormTitleErrorRTL {
+    color: black;
+    font-family: RobotoLight;
+    font-size: 14px;
+}
+
+.ucTimeComponentFormCell, .ucTimeComponentFormCellRTL, .ucTimeComponentFormCellFocused, .ucTimeComponentFormCellFocusedRTL, .ucTimeComponentFormCellDisabled, .ucTimeComponentFormCellDisabledRTL, .ucTimeComponentFormCellError, .ucTimeComponentFormCellErrorRTL {
+    color: black;
+    font-family: RobotoLight;
+    font-size: 14px;
+    padding: 0px;
+}
+
+div.ucEventWindow, div.ucEventWindowBusinessDay, div.ucEventWindowHoliday, div.ucEventWindowPeriod {
+    color: black;
+    background-color: rgb(214, 232, 255);
+    border: 1px solid rgb(148, 193, 227);
+    margin: 1px 0px;
+    padding: 1px;
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+div.ucEventWindowBusinessDay {
+    background-color: rgb(255, 217, 222);
+    border: 1px solid rgb(249, 157, 167);
+}
+
+div.ucEventWindowHoliday {
+    background-color: rgb(255, 255, 204);
+    border: 1px solid rgb(250, 209, 101);
+}
+
+div.ucEventWindowPeriod {
+    background-color: rgb(213, 255, 213);
+    border: 1px solid rgb(122, 245, 150);
+}
+
+img[name$="stonebranchBannerLogo"] {
+    height: 32px;
+    width: 29px;
+    float: left;
+}
+
+img[name$="bannerLogo"] {
+    max-height: 32px;
+    max-width: 298px;
+    float: left;
+    image-rendering: -webkit-optimize-contrast;
+}
+
+.msgLabel, .msgLabelBold {
+    color: black;
+    font-family: RobotoLight;
+    font-size: 14px;
+}
+
+.msgLabelBold {
+    font-weight: bold;
+}
+
+.ucFormSectionLabel, .ucFormSectionLabelBold {
+    color: rgb(40, 40, 40);
+    font-family: RobotoLight;
+    font-size: 14px;
+}
+
+.ucFormSectionLabelBold {
+    font-weight: bold;
+}
+
+.ucListGridFooter {
+    background-color: rgb(240, 240, 240);
+    border-style: solid none none;
+    border-width: 1px;
+    border-color: rgb(204, 204, 204);
+    padding: 5px 5px 5px 6px;
+}
+
+.ucListGridFooterLabel {
+    background-color: transparent;
+    color: rgb(40, 40, 40);
+    font-family: RobotoLight;
+    font-size: 13px;
+}
+
+.navigationMenuLabel, .navigationMenuCategoryLabel {
+    font-family: calibri;
+    font-weight: bold;
+    color: rgb(97, 97, 97);
+}
+
+.navigationMenuLabel {
+    padding-left: 50px;
+    font-size: 16px;
+}
+
+.navigationMenuCategoryLabel {
+    padding-left: 4px;
+    padding-bottom: 1px;
+    font-size: 14px;
+}
+
+.navigationMenuVerticalSeparator {
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    border-image: initial;
+    border-left: 1px solid rgb(204, 204, 204);
+    margin: 0px;
+}
+
+.navigationMenuFavoriteField, .navigationMenuFavoriteFieldDark, .navigationMenuFavoriteFieldSelected, .navigationMenuFavoriteFieldSelectedDark, .navigationMenuFavoriteFieldOver, .navigationMenuFavoriteFieldOverDark, .navigationMenuFavoriteFieldSelectedOver, .navigationMenuFavoriteFieldSelectedOverDark, .navigationMenuFavoriteFieldDisabled, .navigationMenuFavoriteFieldDisabledDark, .navigationMenuTitleField, .navigationMenuTitleFieldDark, .navigationMenuTitleFieldSelected, .navigationMenuTitleFieldSelectedDark, .navigationMenuTitleFieldOver, .navigationMenuTitleFieldOverDark, .navigationMenuTitleFieldSelectedOver, .navigationMenuTitleFieldSelectedOverDark, .navigationMenuTitleFieldDisabled, .navigationMenuTitleFieldDisabledDark, .navigationMenuStackTitleField, .navigationMenuStackTitleFieldDark, .navigationMenuStackTitleFieldSelected, .navigationMenuStackTitleFieldSelectedDark, .navigationMenuStackTitleFieldOver, .navigationMenuStackTitleFieldOverDark, .navigationMenuStackTitleFieldSelectedOver, .navigationMenuStackTitleFieldSelectedOverDark, .navigationMenuStackTitleFieldDisabled, .navigationMenuStackTitleFieldDisabledDark, .navigationMenuIconField, .navigationMenuIconFieldDark, .navigationMenuIconFieldSelected, .navigationMenuIconFieldSelectedDark, .navigationMenuIconFieldOver, .navigationMenuIconFieldOverDark, .navigationMenuIconFieldSelectedOver, .navigationMenuIconFieldSelectedOverDark, .navigationMenuIconFieldDisabled, .navigationMenuIconFieldDisabledDark {
+    font-family: calibri;
+    font-size: 14px;
+    color: rgb(97, 97, 97);
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid transparent;
+    padding-bottom: 2px;
+    padding-top: 2px;
+}
+
+.navigationMenuFavoriteFieldOver, .navigationMenuFavoriteFieldOverDark, .navigationMenuFavoriteFieldSelectedOver, .navigationMenuFavoriteFieldSelectedOverDark, .navigationMenuTitleFieldOver, .navigationMenuTitleFieldOverDark, .navigationMenuTitleFieldSelectedOver, .navigationMenuTitleFieldSelectedOverDark, .navigationMenuStackTitleFieldOver, .navigationMenuStackTitleFieldOverDark, .navigationMenuStackTitleFieldSelectedOver, .navigationMenuStackTitleFieldSelectedOverDark, .navigationMenuIconFieldOver, .navigationMenuIconFieldOverDark, .navigationMenuIconFieldSelectedOver, .navigationMenuIconFieldSelectedOverDark {
+    background-color: rgb(219, 219, 219);
+}
+
+.navigationMenuFavoriteField, .navigationMenuFavoriteFieldDark, .navigationMenuFavoriteFieldSelected, .navigationMenuFavoriteFieldSelectedDark, .navigationMenuFavoriteFieldOver, .navigationMenuFavoriteFieldOverDark, .navigationMenuFavoriteFieldSelectedOver, .navigationMenuFavoriteFieldSelectedOverDark, .navigationMenuFavoriteFieldDisabled, .navigationMenuFavoriteFieldDisabledDark {
+    padding-left: 6px;
+}
+
+.navigationMenuTitleField, .navigationMenuTitleFieldDark, .navigationMenuTitleFieldSelected, .navigationMenuTitleFieldSelectedDark, .navigationMenuTitleFieldOver, .navigationMenuTitleFieldOverDark, .navigationMenuTitleFieldSelectedOver, .navigationMenuTitleFieldSelectedOverDark, .navigationMenuTitleFieldDisabled, .navigationMenuTitleFieldDisabledDark {
+    padding-left: 4px;
+}
+
+.navigationMenuStackTitleField, .navigationMenuStackTitleFieldDark, .navigationMenuStackTitleFieldSelected, .navigationMenuStackTitleFieldSelectedDark, .navigationMenuStackTitleFieldOver, .navigationMenuStackTitleFieldOverDark, .navigationMenuStackTitleFieldSelectedOver, .navigationMenuStackTitleFieldSelectedOverDark, .navigationMenuStackTitleFieldDisabled, .navigationMenuStackTitleFieldDisabledDark {
+    padding-left: 32px;
+}
+
+.navigationMenuIconField, .navigationMenuIconFieldDark, .navigationMenuIconFieldOver, .navigationMenuIconFieldOverDark, .navigationMenuIconFieldSelected, .navigationMenuIconFieldSelectedDark, .navigationMenuIconFieldSelectedOver, .navigationMenuIconFieldSelectedOverDark, .navigationMenuIconFieldDisabled {
+    padding-left: 12px;
+    padding-right: 4px;
+}
+
+.navigationMenuStackSectionHeaderopened, .navigationMenuStackSectionHeaderclosed, .navigationMenuStackSectionHeaderOveropened, .navigationMenuStackSectionHeaderOverclosed, .navigationMenuStackSectionHeaderDownopened, .navigationMenuStackSectionHeaderDownclosed {
+    background-color: rgb(240, 240, 240);
+    color: rgb(97, 97, 97);
+    padding-left: 10px;
+    padding-right: 0px;
+    font-family: calibri;
+    font-size: 14px;
+    font-weight: bold;
+    border-top: 0px;
+    border-bottom: 0px;
+    border-radius: 0px;
+    outline: none;
+}
+
+.navigationMenuStackSectionHeaderOveropened, .navigationMenuStackSectionHeaderOverclosed, .navigationMenuStackSectionHeaderDownopened, .navigationMenuStackSectionHeaderDownclosed {
+    background-color: rgb(219, 219, 219);
+}
+
+.vSplitbar, .vSplitbarclosed, .vSplitbarOver, .vSplitbarOverclosed {
+    background-color: rgb(240, 240, 240);
+}
+
+.tabBarTop {
+    padding-top: 0px;
+}
+
+.tabBarBaseLine {
+    background-color: rgb(240, 240, 240);
+}
+

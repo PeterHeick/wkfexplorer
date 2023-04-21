@@ -1,0 +1,191 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+html, body {
+  width: 100%;
+  height: 90vh;
+  user-select: none;
+  background-color: #fff;
+}
+
+#main {
+  width: 100%;
+  height: 90vh;
+  padding-top: 50px;
+  padding-left: 100px;
+  padding-right: 100px;
+}
+
+#main #header {
+  padding-left: 30px;
+  vertical-align: middle;
+}
+#header {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  top: 0px;
+  height: 50px;
+  width: 100%;
+  border: 0px;
+  padding-top: 10px;
+  overflow: visible;
+  cursor: default;
+  background-color: rgb(255, 102, 0);
+}
+
+input {
+  height: 20px;
+  width: 200px;
+}
+
+#container {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  top: 0px;
+  height: 90vh;
+  width: 100%;
+  z-index: 1;
+  padding: 0px;
+  overflow: visible;
+  border-right: 5px solid lightgrey;
+  border-bottom: 5px solid lightgrey;
+}
+
+#left-pane {
+  width: 333px;
+  height: 90vh;
+  background-color: rgba(250, 250, 250);
+  font-size: 14px;
+  font-weight: 700;
+  border-right: 2px solid grey;
+  overflow-y: auto;
+  resize: horizontal;
+  border: 5px solid lightgrey;
+}
+
+#middle {
+  background-color: rgb(250, 250, 250);
+  display: none;
+  border: 5px solid lightgrey;
+  padding: 10px;
+  left: 0px;
+  margin-left: 1px;
+}
+
+#right-pane {
+  width: 200px;
+}
+
+#general {
+  display: none;
+}
+
+#workflow {
+  margin-top: 20px;
+  display: none;
+}
+
+#unix {
+  margin-top: 20px;
+  display: none;
+  margin-top: 10px;
+}
+
+#ftp {
+  margin-top: 20px;
+  display: none;
+}
+
+#mail {
+  margin-top: 20px;
+  display: none;
+}
+
+div .header h3 {
+  padding-left: 1em;
+}
+
+h3 {
+  padding-left: 1em;
+}
+
+.header h3, ul li {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+ul {
+  list-style-type: none;
+  width: 100%;
+}
+
+li {
+  padding: 4px 0;
+  padding-left: 1em;
+  position: relative;
+  cursor: pointer;
+  Height: "1em";
+}
+
+/*
+https://s0299035.su.dk:8443/uc/skins/Light/images/uc/listIcon.png
+*/
+
+li>ul {
+  display: none;
+}
+
+span.text {
+  height: 14;
+}
+
+li>span {
+  display: inline-block;
+  width: 100%;
+}
+
+li.open>ul {
+  display: block;
+}
+
+ul li:hover {
+  background-color: #fffbfb;
+}
+
+.text {
+  border: 1px solid grey;
+  font-size: 14px;
+  font-family: "RobotoLight";
+  padding: 2px 9px 2px 9px;
+  display: block;
+  font-stretch: 100%;
+  font-weight: 500;
+  height: 22px;
+}
+
+#td-version {
+  width: 50px;
+}
+
+.ucFormSectionLabelBold {
+  font-weight: 700;
+}
+
+td {
+  width: 320px;
+  padding: 3px;
+  height: 28px;
+}
+
+label {
+  font-family: "RobotoLight";
+  font-size: 14px;
+  text-size-adjust: 100%;
+  font-weight: 700;
+}

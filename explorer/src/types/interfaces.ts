@@ -20,9 +20,19 @@ export interface IworkflowNode {
   remoteServer?: string;
   localFilename?: string;
   remoteFilename?: string;
+  agent?: string;
+  credentials?: string;
+  runAsSudo?: boolean,
+  resolveNameImmediately?: boolean;
+  timeZonePref?: string;
+  resPriority?: number;
+  startHeld?: boolean;
+  exclusiveWithSelf?: boolean;
+  agentCluster?: string;
+
   workflowVertices?: Ivertice[];
   [key: string]: unknown;
-}
+} ;
 
 export interface ItreeNode {
   name: string;
@@ -35,6 +45,15 @@ export interface ItreeNode {
   remoteServer?: string;
   localFilename?: string;
   remoteFilename?: string;
+  agent?: string;
+  credentials?: string;
+  runAsSudo?: boolean,
+  resolveNameImmediately?: boolean;
+  timeZonePref?: string;
+  resPriority?: number;
+  startHeld?: boolean;
+  exclusiveWithSelf?: boolean;
+  agentCluster?: string;
   
   isVisible: boolean;
   color: string;
@@ -51,6 +70,16 @@ export const emptyWorkflowNode: IworkflowNode = {
   remoteServer: "",
   localFilename: "",
   remoteFilename: "",
+  agent: "",
+  credentials: "",
+  runAsSudo: false,
+  resolveNameImmediately: false,
+  timeZonePref: "",
+  resPriority: 0,
+  startHeld: false,
+  exclusiveWithSelf: false,
+  agentCluster: "",
+
   workflowVertices: [],
 }
 

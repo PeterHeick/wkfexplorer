@@ -1,4 +1,17 @@
+
 # explorer
+
+Setup development
+cd projects/wkfexplorer
+./setup
+
+cd explorer
+npm run build
+
+Start en ny terminal: ctrl alt t
+cd projects/wkfexplorer/server
+npm start
+
 
 ## Project setup
 ```

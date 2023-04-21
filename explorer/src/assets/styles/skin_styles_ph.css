@@ -1,0 +1,16 @@
+
+.checkboxTrueDisabled {
+  background: url("../images/cb-checked-normal_Disabled.png") no-repeat;
+  cursor: no-drop;
+}
+
+.checkboxTrue {
+  background: url("../images/cb-checked-normal.png") no-repeat;
+}
+
+
+.checkboxFalse {
+  background: url("../images/cb-uncheck-normal.png") no-repeat;
+  background-size: 25px 25px;
+  background-position: center;
+}

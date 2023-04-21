@@ -64,20 +64,37 @@
             <label> Environment Variables </label>
           </span>
           <br />
-          <!--
-                  <div style="position:absolute;overflow:visible;z-index:1000;height:100%;width:601px">
-                    <table id="isc_DS" role="presentation" border="0" margin="0" cellspacing="0" cellpadding="0"
-                      style="position:absolute;height:100%;width:601px;">
-                      <tbody id="td-envtable">
-                        <tr>
-                          <td align="CENTER" class="emptyMessage"
-                            style="padding-left:0px;padding-right:0px;height:26px">
-                            No items to show.</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                -->
+          <div
+            style="
+              position: absolute;
+              overflow: visible;
+              z-index: 1000;
+              height: 100%;
+              width: 601px;
+            "
+          >
+            <table
+              id="isc_DS"
+              role="presentation"
+              border="0"
+              margin="0"
+              cellspacing="0"
+              cellpadding="0"
+              style="position: absolute; height: 100%; width: 601px"
+            >
+              <tbody id="td-envtable">
+                <tr>
+                  <td
+                    align="CENTER"
+                    class="emptyMessage"
+                    style="padding-left: 0px; padding-right: 0px; height: 26px"
+                  >
+                    No items to show.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
           <span id="td-env" class="text"></span>
         </td>
       </tr>
@@ -86,11 +103,30 @@
 </template>
 
 <script lang="ts">
+import { ItreeNode } from "@/types/interfaces";
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  props: {
+    taskNode: {
+      type: Object as () => ItreeNode,
+      default: () => {
+        return {} as ItreeNode;
+      },
+    },
+  },
   setup() {
     return {};
   },
 });
 </script>
+
+<style scoped>
+
+
+#unix {
+  margin-top: 20px;
+  display: none;
+  margin-top: 10px;
+}
+</style>

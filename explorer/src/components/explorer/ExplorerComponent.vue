@@ -1,7 +1,7 @@
 <template>
   <h2>Data fra API</h2>
   <button @click="getData">Hent data</button>
-  <TreeComponent :treeData="wkf"></TreeComponent>
+  <TreeComponent :treeData="wkf" :teleportTarget="teleportTarget"></TreeComponent>
 </template>
 
 <script lang="ts">
@@ -9,14 +9,15 @@ import {
   computed,
   defineComponent,
   onMounted,
+  onBeforeMount,
   ref,
   watch,
   watchEffect,
 } from "vue";
 import TreeComponent from "./TreeComponent.vue";
 import { ItreeNode } from "@/types/interfaces";
-import { store }  from "../../store/config";
- 
+import { store }  from "@/store/config";
+import { currentTask } from "@/store/currentTask";
 
 //const baseUrl = `http://localhost:8080/uac/`;
 const baseUrl = `http://localhost:8080/test/`;
@@ -36,10 +37,14 @@ export default defineComponent({
     TreeComponent,
   },
 
+
   setup() {
     const localValue = ref("");
+    // const currentTask = ref("");
     const wkf = ref<ItreeNode[]>([]);
     const url = "listadv?uacenv=ussand";
+    const teleportTarget = ref<HTMLElement | null>(null);
+
     async function getData() {
       console.log("getData");
       try {
@@ -74,8 +79,16 @@ export default defineComponent({
     // Brug watchEffect til at reagere på alle reaktive kilder i dens funktion
     watchEffect(() => {
       console.log("inputProp er nu");
-    });
+    })
 
+    /*
+    onBeforeMount(() => {
+      console.log("onMounted");
+      console.log(document.getElementById("middle")?.innerHTML);
+      teleportTarget.value = document.getElementById("middle");
+      console.log(teleportTarget.value? teleportTarget.value.innerHTML: "not defined");
+    })
+    */
     return {
       wkf,
       getData,
@@ -83,3 +96,7 @@ export default defineComponent({
   },
 });
 </script>
+<style scoped>
+
+
+</style>
