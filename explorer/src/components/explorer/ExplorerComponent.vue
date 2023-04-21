@@ -1,7 +1,10 @@
 <template>
   <h2>Data fra API</h2>
   <button @click="getData">Hent data</button>
+  <TreeComponent :treeData="wkf"></TreeComponent>
+  <!--
   <TreeComponent :treeData="wkf" :teleportTarget="teleportTarget"></TreeComponent>
+  -->
 </template>
 
 <script lang="ts">
