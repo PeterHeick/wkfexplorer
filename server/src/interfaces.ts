@@ -35,6 +35,7 @@ export interface IworkflowNode {
 } ;
 
 export interface ItreeNode {
+  id: number;
   name: string;
   type: string;
   summary?: string;

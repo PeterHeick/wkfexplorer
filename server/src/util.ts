@@ -1,6 +1,7 @@
 import { isGeneratorFunction } from "util/types";
 import { INumberDictionary, Ivertice, IworkflowNode, ItreeNode, emptyWorkflowNode } from "./interfaces";
 
+var id = 0;
 let counter: INumberDictionary = {};
 function findTopLevel(workflows: IworkflowNode[]) {
 
@@ -76,14 +77,16 @@ function getWkfByName(workflowSet: IworkflowNode[], name: string): IworkflowNode
 function parse(workflow: ItreeNode[], wkf: IworkflowNode[], name: string): number {
     let wkfNode = getWkfByName(wkf, name);
   
+    id++;
     let count = 0;
     let newNode: ItreeNode = {
+      id,
       name,
       type: wkfNode.type,
       summary: wkfNode.summary,
       version: wkfNode.version,
       opswiseGroups: wkfNode.opswiseGroups,
-      // remoteServer: wkfNode.remoteServer,
+      remoteServer: wkfNode.remoteServer,
       agent: wkfNode.agent,
       credentials: wkfNode.credentials,
       runAsSudo: wkfNode.runAsSudo,
