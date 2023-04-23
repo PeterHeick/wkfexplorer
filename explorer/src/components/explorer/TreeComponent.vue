@@ -78,6 +78,7 @@ export default defineComponent({
     var shownNode = ref("");
 
     const handleTaskClick = (node: ItreeNode) => {
+      currentTask.setId(node.id);
       shownNode.value = node.name;
       currentTask.setTask(node.name);
       console.log("handleTaskClick", currentTask.getTask());
