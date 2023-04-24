@@ -28,7 +28,6 @@
                   align="left"
                   valign="middle"
                 >
-                  General
                 </td>
               </tr>
             </tbody>
@@ -845,19 +844,22 @@
 </template>
 
 <script lang="ts">
-import { ItreeNode } from "@/types/interfaces";
-import { defineComponent } from "vue";
+import { TreeNode } from "@/types/interfaces";
+import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
   props: {
     taskNode: {
-      type: Object as () => ItreeNode,
+      type: Object as () => TreeNode,
       default: () => {
-        return {} as ItreeNode;
+        return {} as TreeNode;
       },
     },
   },
-  setup() {
+  setup(props) {
+    onMounted(() => {
+      console.log("generalComponent.onMounted: ", props.taskNode.name, " ", props.taskNode.type)
+    })
     return {}
   },
 }); </script>

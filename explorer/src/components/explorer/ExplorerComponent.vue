@@ -18,7 +18,7 @@ import {
   watchEffect,
 } from "vue";
 import TreeComponent from "./TreeComponent.vue";
-import { ItreeNode } from "@/types/interfaces";
+import { TreeNode } from "@/types/interfaces";
 import { store }  from "@/store/config";
 import { currentTask } from "@/store/currentTask";
 
@@ -44,7 +44,7 @@ export default defineComponent({
   setup() {
     const localValue = ref("");
     // const currentTask = ref("");
-    const wkf = ref<ItreeNode[]>([]);
+    const wkf = ref<TreeNode[]>([]);
     const url = "listadv?uacenv=ussand";
     const teleportTarget = ref<HTMLElement | null>(null);
 
@@ -53,7 +53,7 @@ export default defineComponent({
       try {
         console.log(baseUrl + url + "  " + JSON.stringify(config));
         const response = await fetch(baseUrl + url, config);
-        const responseData: ItreeNode[] = await response.json();
+        const responseData: TreeNode[] = await response.json();
         wkf.value = responseData;
 
         console.log(`wkf.value: ${JSON.stringify(wkf.value)}`);

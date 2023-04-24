@@ -5,7 +5,7 @@ import { reactive } from 'vue';
 //   selectedElement: "",
 // });
 
-export const currentTask = {
+export const currentTask = reactive({
   selectedElement: "",
   selectedId: 0,
 
@@ -35,4 +35,4 @@ export const currentTask = {
     return document.getElementById("middle")
   },
 
-};
+});

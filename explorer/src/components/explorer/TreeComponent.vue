@@ -22,8 +22,7 @@
         <teleport to="#middle">
           <TaskComponent
             :taskNode="node"
-            :shownNode="shownNode"
-            v-show="visible(node)"
+            v-if="currentTask.getId() > 0 && node.id === currentTask.getId()"
           >
           </TaskComponent>
         </teleport>
@@ -33,12 +32,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
-import { ItreeNode } from "@/types/interfaces";
+import { defineComponent, ref } from "vue";
+import { TreeNode } from "@/types/interfaces";
 import TaskComponent from "./tasks/TaskComponent.vue";
 import { currentTask } from "@/store/currentTask";
 
-function closeSubtree(node: ItreeNode) {
+function closeSubtree(node: TreeNode) {
   node.isVisible = false;
   if (node.type === "taskWorkflow") {
     for (const e of node.workflow) {
@@ -46,7 +45,7 @@ function closeSubtree(node: ItreeNode) {
     }
   }
 }
-function toggleVisibility(node: ItreeNode) {
+function toggleVisibility(node: TreeNode) {
   console.log("toggleVisibility");
   if (node.isVisible) {
     closeSubtree(node);
@@ -61,41 +60,39 @@ export default defineComponent({
   components: { TaskComponent },
   props: {
     treeData: {
-      type: Array as () => ItreeNode[],
+      type: Array as () => TreeNode[],
       default: () => {
-        return [] as ItreeNode[];
+        return [] as TreeNode[];
       },
     },
     /*  Props benyttes kun når man importerer data ikke når de eksporteres
     taskNode:
     {
-      type: Object as () => ItreeNode,
-      default: () => { return {} as ItreeNode }
+      type: Object as () => TreeNode,
+      default: () => { return {} as TreeNode }
     },
     */
   },
   setup() {
     var shownNode = ref("");
 
-    const handleTaskClick = (node: ItreeNode) => {
+    const handleTaskClick = (node: TreeNode) => {
+      console.log("handleTaskClick", node.id);
       currentTask.setId(node.id);
-      shownNode.value = node.name;
-      currentTask.setTask(node.name);
-      console.log("handleTaskClick", currentTask.getTask());
     };
 
-    const openNode = (node: ItreeNode) => {
+    const openNode = (node: TreeNode) => {
       if (node.isVisible) {
         return;
       }
       node.isVisible = true;
     };
 
-    const visible = (node: ItreeNode) => {
+    const visible = (node: TreeNode) => {
       return node.name === currentTask.getTask();
     };
 
-    const handleClick = (node: ItreeNode) => {
+    const handleClick = (node: TreeNode) => {
       if (node.type === "taskWorkflow") {
         toggleVisibility(node);
       } else {
@@ -105,11 +102,11 @@ export default defineComponent({
       }
     };
 
-    const isTask = (elem: ItreeNode) => {
+    const isTask = (elem: TreeNode) => {
       return elem.type === "taskUnix";
     };
 
-    const isWorkflow = (elem: ItreeNode) => {
+    const isWorkflow = (elem: TreeNode) => {
       return elem.type === "taskWorkflow";
     };
 

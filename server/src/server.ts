@@ -2,7 +2,7 @@ import express from "express";
 import os from "os";
 import { exit } from "process";
 import { readFileSync, writeFileSync } from "fs";
-import { Iconfig, IuserConfig, IworkflowNode, Idata } from './interfaces';
+import { Iconfig, IuserConfig, WorkflowNode, Idata } from './interfaces';
 import init_app from "./init_app";
 
 const docRoot = "docRoot";

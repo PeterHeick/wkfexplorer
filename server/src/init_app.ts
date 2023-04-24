@@ -4,7 +4,7 @@ import mime from "mime";
 import cors from "cors";
 import wkf from "../wkf.json";
 import { handleData } from './util';
-import { Iconfig, IuserConfig, IworkflowNode, Idata } from "./interfaces";
+import { Iconfig, IuserConfig, WorkflowNode, Idata } from "./interfaces";
 // import { docRoot, uacenv, globalUacConfig, userUacConfig, uac } from "./server";
 
 const docRoot = "docRoot";
@@ -125,7 +125,7 @@ export default function init_app(app: express.Application, data: Idata) {
     fetch(baseUrl + url, headers)
       .then((response) => response.json())
       .then((data) => {
-        handleData(data);
+        handleData(data.map((data: WorkflowNode) => data.type != "taskWebService"));
         res.status(200).json(data);
       })
       .catch((error: any) => console.error(error));

@@ -103,15 +103,15 @@
 </template>
 
 <script lang="ts">
-import { ItreeNode } from "@/types/interfaces";
+import { TreeNode } from "@/types/interfaces";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
     taskNode: {
-      type: Object as () => ItreeNode,
+      type: Object as () => TreeNode,
       default: () => {
-        return {} as ItreeNode;
+        return {} as TreeNode;
       },
     },
   },

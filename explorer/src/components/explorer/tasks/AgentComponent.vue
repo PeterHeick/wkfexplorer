@@ -95,7 +95,9 @@
                   <div style="overflow: hidden; height: 0px"></div>
                 </td>
               </tr>
-              <tr>
+              <tr
+                  v-if="taskNode.agentCluster"
+                  >
                 <td
                   align="left"
                   valign="top"
@@ -459,7 +461,7 @@
                   </table>
                 </td>
               </tr>
-              <tr v-if="taskNode.agentCluster.trim()">
+              <tr v-if="taskNode.agentCluster && taskNode.agentCluster.trim()">
                 <td
                   align="left"
                   valign="top"
@@ -651,6 +653,7 @@
                   style=""
                   height="41"
                   id="isc_7M7"
+                  v-if="taskNode.agentCluster"
                 >
                   <span
                     id="isc_7M8"
@@ -1076,15 +1079,15 @@
 </template>
 
 <script lang="ts">
-import { ItreeNode } from "@/types/interfaces";
+import { TreeNode } from "@/types/interfaces";
 import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
     taskNode: {
-      type: Object as () => ItreeNode,
+      type: Object as () => TreeNode,
       default: () => {
-        return {} as ItreeNode;
+        return {} as TreeNode;
       },
     },
   },

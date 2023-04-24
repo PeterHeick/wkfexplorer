@@ -1,9 +1,8 @@
-import { isGeneratorFunction } from "util/types";
-import { INumberDictionary, Ivertice, IworkflowNode, ItreeNode, emptyWorkflowNode } from "./interfaces";
+import { INumberDictionary, Ivertice, WorkflowNode, TreeNode, emptyWorkflowNode } from "./interfaces";
 
 var id = 0;
 let counter: INumberDictionary = {};
-function findTopLevel(workflows: IworkflowNode[]) {
+function findTopLevel(workflows: WorkflowNode[]) {
 
     counter = {};
     for (const wkf of workflows) {
@@ -36,12 +35,13 @@ function findTopLevel(workflows: IworkflowNode[]) {
   }
   
   
-export function handleData(data: IworkflowNode[]): ItreeNode[] {
+export function handleData(data: WorkflowNode[]): TreeNode[] {
+     id= 0;
     findTopLevel(data);
     for (const key in counter) {
     }
   
-    let workflow: ItreeNode[] = [];
+    let workflow: TreeNode[] = [];
     let count = 0;
     let sequence: INumberDictionary = {};
     for (const wkf of data) {
@@ -50,7 +50,7 @@ export function handleData(data: IworkflowNode[]): ItreeNode[] {
         sequence[wkf.name] = count;
       }
     }
-    workflow.sort((a: ItreeNode, b: ItreeNode) => {
+    workflow.sort((a: TreeNode, b: TreeNode) => {
       if (a.name && b.name) {
         return sequence[b.name] - sequence[a.name];
       }
@@ -61,7 +61,7 @@ export function handleData(data: IworkflowNode[]): ItreeNode[] {
     return workflow;
   }
 
-function getWkfByName(workflowSet: IworkflowNode[], name: string): IworkflowNode {
+function getWkfByName(workflowSet: WorkflowNode[], name: string): WorkflowNode {
     for (const wkfNode of workflowSet) {
       if (wkfNode.name == name) {
         return wkfNode;
@@ -74,12 +74,12 @@ function getWkfByName(workflowSet: IworkflowNode[], name: string): IworkflowNode
 // workflow resultat af parse
 // Array af workflows
 // Navn på current workflow node
-function parse(workflow: ItreeNode[], wkf: IworkflowNode[], name: string): number {
+function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string): number {
     let wkfNode = getWkfByName(wkf, name);
   
     id++;
     let count = 0;
-    let newNode: ItreeNode = {
+    let newNode: TreeNode = {
       id,
       name,
       type: wkfNode.type,
