@@ -6,3 +6,5 @@ vue-tips-og-triks.txt
 xxx
 setup
 server/dist/src/
+server/docRoot
+explorer/package-lock.json
