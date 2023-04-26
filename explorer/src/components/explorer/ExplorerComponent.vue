@@ -1,105 +1,132 @@
 <template>
-  <h2>Data fra API</h2>
-  <button @click="getData">Hent data</button>
-  <TreeComponent :treeData="wkf"></TreeComponent>
+  <div v-if="loading" class="loader" style="justify-items: center" >Loading...</div>
   <!--
-  <TreeComponent :treeData="wkf" :teleportTarget="teleportTarget"></TreeComponent>
+  <h2>Data fra API</h2>
+  <div style="padding:  4px 5px 4px 40px;">
+    <button @click="getData">Hent data</button>
+  </div>
   -->
+  <TreeComponent v-if="!loading" :treeData="wkf"></TreeComponent>
 </template>
 
 <script lang="ts">
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  onBeforeMount,
-  ref,
-  watch,
-  watchEffect,
-} from "vue";
+import { defineComponent, onMounted, reactive, ref, computed } from "vue";
 import TreeComponent from "./TreeComponent.vue";
-import { TreeNode } from "@/types/interfaces";
-import { store }  from "@/store/config";
-import { currentTask } from "@/store/currentTask";
-
-//const baseUrl = `http://localhost:8080/uac/`;
-const baseUrl = `http://localhost:8080/test/`;
-
-const config = {
-  method: "GET",
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    Host: "localhost:8080",
-    "Sec-Fetch-Site": "cross-site",
-  },
-};
+import { workflowStore } from "../../store/workflowStore";
 
 export default defineComponent({
   components: {
     TreeComponent,
   },
 
-
   setup() {
-    const localValue = ref("");
     // const currentTask = ref("");
-    const wkf = ref<TreeNode[]>([]);
-    const url = "listadv?uacenv=ussand";
-    const teleportTarget = ref<HTMLElement | null>(null);
+    const wkf = computed(() => workflowStore.wkf);
+    /*
+    let wkf = reactive({
+      value: workflowStore.wkf as TreeNode[],
+    });
+    */
+    let loading = ref(true);
 
-    async function getData() {
-      console.log("getData");
-      try {
-        console.log(baseUrl + url + "  " + JSON.stringify(config));
-        const response = await fetch(baseUrl + url, config);
-        const responseData: TreeNode[] = await response.json();
-        wkf.value = responseData;
-
-        console.log(`wkf.value: ${JSON.stringify(wkf.value)}`);
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    }
-
-    function handleChange(newVal: any, oldVal: any) {
-      console.log("Changed iExplorerComponent");
-    }
-
-    console.log(store.configData);
     onMounted(() => {
-      getData();
+      workflowStore.update().then((data) => {
+        // wkf.value = data;
+        loading.value = false;
+        console.log(
+          "ExplorerComponent data length ",
+          data.length,
+          wkf.value.length
+        );
+      });
     });
 
-    // Brug watch til at overvåge en bestemt reaktiv kilde
-    watch(
-      () => wkf.value,
-      (newVal, oldVal) => {
-        console.log("wkf.value er ændret fra", oldVal, "til", newVal);
-      }
-    );
-
-    // Brug watchEffect til at reagere på alle reaktive kilder i dens funktion
-    watchEffect(() => {
-      console.log("inputProp er nu");
-    })
-
-    /*
-    onBeforeMount(() => {
-      console.log("onMounted");
-      console.log(document.getElementById("middle")?.innerHTML);
-      teleportTarget.value = document.getElementById("middle");
-      console.log(teleportTarget.value? teleportTarget.value.innerHTML: "not defined");
-    })
-    */
     return {
       wkf,
-      getData,
+      loading,
     };
   },
 });
 </script>
 <style scoped>
-
-
+.loader {
+  color: #ffffff;
+  font-size: 90px;
+  text-indent: -9999em;
+  overflow: hidden;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  margin: 72px auto;
+  position: relative;
+  -webkit-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+  animation: load6 1.7s infinite ease, round 1.7s infinite ease;
+}
+@-webkit-keyframes load6 {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+@keyframes load6 {
+  0% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  5%,
+  95% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+  10%,
+  59% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.087em -0.825em 0 -0.42em, -0.173em -0.812em 0 -0.44em, -0.256em -0.789em 0 -0.46em, -0.297em -0.775em 0 -0.477em;
+  }
+  20% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.338em -0.758em 0 -0.42em, -0.555em -0.617em 0 -0.44em, -0.671em -0.488em 0 -0.46em, -0.749em -0.34em 0 -0.477em;
+  }
+  38% {
+    box-shadow: 0 -0.83em 0 -0.4em, -0.377em -0.74em 0 -0.42em, -0.645em -0.522em 0 -0.44em, -0.775em -0.297em 0 -0.46em, -0.82em -0.09em 0 -0.477em;
+  }
+  100% {
+    box-shadow: 0 -0.83em 0 -0.4em, 0 -0.83em 0 -0.42em, 0 -0.83em 0 -0.44em, 0 -0.83em 0 -0.46em, 0 -0.83em 0 -0.477em;
+  }
+}
+@-webkit-keyframes round {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@keyframes round {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
 </style>

@@ -845,7 +845,7 @@
 
 <script lang="ts">
 import { TreeNode } from "@/types/interfaces";
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, toRefs } from "vue";
 
 export default defineComponent({
   props: {
@@ -857,8 +857,9 @@ export default defineComponent({
     },
   },
   setup(props) {
+    const {taskNode } = toRefs(props);
     onMounted(() => {
-      console.log("generalComponent.onMounted: ", props.taskNode.name, " ", props.taskNode.type)
+      console.log("generalComponent.onMounted: ");
     })
     return {}
   },

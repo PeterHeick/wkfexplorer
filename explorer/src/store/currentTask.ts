@@ -1,9 +1,11 @@
 // src/store.ts
 import { reactive } from 'vue';
 
-// export const currentTask = reactive({
-//   selectedElement: "",
-// });
+/*
+  Den her bruges til at holde styr på current task i TreeComponent.
+  Task skal kun vises når det er den aktuelle current task.
+  Så den her opdateres fra TreeComponent.
+*/
 
 export const currentTask = reactive({
   selectedElement: "",

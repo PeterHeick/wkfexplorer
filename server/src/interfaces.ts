@@ -89,7 +89,11 @@ export interface INumberDictionary {
   [key: string]: number;
 }
 
-export interface Iconfig {
+export interface IStringDictionary {
+  [key: string]: Set<string>;
+}
+
+export type UacConfig = {
   [ key: string ]: {
     prefix: string;
     credentials: string;
@@ -113,12 +117,12 @@ export interface IuserConfig {
 export interface RootState {} 
 
 export interface State {
-  configData: Iconfig[]
+  configData: UacConfig[]
 }
 
 export interface Idata {
   uac: WorkflowNode[];
-  globalUacConfig: Iconfig;
+  globalUacConfig: UacConfig;
   userUacConfig: IuserConfig;
   uacenv: string;
 }
