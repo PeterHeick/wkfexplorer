@@ -5,8 +5,9 @@
         <span
           @click="handleClick(node)"
           :style="{ backgroundColor: node.color }"
+          :class="node.workflow.length > 0 ? 'workflow' : 'wkfempty'"
         >
-          -{{ node.name }}</span
+          {{ node.name }}</span
         >
         <TreeComponent
           v-if="isWorkflow(node)"
@@ -32,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import { TreeNode } from "@/types/interfaces";
 import TaskComponent from "./tasks/TaskComponent.vue";
 import { currentTask } from "@/store/currentTask";
@@ -65,16 +66,8 @@ export default defineComponent({
         return [] as TreeNode[];
       },
     },
-    /*  Props benyttes kun når man importerer data ikke når de eksporteres
-    taskNode:
-    {
-      type: Object as () => TreeNode,
-      default: () => { return {} as TreeNode }
-    },
-    */
   },
   setup() {
-    var shownNode = ref("");
 
     const handleTaskClick = (node: TreeNode) => {
       console.log("handleTaskClick", node.id);
@@ -95,15 +88,7 @@ export default defineComponent({
     const handleClick = (node: TreeNode) => {
       if (node.type === "taskWorkflow") {
         toggleVisibility(node);
-      } else {
-        if (node.type === "taskUnix") {
-          // this.$emit('update:taskNode', node)
-        }
       }
-    };
-
-    const isTask = (elem: TreeNode) => {
-      return elem.type === "taskUnix";
     };
 
     const isWorkflow = (elem: TreeNode) => {
@@ -113,10 +98,8 @@ export default defineComponent({
     return {
       handleClick,
       isWorkflow,
-      isTask,
       handleTaskClick,
       openNode,
-      shownNode,
       currentTask,
       visible,
     };

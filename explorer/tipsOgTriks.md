@@ -373,3 +373,50 @@ export default {
 I dette eksempel opretter vi et user modul, der håterer brugerrelaterede data og logik. Vi bruger namespaced: true for at undgåavnekonflikter mellem moduler. For at fådgang til modulernes data og metoder, bruger du modulnavnet som et namespace, f.eks. store.getters['user/fullName'] eller store.dispatch('user/updateUser', { name: 'John', age: 30 }).
 
 </pre>
+
+eklager ulejligheden. Det kan muligvis have noget at gøre med teleport. 
+Lad os prøve en anden tilgang. 
+I stedet for at bruge v-if direkte på TaskComponent, 
+kan vi oprette en beregnet egenskab, der returnerer den valgte taskUnix 
+og derefter bruge denne egenskab som taskNode prop i TaskComponent.
+
+    Fjern v-if fra TaskComponent:
+
+html
+
+<teleport to="#middle">
+  <TaskComponent
+    :taskNode="selectedTaskNode"
+    :shownNode="shownNode"
+    :key="selectedTaskNode.id">
+  </TaskComponent>
+</teleport>
+
+    Tilføj en beregnet egenskab selectedTaskNode:
+
+javascript
+
+computed: {
+  selectedTaskNode() {
+    if (this.selectedNode) {
+      return this.selectedNode;
+    } else {
+      return null;
+    }
+  },
+},
+
+    Opdater handleTaskClick metoden for at opdatere selectedNode:
+
+javascript
+
+methods: {
+  handleTaskClick(node) {
+    this.selectedNode = node;
+  },
+},
+
+Nu, når du klikker på en taskUnix, vil selectedNode blive opdateret,
+og den beregnede egenskab selectedTaskNode vil returnere den valgte taskUnix.
+Den valgte taskUnix vil blive sendt som taskNode prop til TaskComponent.
+Dette skulle løse problemet med, at den tidligere TaskComponent fortsat vises.
