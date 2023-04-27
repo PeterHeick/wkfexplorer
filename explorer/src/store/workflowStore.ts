@@ -13,7 +13,7 @@ export const workflowStore = reactive({
   wkf: [] as TreeNode[],
 
   update() {
-    return api.getAllTasks(config.getEnv())
+    return api.getAllWorkflows(config.getEnv())
       .then((data: TreeNode[]) => {
         this.wkf = data;
         console.log('workflowStore.wkf.length ', this.wkf.length);

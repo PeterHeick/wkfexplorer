@@ -51,6 +51,7 @@ export function handleData(data: WorkflowNode[], credentials: string): TreeNode[
   let workflow: TreeNode[] = [];
   let count = 0;
   let sequence: INumberDictionary = {};
+  writeFileSync('../counter.json', JSON.stringify(counter));
   for (const wkf of data) {
     if (wkf.name && counter[wkf.name] === 0) {
       wkf.name = wkf.name.trim().replace(/-/g, "_");
@@ -73,13 +74,16 @@ export function handleData(data: WorkflowNode[], credentials: string): TreeNode[
   console.log(workflow[0].name);
   console.log(envTable[workflow[0].name]);
 
-  writeFileSync('../workflow.json', JSON.stringify(workflow));
+  writeFileSync('../sorted.json', JSON.stringify(workflow));
+  return workflow;
+  /*
   return workflow.filter((a) => {
     if (a && a.name) {
       return envTable[a.name].has(credentials);
     } else {
       return false;
     }})
+    */
 }
 
 function getWkfByName(workflowSet: WorkflowNode[], name: string): WorkflowNode {
@@ -123,6 +127,9 @@ function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevel
     workflow: []
   };
 
+  if (newNode.type === "") {
+    newNode.type = "task";
+  }
   workflow.push(newNode);
   if (newNode.credentials) {
     envTable[topLevelName].add(newNode.credentials);

@@ -4,13 +4,14 @@ import mime from "mime";
 import cors from "cors";
 import { handleData } from './util';
 import { Idata } from "./interfaces";
+import { writeFileSync } from "fs";
 
 const docRoot = "docRoot";
 
 // var sys: 'prod' | 'test' = 'test';
 var baseUrl: string;
 
-export default function init_app(app: express.Application, data: Idata) {
+export default function api(app: express.Application, data: Idata) {
   app.use(cors());
   app.use(
     express.static(docRoot, {
@@ -29,11 +30,11 @@ export default function init_app(app: express.Application, data: Idata) {
     console.log(`Send index.html ${docRoot}`);
     res.sendFile(path.join(docRoot, "index.html"));
   });
-  
+
   app.get("/api/environments", (req: any, res: any) => {
     console.log('\n--- /api/environments');
     console.log('Send: ', JSON.stringify(data.globalUacConfig));
-    res.status(200).json( Object.keys(data.globalUacConfig));
+    res.status(200).json(Object.keys(data.globalUacConfig));
   });
 
   app.get("/api/uacenv", (req: any, res: any) => {
@@ -53,6 +54,51 @@ export default function init_app(app: express.Application, data: Idata) {
     const cfg = data.globalUacConfig[env];
     console.log(JSON.stringify(cfg));
     res.status(200).json(cfg);
+  });
+
+  app.get("/api/task", (req: any, res: any) => {
+    console.log('\n--- /api/task');
+
+    let env = "";
+    try {
+      env = req.query.uacenv;
+    } catch (e) {
+      env = "Uknown";
+    }
+
+    let task = "";
+    try {
+      task = req.query.taskname;
+    } catch (e) {
+      task = "Uknown";
+    }
+
+    const cfg = data.globalUacConfig[env];
+    console.log("cfg: ", JSON.stringify(cfg));
+
+    const uacHost = cfg.uachost;
+    const uacPort = cfg.uacport;
+    const url = `uc/resources/task/?taskname=${task}`;
+    let token = "ucp_tfYrHFx4DCp7E0B1TMHgIvZllyEILRcwOCkcxH5v";
+
+    const headers = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        Host: `${uacHost}:${uacPort}`,
+        "Sec-Fetch-Site": "cross-site",
+      },
+    };
+
+    fetch(baseUrl + url, headers)
+      .then((response) => response.json())
+      .then((data) => {
+        writeFileSync('../task.json', JSON.stringify(data));
+        res.status(200).json(data);
+      })
+      .catch((error: any) => console.error(error));
   });
 
   app.get("/api/listadv", (req: any, res: any) => {
@@ -84,7 +130,7 @@ export default function init_app(app: express.Application, data: Idata) {
 
     const uacHost = cfg.uachost;
     const uacPort = cfg.uacport;
-    const url = "uc/resources/task/listadv";
+    const url = "uc/resources/task/listadv?type=Workflow";
     let token = "ucp_tfYrHFx4DCp7E0B1TMHgIvZllyEILRcwOCkcxH5v";
 
     let baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
@@ -105,11 +151,11 @@ export default function init_app(app: express.Application, data: Idata) {
     fetch(baseUrl + url, headers)
       .then((response) => response.json())
       .then((data) => {
-        console.log("getting ", cfg.credentials);
+        console.log("getting ", JSON.stringify(headers));
         console.log("Got ", data.length);
+        writeFileSync('../workflow.json', JSON.stringify(data));
         const sorted = handleData(data, cfg.credentials);
         console.log("sorted ", sorted.length);
-        console.log("sorted ", Object.keys(sorted));
         res.status(200).json(sorted);
       })
       .catch((error: any) => console.error(error));

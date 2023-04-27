@@ -1,5 +1,3 @@
-import { TreeNode, UacConfig } from '@/types/interfaces';
-import { ref } from 'vue';
 
 const baseUrl = `http://localhost:8080/api/`;
 const headers = {
@@ -50,8 +48,19 @@ export const api = {
       })
   },
 
-  getAllTasks(env: string) {
-    console.log("api.getAllTasks");
+  getTask(name: string, env: string) {
+    console.log("api.getTask");
+    const url = `taskname?${name}&uacenv=${env}`;
+    return fetch(baseUrl + url, headers)
+      .then((response) => response.json())
+      .then((data) => {
+      //  this.configData = data;
+        return data;
+      })
+  },
+
+  getAllWorkflows(env: string) {
+    console.log("api.getAllWorkflows");
     const url = `listadv?uacenv=${env}`;
     return fetch(baseUrl + url, headers)
       .then((response) => response.json())

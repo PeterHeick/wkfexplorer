@@ -3,7 +3,7 @@ import os from "os";
 import { exit } from "process";
 import { readFileSync, writeFileSync } from "fs";
 import { UacConfig, IuserConfig, WorkflowNode, Idata } from './interfaces';
-import init_app from "./init_app";
+import api from "./api";
 
 const docRoot = "docRoot";
 
@@ -61,7 +61,7 @@ try {
 
 export const app = express();
 
-init_app(app, data);
+api(app, data);
 // start serveren
 app.listen(8080, () => {
   console.log(process.cwd());

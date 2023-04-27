@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, computed } from "vue";
+import { defineComponent, onMounted, ref, computed } from "vue";
 import TreeComponent from "./TreeComponent.vue";
 import { workflowStore } from "../../store/workflowStore";
 

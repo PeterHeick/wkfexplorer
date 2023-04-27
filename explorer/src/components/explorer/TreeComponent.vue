@@ -18,11 +18,11 @@
         >
         </TreeComponent>
       </div>
-      <div v-else-if="node.type === 'taskUnix'">
+      <div v-else-if="node.type === 'task'">
         <span @click="handleTaskClick(node)"> {{ node.name }}</span>
         <teleport to="#middle">
           <TaskComponent
-            :taskNode="node"
+            :taskNode="task"
             v-if="currentTask.getId() > 0 && node.id === currentTask.getId()"
           >
           </TaskComponent>
@@ -33,10 +33,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, reactive } from "vue";
 import { TreeNode } from "@/types/interfaces";
 import TaskComponent from "./tasks/TaskComponent.vue";
 import { currentTask } from "@/store/currentTask";
+import { api } from "@/api/api";
+import { config } from "@/store/config";
 
 function closeSubtree(node: TreeNode) {
   node.isVisible = false;
@@ -69,8 +71,10 @@ export default defineComponent({
   },
   setup() {
 
+    const task = reactive({});
     const handleTaskClick = (node: TreeNode) => {
       console.log("handleTaskClick", node.id);
+      api.getTask(node.name, config.getEnv())
       currentTask.setId(node.id);
     };
 
