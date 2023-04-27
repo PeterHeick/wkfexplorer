@@ -2,9 +2,8 @@ import express from "express";
 import path from "path";
 import mime from "mime";
 import cors from "cors";
-import wkf from "../wkf.json";
 import { handleData } from './util';
-import { UacConfig, IuserConfig, WorkflowNode, Idata } from "./interfaces";
+import { Idata } from "./interfaces";
 
 const docRoot = "docRoot";
 
@@ -24,11 +23,6 @@ export default function init_app(app: express.Application, data: Idata) {
       },
     })
   );
-
-  app.get("/test/uac", (req: any, res: any) => {
-    console.log('\n--- /uac');
-    res.status(200).json(wkf);
-  });
 
   app.get("/", (req, res) => {
     console.log('\n--- /');
