@@ -3,15 +3,12 @@ import path from "path";
 import mime from "mime";
 import cors from "cors";
 import { handleData } from './util';
-import { Idata } from "./interfaces";
+import { UacConfig, WorkflowNode } from "./interfaces";
 import { writeFileSync } from "fs";
 
 const docRoot = "docRoot";
 
-// var sys: 'prod' | 'test' = 'test';
-var baseUrl: string;
-
-export default function api(app: express.Application, data: Idata) {
+export default function api(app: express.Application, config: UacConfig, token: string, uacenv: string, dummyWorkflows: WorkflowNode[]) {
   app.use(cors());
   app.use(
     express.static(docRoot, {
@@ -33,14 +30,14 @@ export default function api(app: express.Application, data: Idata) {
 
   app.get("/api/environments", (req: any, res: any) => {
     console.log('\n--- /api/environments');
-    console.log('Send: ', JSON.stringify(data.globalUacConfig));
-    res.status(200).json(Object.keys(data.globalUacConfig));
+    console.log('Send: ', JSON.stringify(config.environments));
+    res.status(200).json(Object.keys(config.environments));
   });
 
   app.get("/api/uacenv", (req: any, res: any) => {
     console.log('\n--- /uacenv');
-    console.log('Send: ', JSON.stringify(data.uacenv));
-    res.status(200).json(data.uacenv);
+    console.log('Send: ', JSON.stringify(uacenv));
+    res.status(200).json(uacenv);
   });
 
   app.get("/api/config", (req: any, res: any) => {
@@ -49,9 +46,9 @@ export default function api(app: express.Application, data: Idata) {
     try {
       env = req.query.uacenv;
     } catch (e) {
-      env = data.uacenv;
+      env = uacenv;
     }
-    const cfg = data.globalUacConfig[env];
+    const cfg = config.environments[env];
     console.log(JSON.stringify(cfg));
     res.status(200).json(cfg);
   });
@@ -59,12 +56,7 @@ export default function api(app: express.Application, data: Idata) {
   app.get("/api/task", (req: any, res: any) => {
     console.log('\n--- /api/task');
 
-    let env = "";
-    try {
-      env = req.query.uacenv;
-    } catch (e) {
-      env = "Uknown";
-    }
+    const env = getEnv(req);
 
     let task = "";
     try {
@@ -73,24 +65,10 @@ export default function api(app: express.Application, data: Idata) {
       task = "Uknown";
     }
 
-    const cfg = data.globalUacConfig[env];
-    console.log("cfg: ", JSON.stringify(cfg));
-
-    const uacHost = cfg.uachost;
-    const uacPort = cfg.uacport;
+    const cfg = config.environments[env];
+    const baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
     const url = `uc/resources/task/?taskname=${task}`;
-    let token = "ucp_tfYrHFx4DCp7E0B1TMHgIvZllyEILRcwOCkcxH5v";
-
-    const headers = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        Host: `${uacHost}:${uacPort}`,
-        "Sec-Fetch-Site": "cross-site",
-      },
-    };
+    const headers = getHeaders(cfg);
 
     fetch(baseUrl + url, headers)
       .then((response) => response.json())
@@ -104,61 +82,54 @@ export default function api(app: express.Application, data: Idata) {
   app.get("/api/listadv", (req: any, res: any) => {
     console.log('\n--- /api/listadv');
 
-    let env = "";
-    try {
-      env = req.query.uacenv;
-    } catch (e) {
-      env = data.uacenv;
-    }
-    console.log(env);
-    console.log(`${JSON.stringify(data.globalUacConfig[env])}`);
+    const env = getEnv(req);
+    const cfg = config.environments[env];
 
-    const cfg = data.globalUacConfig[env];
-    console.log("cfg: ", JSON.stringify(cfg));
-
-    if (data.uac.length > 0) {
-      /*
-      console.log('data.uac.length ', data.uac.length)
-      const wkf = data.uac.filter((n) => n.credentials === cfg.credentials);
-      console.log('data length ', wkf.length)
-      */
-      const sorted = handleData(data.uac, cfg.credentials);
+    if (dummyWorkflows.length > 0) {
+      const sorted = handleData(dummyWorkflows, cfg.pattern);
       console.log("sorted ", Object.keys(sorted));
       res.status(200).json(sorted);
       return;
     }
 
-    const uacHost = cfg.uachost;
-    const uacPort = cfg.uacport;
+    const baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
     const url = "uc/resources/task/listadv?type=Workflow";
-    let token = "ucp_tfYrHFx4DCp7E0B1TMHgIvZllyEILRcwOCkcxH5v";
-
-    let baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
-    token = data.userUacConfig.token[cfg.token];
-
-    //writeFileSync('xx.json', JSON.stringify(sorted));
-    const headers = {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-        Host: `${uacHost}:${uacPort}`,
-        "Sec-Fetch-Site": "cross-site",
-      },
-    };
+    const headers = getHeaders(cfg);
 
     fetch(baseUrl + url, headers)
       .then((response) => response.json())
       .then((data) => {
-        console.log("getting ", JSON.stringify(headers));
         console.log("Got ", data.length);
         writeFileSync('../workflow.json', JSON.stringify(data));
-        const sorted = handleData(data, cfg.credentials);
+        const sorted = handleData(data, cfg.pattern);
         console.log("sorted ", sorted.length);
         res.status(200).json(sorted);
       })
       .catch((error: any) => console.error(error));
   });
 
+  function getHeaders(cfg: { pattern: string; credentials: string; business_area: [string]; agent: string; uachost: string; uacport: string; token: string; }) {
+    return {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cfg.token}`,
+        Host: `${cfg.uachost}:${cfg.uacport}`,
+        "Sec-Fetch-Site": "cross-site",
+      },
+    };
+  }
+
+  function getEnv(req: any) {
+    let env = "";
+    try {
+      env = req.query.uacenv;
+    } catch (e) {
+      env = uacenv;
+    }
+    console.log("getEnv: ", env);
+    console.log(`${JSON.stringify(config.environments[env])}`);
+    return env;
+  }
 }

@@ -1,5 +1,6 @@
 import { api } from '@/api/api';
 import { UacConfig } from '@/types/interfaces';
+import { ref } from 'vue';
 
 /*
 
@@ -10,12 +11,14 @@ import { UacConfig } from '@/types/interfaces';
 */
 export const config = {
   configData: {} as UacConfig,
-  uacenv: "ussand",
+  uacenv: ref(""),
+  isLoading: ref(true),
 
   async init() {
     await api.getDefaultEnv()
     .then((env) => {
-      this.uacenv = env;
+      this.uacenv.value = env;
+      this.isLoading.value = false;
     })
   },
 
@@ -24,7 +27,7 @@ export const config = {
   },
 
   setEnv(env: string) {
-    this.uacenv =env;
+    this.uacenv.value =env;
   },
 
   async getConfigData(env: string) {

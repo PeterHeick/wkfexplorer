@@ -9,7 +9,7 @@ export interface Ivertice {
   vertexY?: string;
 }
 
-export type WorkflowNode =  {
+export type WorkflowNode = {
   name: string;
   type: string;
   summary?: string;
@@ -32,58 +32,35 @@ export type WorkflowNode =  {
 
   workflowVertices?: Ivertice[];
   [key: string]: unknown;
-} ;
+};
 
-export type TreeNode = 
-{
-  id: number;
-  name: string;
-  type: string;
-  summary?: string;
-  version?: number;
-  command?: string;
-  commandOrScript?: string;
-  opswiseGroups?: string[];
-  remoteServer?: string;
-  localFilename?: string;
-  remoteFilename?: string;
-  agent?: string;
-  credentials?: string;
-  runAsSudo?: boolean,
-  resolveNameImmediately?: boolean;
-  timeZonePref?: string;
-  resPriority?: number;
-  startHeld?: boolean;
-  exclusiveWithSelf?: boolean;
-  agentCluster?: string;
-  
-  isVisible: boolean;
-  color: string;
-  workflow: TreeNode[];
-}
+export type TreeNode =
+  {
+    id: number;
+    name: string;
+    type: string;
+    summary?: string;
+    version?: number;
+    command?: string;
+    commandOrScript?: string;
+    opswiseGroups?: string[];
+    remoteServer?: string;
+    localFilename?: string;
+    remoteFilename?: string;
+    agent?: string;
+    credentials?: string;
+    runAsSudo?: boolean,
+    resolveNameImmediately?: boolean;
+    timeZonePref?: string;
+    resPriority?: number;
+    startHeld?: boolean;
+    exclusiveWithSelf?: boolean;
+    agentCluster?: string;
 
-export const emptyWorkflowNode: WorkflowNode = {
-  name: "",
-  type: "",
-  summary: "",
-  command: "",
-  commandOrScript: "",
-  opswiseGroups: [],
-  remoteServer: "",
-  localFilename: "",
-  remoteFilename: "",
-  agent: "",
-  credentials: "",
-  runAsSudo: false,
-  resolveNameImmediately: false,
-  timeZonePref: "",
-  resPriority: 0,
-  startHeld: false,
-  exclusiveWithSelf: false,
-  agentCluster: "",
-
-  workflowVertices: [],
-}
+    isVisible: boolean;
+    color: string;
+    workflow: TreeNode[];
+  }
 
 export interface INumberDictionary {
   [key: string]: number;
@@ -93,17 +70,21 @@ export interface IStringDictionary {
   [key: string]: Set<string>;
 }
 
-export type UacConfig = {
-  [ key: string ]: {
-    prefix: string;
+export type Environment = {
+  [key: string]: {
+    pattern: string;
     credentials: string;
-    business_area: [ string ];
+    business_area: [string];
     agent: string;
     uachost: string;
     uacport: string;
-    jcl: string;
-    token: 'prod' | 'test';
+    token: string;
   };
+}
+
+export type UacConfig = {
+  default: string;
+  environments: Environment;
 }
 
 export interface IuserConfig {
@@ -114,19 +95,11 @@ export interface IuserConfig {
   uacenv: string
 }
 
-export interface RootState {} 
+export interface RootState { }
 
 export interface State {
   configData: UacConfig[]
 }
-
-export interface Idata {
-  uac: WorkflowNode[];
-  globalUacConfig: UacConfig;
-  userUacConfig: IuserConfig;
-  uacenv: string;
-}
-
 
 interface TaskUnix {
   type: string;

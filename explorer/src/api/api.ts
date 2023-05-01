@@ -11,9 +11,6 @@ const headers = {
 };
 
 export const api = {
-  // configData: {} as UacConfig,
-  // uacenv: ref("ussand"),
-  // treeData: {} as TreeNode,
 
   getDefaultEnv() {
     const url = `uacenv`;
@@ -21,7 +18,6 @@ export const api = {
       .then((response) => response.json())
       .then((data) => {
         console.log('api.getDefaultEnv ', data);
-    //    this.uacenv = data;
         return data;
       })
   },

@@ -1,67 +1,47 @@
 import express from "express";
-import os from "os";
+import { homedir } from "os";
 import { exit } from "process";
 import { readFileSync, writeFileSync } from "fs";
-import { UacConfig, IuserConfig, WorkflowNode, Idata } from './interfaces';
+import { UacConfig, IuserConfig, WorkflowNode } from './interfaces';
 import api from "./api";
 
-const docRoot = "docRoot";
+// const data: Idata = {} as Idata;
+var dummyWorkflows: WorkflowNode[];
+var config: UacConfig = {} as UacConfig;
+var uacenv = "";
+var token = "";
 
-// var sys: 'prod' | 'test' = 'test';
-var baseUrl: string;
-
-var data: Idata = {
-  uac: [],
-  globalUacConfig: {},
-  userUacConfig: { uacenv: "", token: { prod: "", test: "" } },
-  uacenv: "",
-};
-
-// Data dummy
+// Dummy data
 try {
-  data.uac = JSON.parse(readFileSync("uac.json", "utf-8"));
+  dummyWorkflows = JSON.parse(readFileSync("uac.json", "utf-8"));
 } catch (e) {
-  data.uac = [];
+  dummyWorkflows = [];
 }
 
 // Read Config file
 try {
-  let json;
-  json = readFileSync("config.json", "utf-8");
-  data.globalUacConfig = JSON.parse(json);
-  console.log("Global Config :", json);
-
+  let json = readFileSync("config.json", "utf-8");
+  config = JSON.parse(json);
 } catch (e) {
-  console.error("Global Config ", e);
-  data.globalUacConfig = {}
+  console.error("Reading Config ", e);
+  exit(1);
 }
 
+// Default environment
+uacenv = config.default;
 try {
-  let json = readFileSync("H:/uac/config.json", "utf-8");
-  data.userUacConfig = JSON.parse(json);
-  if (data.userUacConfig.uacenv) {
-    data.uacenv = data.userUacConfig.uacenv;
-  }
-  else {
-    data.uacenv = "ussand";
-  }
-  console.log("lokal config: ", json);
+  const homeDir = homedir();
+  const configFilePath = config.environments[uacenv].token;
+  const filePath = configFilePath.replace(/^~(?=$|\/|\\)/, homeDir);
+  token = readFileSync(filePath, "utf-8");
 } catch (e) {
-  try {
-    let json = readFileSync(`${os.homedir()}/.uac/config.json`, "utf-8");
-    data.userUacConfig = JSON.parse(json);
-    data.uacenv = data.userUacConfig.uacenv;
-    console.log("lokal config: XX ", json);
-  } catch (e) {
-    console.error(e);
-    exit(1);
-  }
+  console.error(e);
+  exit(1);
 }
-
 
 export const app = express();
+api(app, config, token, uacenv, dummyWorkflows);
 
-api(app, data);
 // start serveren
 app.listen(8080, () => {
   console.log(process.cwd());

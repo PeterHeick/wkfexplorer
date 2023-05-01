@@ -4,11 +4,11 @@
       <HeaderComponent></HeaderComponent>
     </div>
     <div id="toolbar">
-      <ToolbarComponent></ToolbarComponent>
+      <ToolbarComponent v-if="!isLoading"></ToolbarComponent>
     </div>
     <div id="container">
       <div id="left-pane">
-        <ExplorerComponent></ExplorerComponent>
+        <ExplorerComponent v-if="!isLoading"></ExplorerComponent>
       </div>
       <div id="middle">
         <TaskComponent></TaskComponent>
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted, toRef } from "vue";
 import ExplorerComponent from "./components/explorer/ExplorerComponent.vue";
 import TaskComponent from "./components/explorer/tasks/TaskComponent.vue";
 import HeaderComponent from "./components/header/HeaderComponent.vue";
@@ -37,13 +37,14 @@ export default defineComponent({
     TaskComponent,
   },
   setup() {
+    var isLoading = toRef(config, "isLoading");
     onMounted(async () => {
       await config.init();
       console.log('App config.init: env ', config.getEnv());
     });
-    return {};
+    return {isLoading};
   },
 });
 </script>
-
+isLoading
 <style lang="scss"></style>
