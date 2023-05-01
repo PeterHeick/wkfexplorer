@@ -9,3 +9,5 @@ server/dist/src/
 server/workflow.json
 server/docRoot
 explorer/package-lock.json
+counter.json
+sorted.json
