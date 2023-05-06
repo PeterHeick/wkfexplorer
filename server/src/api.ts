@@ -4,7 +4,9 @@ import mime from "mime";
 import cors from "cors";
 import { handleData } from './util';
 import { UacConfig, WorkflowNode } from "./interfaces";
-import { writeFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
+import { homedir } from "node:os";
+import { exit } from "process";
 
 const docRoot = "docRoot";
 
@@ -30,7 +32,6 @@ export default function api(app: express.Application, config: UacConfig, token: 
 
   app.get("/api/environments", (req: any, res: any) => {
     console.log('\n--- /api/environments');
-    console.log('Send: ', JSON.stringify(config.environments));
     res.status(200).json(Object.keys(config.environments));
   });
 
@@ -100,12 +101,14 @@ export default function api(app: express.Application, config: UacConfig, token: 
   app.get("/api/listadv", (req: any, res: any) => {
     console.log('\n--- /api/listadv');
 
+    // eks env = "usprod"
     const env = getEnv(req);
     const cfg = config.environments[env];
+    cfg.token = readToken(env);
 
     if (dummyWorkflows.length > 0) {
       const sorted = handleData(dummyWorkflows, cfg.pattern);
-      console.log("sorted ", Object.keys(sorted));
+      // console.log("sorted ", Object.keys(sorted));
       res.status(200).json(sorted);
       return;
     }
@@ -150,4 +153,18 @@ export default function api(app: express.Application, config: UacConfig, token: 
     console.log(`${JSON.stringify(config.environments[env])}`);
     return env;
   }
+
+  function readToken(uacenv: string) {
+    try {
+      const homeDir = homedir();
+      const configFilePath = config.environments[uacenv].token;
+      const filePath = configFilePath.replace(/^~(?=$|\/|\\)/, homeDir);
+      return readFileSync(filePath, "utf-8");
+
+    } catch (e) {
+      console.error(e);
+      exit(1);
+    }
+  }
+
 }

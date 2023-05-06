@@ -11,6 +11,8 @@ import { ref } from 'vue';
 */
 export const config = {
   configData: {} as UacConfig,
+  
+  // uacenv.value er en string der indeholder eks. "usprod"
   uacenv: ref(""),
   isLoading: ref(true),
 
@@ -23,15 +25,15 @@ export const config = {
     })
   },
 
-  // Denne benyttes vist ikke
-  getEnv() {
-    return this.uacenv;
-  },
+  // getEnv kan ikke bruges til at returnere uacenv.value,
+  // så mister vi reactiviteten.
 
   setEnv(env: string) {
     this.uacenv.value =env;
   },
 
+  // Kalder direkte mod server, for at undgå at api skal inkludere config
+  // api er low level i forhold til config
   async getConfigData(env: string) {
     const header = {
       method: "GET",
