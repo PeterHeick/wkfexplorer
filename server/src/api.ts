@@ -3,7 +3,7 @@ import path from "path";
 import mime from "mime";
 import cors from "cors";
 import { handleData } from './util';
-import { UacConfig, WorkflowNode } from "./interfaces";
+import { UacConfig, WorkflowNode, Environment } from "./interfaces";
 import { readFileSync, writeFileSync } from "fs";
 import { homedir } from "node:os";
 import { exit } from "process";
@@ -27,7 +27,8 @@ export default function api(app: express.Application, config: UacConfig, token: 
   app.get("/", (req, res) => {
     console.log('\n--- /');
     console.log(`Send index.html ${docRoot}`);
-    res.sendFile(path.join(docRoot, "index.html"));
+    res.sendFile('index.html', { root: path.join(__dirname, 'public') });
+    // res.sendFile(path.join(docRoot, "index.html"));
   });
 
   app.get("/api/environments", (req: any, res: any) => {
@@ -86,7 +87,17 @@ export default function api(app: express.Application, config: UacConfig, token: 
       const cfg = config.environments[env];
       const baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
       const url = `uc/resources/task/?taskname=${task}`;
-      const headers = getHeaders(cfg);
+      const token = readToken(env);
+      const headers = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Host: `${cfg.uachost}:${cfg.uacport}`,
+          "Sec-Fetch-Site": "cross-site"
+        }
+      }
 
       fetch(baseUrl + url, headers)
         .then((response) => response.json())
@@ -104,7 +115,7 @@ export default function api(app: express.Application, config: UacConfig, token: 
     // eks env = "usprod"
     const env = getEnv(req);
     const cfg = config.environments[env];
-    cfg.token = readToken(env);
+    const token = readToken(env);
 
     if (dummyWorkflows.length > 0) {
       const sorted = handleData(dummyWorkflows, cfg.pattern);
@@ -115,7 +126,16 @@ export default function api(app: express.Application, config: UacConfig, token: 
 
     const baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
     const url = "uc/resources/task/listadv?type=Workflow";
-    const headers = getHeaders(cfg);
+    const headers = {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        Host: `${cfg.uachost}:${cfg.uacport}`,
+        "Sec-Fetch-Site": "cross-site"
+      }
+    }
 
     fetch(baseUrl + url, headers)
       .then((response) => response.json())
@@ -129,18 +149,7 @@ export default function api(app: express.Application, config: UacConfig, token: 
       .catch((error: any) => console.error(error));
   });
 
-  function getHeaders(cfg: { pattern: string; credentials: string; business_area: [string]; agent: string; uachost: string; uacport: string; token: string; }) {
-    return {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${cfg.token}`,
-        Host: `${cfg.uachost}:${cfg.uacport}`,
-        "Sec-Fetch-Site": "cross-site",
-      },
-    };
-  }
+
 
   function getEnv(req: any) {
     let env = "";
