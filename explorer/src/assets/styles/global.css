@@ -6,6 +6,8 @@
 @import 'skin_styles_ph.css';
 @import 'uc_general.css';
 @import 'styles.css';
+@import 'spinner.css';
+
 
 body {
   font-family: 'Open Sans';
@@ -42,23 +44,24 @@ body {
   margin: 0px;
 }
 
+#abx {
+  grid-template-columns: auto 1fr;
+}
 #container {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
+  display: flex;
   top: 0px;
   height: 90vh;
   width: 100%;
   z-index: 1;
+  background-color: rgb(250, 250, 250);
   overflow: visible;
   border-right: 5px solid lightgrey;
   border-bottom: 5px solid lightgrey;
 }
 
 #left-pane {
-  display: inline-block;
   height: 90vh;
   min-width: 200px;
-  background-color: rgba(250, 250, 250);
   font-size: 14px;
   font-weight: 700;
   border-right: 2px solid grey;
@@ -69,7 +72,8 @@ body {
 }
 
 #middle {
-  background-color: rgb(250, 250, 250);
+  flex-grow: 1;
+  min-width: 650;
   border: 5px solid lightgrey;
   padding: 10px;
   left: 0px;

@@ -14,6 +14,7 @@ export const config = {
   uacenv: ref(""),
   isLoading: ref(true),
 
+  // Kaldes fra app.vue
   async init() {
     await api.getDefaultEnv()
     .then((env) => {
@@ -22,6 +23,7 @@ export const config = {
     })
   },
 
+  // Denne benyttes vist ikke
   getEnv() {
     return this.uacenv;
   },

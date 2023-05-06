@@ -2,20 +2,25 @@ import express from "express";
 import { homedir } from "os";
 import { exit } from "process";
 import { readFileSync, writeFileSync } from "fs";
-import { UacConfig, IuserConfig, WorkflowNode } from './interfaces';
+import { UacConfig, WorkflowNode } from './interfaces';
 import api from "./api";
 
 // const data: Idata = {} as Idata;
 var dummyWorkflows: WorkflowNode[];
+var dummyTasks: WorkflowNode[];
 var config: UacConfig = {} as UacConfig;
 var uacenv = "";
 var token = "";
 
 // Dummy data
 try {
-  dummyWorkflows = JSON.parse(readFileSync("uac.json", "utf-8"));
+  dummyWorkflows = JSON.parse(readFileSync("../workflows.json", "utf-8"));
+  dummyTasks = JSON.parse(readFileSync("../tasks.json", "utf-8"));
+  //let tmp = dummyWorkflows.filter((x) => x.type != "taskWorkflow")
+  //writeFileSync("../tasks.json", JSON.stringify(tmp));
 } catch (e) {
   dummyWorkflows = [];
+  dummyTasks = [];
 }
 
 // Read Config file
@@ -40,7 +45,7 @@ try {
 }
 
 export const app = express();
-api(app, config, token, uacenv, dummyWorkflows);
+api(app, config, token, uacenv, dummyWorkflows, dummyTasks);
 
 // start serveren
 app.listen(8080, () => {

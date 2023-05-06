@@ -103,7 +103,7 @@ function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevel
     workflow: []
   };
 
-  if (newNode.type === "") {
+  if (!newNode.type || newNode.type === "") {
     newNode.type = "task";
   }
   workflow.push(newNode);

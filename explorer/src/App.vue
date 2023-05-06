@@ -10,11 +10,8 @@
       <div id="left-pane">
         <ExplorerComponent v-if="!isLoading"></ExplorerComponent>
       </div>
-      <div id="middle">
-        <TaskComponent></TaskComponent>
-      </div>
+      <div id="middle"></div>
       <div id="right-pane">
-        <h1>Right pane</h1>
       </div>
     </div>
   </div>
@@ -34,17 +31,15 @@ export default defineComponent({
     HeaderComponent,
     ToolbarComponent,
     ExplorerComponent,
-    TaskComponent,
   },
   setup() {
     var isLoading = toRef(config, "isLoading");
     onMounted(async () => {
       await config.init();
-      console.log('App config.init: env ', config.getEnv());
+      console.log("App config.init: env ", config.getEnv());
     });
-    return {isLoading};
+    return { isLoading };
   },
 });
 </script>
-isLoading
 <style lang="scss"></style>

@@ -1,5 +1,5 @@
 {
-  "default": "svusql",
+  "default": "test",
   "environments": {
     "svuprod": {
       "pattern": "svuprod.*",

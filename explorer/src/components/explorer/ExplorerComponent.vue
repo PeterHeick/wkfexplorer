@@ -1,11 +1,9 @@
 <template>
   <div v-if="loading" class="loader" style="justify-items: center" >Loading...</div>
-  <!--
-  <h2>Data fra API</h2>
-  <div style="padding:  4px 5px 4px 40px;">
-    <button @click="getData">Hent data</button>
+  <div v-if="loading" class="example">
+    <span class="smooth spinner" />
   </div>
-  -->
+
   <TreeComponent v-if="!loading" :treeData="wkf"></TreeComponent>
 </template>
 
@@ -20,18 +18,11 @@ export default defineComponent({
   },
 
   setup() {
-    // const currentTask = ref("");
     const wkf = computed(() => workflowStore.wkf);
-    /*
-    let wkf = reactive({
-      value: workflowStore.wkf as TreeNode[],
-    });
-    */
     let loading = ref(true);
 
     onMounted(() => {
       workflowStore.update().then((data) => {
-        // wkf.value = data;
         loading.value = false;
         console.log(
           "ExplorerComponent data length ",

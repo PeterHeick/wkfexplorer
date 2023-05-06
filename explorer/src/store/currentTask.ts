@@ -5,6 +5,7 @@ import { reactive } from 'vue';
   Den her bruges til at holde styr på current task i TreeComponent.
   Task skal kun vises når det er den aktuelle current task.
   Så den her opdateres fra TreeComponent.
+  Og den indeholder ikke hele tasken kun id og navn, jeg tror ikke navn bruges mere.
 */
 
 export const currentTask = reactive({

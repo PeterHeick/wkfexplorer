@@ -857,9 +857,9 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const {taskNode } = toRefs(props);
+    
     onMounted(() => {
-      console.log("generalComponent.onMounted: ");
+      console.log("generalComponent.onMounted: ", props.taskNode.name);
     })
     return {}
   },

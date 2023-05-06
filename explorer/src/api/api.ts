@@ -12,6 +12,7 @@ const headers = {
 
 export const api = {
 
+  // kaldes fra config.init
   getDefaultEnv() {
     const url = `uacenv`;
     return fetch(baseUrl + url, headers)
@@ -39,20 +40,26 @@ export const api = {
     return fetch(baseUrl + url, headers)
       .then((response) => response.json())
       .then((data) => {
-      //  this.configData = data;
+        //  this.configData = data;
         return data;
       })
   },
 
+  // Kaldt fra handleTaskClick i TreeComponent
   getTask(name: string, env: string) {
-    console.log("api.getTask");
-    const url = `taskname?${name}&uacenv=${env}`;
-    return fetch(baseUrl + url, headers)
-      .then((response) => response.json())
-      .then((data) => {
-      //  this.configData = data;
-        return data;
-      })
+    console.log("api.getTask", name);
+    return new Promise((resolve, reject) => {
+      if (name === undefined) {
+        reject('Name undefined');
+      } else {
+        const url = `task?taskname=${name}&uacenv=${env}`;
+        return fetch(baseUrl + url, headers)
+          .then((response) => response.json())
+          .then((data) => {
+            resolve(data);
+          })
+      }
+    })
   },
 
   getAllWorkflows(env: string) {
@@ -61,8 +68,8 @@ export const api = {
     return fetch(baseUrl + url, headers)
       .then((response) => response.json())
       .then((data) => {
-       //  this.treeData = data;
-         return data;
+        //  this.treeData = data;
+        return data;
       })
   }
 }

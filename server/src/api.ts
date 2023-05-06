@@ -8,7 +8,7 @@ import { writeFileSync } from "fs";
 
 const docRoot = "docRoot";
 
-export default function api(app: express.Application, config: UacConfig, token: string, uacenv: string, dummyWorkflows: WorkflowNode[]) {
+export default function api(app: express.Application, config: UacConfig, token: string, uacenv: string, dummyWorkflows: WorkflowNode[], dummyTasks: WorkflowNode[]) {
   app.use(cors());
   app.use(
     express.static(docRoot, {
@@ -54,10 +54,20 @@ export default function api(app: express.Application, config: UacConfig, token: 
   });
 
   app.get("/api/task", (req: any, res: any) => {
+
+    function getWkfByName(workflowSet: WorkflowNode[], name: string): WorkflowNode {
+      for (const wkfNode of workflowSet) {
+        if (wkfNode.name == name) {
+          return wkfNode;
+        }
+      }
+      return {} as WorkflowNode;
+    }
     console.log('\n--- /api/task');
 
     const env = getEnv(req);
 
+    console.log(JSON.stringify(req.query));
     let task = "";
     try {
       task = req.query.taskname;
@@ -65,18 +75,26 @@ export default function api(app: express.Application, config: UacConfig, token: 
       task = "Uknown";
     }
 
-    const cfg = config.environments[env];
-    const baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
-    const url = `uc/resources/task/?taskname=${task}`;
-    const headers = getHeaders(cfg);
+    console.log(dummyTasks.length);
+    if (dummyTasks.length > 0) {
+      console.log(task)
+      let wkfNode = getWkfByName(dummyTasks, task);
+      console.log(wkfNode.name);
+      res.status(200).json(wkfNode);
+    } else {
+      const cfg = config.environments[env];
+      const baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
+      const url = `uc/resources/task/?taskname=${task}`;
+      const headers = getHeaders(cfg);
 
-    fetch(baseUrl + url, headers)
-      .then((response) => response.json())
-      .then((data) => {
-        writeFileSync('../task.json', JSON.stringify(data));
-        res.status(200).json(data);
-      })
-      .catch((error: any) => console.error(error));
+      fetch(baseUrl + url, headers)
+        .then((response) => response.json())
+        .then((data) => {
+          writeFileSync('../task.json', JSON.stringify(data));
+          res.status(200).json(data);
+        })
+        .catch((error: any) => console.error(error));
+    }
   });
 
   app.get("/api/listadv", (req: any, res: any) => {
