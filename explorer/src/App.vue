@@ -36,7 +36,6 @@ export default defineComponent({
     var isLoading = toRef(config, "isLoading");
     onMounted(async () => {
       await config.init();
-      console.log("App config.init: env ", config.getEnv());
     });
     return { isLoading };
   },
