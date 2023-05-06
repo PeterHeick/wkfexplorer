@@ -23,6 +23,8 @@ export const api = {
       })
   },
 
+  /*
+  // Benyttes vist ikke
   getConfigData(env: string) {
     console.log("api.getConfigData ", env)
     const url = `config?uacenv=${env}`;
@@ -33,6 +35,7 @@ export const api = {
         return data;
       })
   },
+  */
 
   getEnvironments() {
     console.log("api.getEnvironments");
@@ -40,7 +43,6 @@ export const api = {
     return fetch(baseUrl + url, headers)
       .then((response) => response.json())
       .then((data) => {
-        //  this.configData = data;
         return data;
       })
   },
@@ -62,8 +64,9 @@ export const api = {
     })
   },
 
+  // env eks: "usprod"
   getAllWorkflows(env: string) {
-    console.log("api.getAllWorkflows");
+    console.log("api.getAllWorkflows ", env);
     const url = `listadv?uacenv=${env}`;
     return fetch(baseUrl + url, headers)
       .then((response) => response.json())

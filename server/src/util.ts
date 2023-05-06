@@ -61,7 +61,7 @@ export function handleData(data: WorkflowNode[], pattern: string): TreeNode[] {
   });
   // console.log(envTable);
   console.log(pattern);
-  console.log(JSON.stringify(workflowFiltered));
+  // console.log(JSON.stringify(workflowFiltered));
   if (workflowFiltered.length > 0) {
     console.log(workflowFiltered[0].name);
     console.log(envTable[workflowFiltered[0].name]);

@@ -34,15 +34,7 @@ try {
 
 // Default environment
 uacenv = config.default;
-try {
-  const homeDir = homedir();
-  const configFilePath = config.environments[uacenv].token;
-  const filePath = configFilePath.replace(/^~(?=$|\/|\\)/, homeDir);
-  token = readFileSync(filePath, "utf-8");
-} catch (e) {
-  console.error(e);
-  exit(1);
-}
+readToken(uacenv);
 
 export const app = express();
 api(app, config, token, uacenv, dummyWorkflows, dummyTasks);
@@ -52,4 +44,16 @@ app.listen(8080, () => {
   console.log(process.cwd());
   console.log("Server kører på http://localhost:8080/");
 });
+
+function readToken(uacenv: string) {
+  try {
+    const homeDir = homedir();
+    const configFilePath = config.environments[uacenv].token;
+    const filePath = configFilePath.replace(/^~(?=$|\/|\\)/, homeDir);
+    token = readFileSync(filePath, "utf-8");
+  } catch (e) {
+    console.error(e);
+    exit(1);
+  }
+}
 
