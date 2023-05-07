@@ -1,7 +1,7 @@
 <template>
   <div class="toolbar">
-    <div class="dropdown">
-      <button :disabled="isLoading" class="dropbtn">{{ selectedItem }}</button>
+    <div class="dropdown" v-show="!isloading" >
+      <button class="dropbtn">{{ selectedItem }}</button>
       <div class="dropdown-content" v-if="!isLoading">
         <a
           v-for="(env, index) in environments"

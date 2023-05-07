@@ -10,7 +10,7 @@ import { exit } from "process";
 
 const docRoot = "docRoot";
 
-export default function api(app: express.Application, config: UacConfig, token: string, uacenv: string, workflows: WorkflowNode[], dummyTasks: WorkflowNode[]) {
+export default function api(app: express.Application, config: UacConfig, uacenv: string) {
   app.use(cors());
   app.use(
     express.static(docRoot, {
@@ -109,6 +109,7 @@ export default function api(app: express.Application, config: UacConfig, token: 
   });
 
   app.get("/api/listadv", (req: any, res: any) => {
+    let system: string;
     console.log('\n--- /api/listadv');
 
     // eks env = "usprod"
@@ -116,9 +117,21 @@ export default function api(app: express.Application, config: UacConfig, token: 
     const cfg = config.environments[env];
     const token = readToken(env);
 
-    if (workflows.length > 0) {
-      const sorted = handleData(workflows, cfg.pattern);
-      // console.log("sorted ", Object.keys(sorted));
+    if (token === "Token not found") {
+      res.status(404).send(token);
+    }
+
+    console.log("env ", env);
+    console.log("cfg ", cfg);
+    system = "test";
+    if (config.environments[uacenv].uachost === "s0199035.su.dk") {
+      system = "prod";
+    }
+
+    console.log(workflows.hasOwnProperty(system));
+    if (workflows.hasOwnProperty(system) && workflows[system].length > 0) {
+      const sorted = handleData(workflows[system], cfg.pattern);
+      console.log("sorted ", Object.keys(sorted));
       res.status(200).json(sorted);
       return;
     }
@@ -140,7 +153,7 @@ export default function api(app: express.Application, config: UacConfig, token: 
       .then((response) => response.json())
       .then((data) => {
         console.log("Got ", data.length);
-        workflows = data;
+        workflows[system] = data;
         // writeFileSync('../workflow.json', JSON.stringify(data));
         const sorted = handleData(data, cfg.pattern);
         console.log("sorted ", sorted.length);
@@ -148,8 +161,6 @@ export default function api(app: express.Application, config: UacConfig, token: 
       })
       .catch((error: any) => console.error(error));
   });
-
-
 
   function getEnv(req: any) {
     let env = "";
@@ -172,8 +183,29 @@ export default function api(app: express.Application, config: UacConfig, token: 
 
     } catch (e) {
       console.error(e);
-      exit(1);
+      return "Token not found";
     }
+  }
+  interface Workflows {
+    [key: string]: never[]
+  }
+  
+  var workflows: Workflows = {
+    prod: [],
+    test: []
+  };
+
+  var dummyTasks: WorkflowNode[];
+  let system = "test";
+
+  // Dummy data
+  try {
+    workflows.test = JSON.parse(readFileSync("../workflows.json", "utf-8"));
+    dummyTasks = JSON.parse(readFileSync("../tasks.json", "utf-8"));
+    //let tmp = workflows.filter((x) => x.type != "taskWorkflow")
+    //writeFileSync("../tasks.json", JSON.stringify(tmp));
+  } catch (e) {
+    dummyTasks = [];
   }
 
 }

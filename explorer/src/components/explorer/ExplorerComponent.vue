@@ -19,7 +19,7 @@ export default defineComponent({
 
   setup() {
     const wkf = computed(() => workflowStore.wkf);
-    const isLoading = ref(workflowStore.isLoading);
+    const isLoading = computed(() => workflowStore.isLoading);
 
     onMounted(() => {
       workflowStore.update()
@@ -52,6 +52,7 @@ export default defineComponent({
   border: 2px solid #ccc;
   border-top-color: #000;
   animation: spinner .6s linear infinite;
+  position: relative;
 
 }
 
