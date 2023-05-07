@@ -11,3 +11,9 @@ server/docRoot
 explorer/package-lock.json
 counter.json
 sorted.json
+config.json
+all.workflows.json
+server/Root
+tasks.json
+workflows.json
+
