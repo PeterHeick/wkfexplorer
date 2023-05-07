@@ -1,8 +1,8 @@
 <template>
   <div class="toolbar">
     <div class="dropdown">
-      <button class="dropbtn">{{ selectedItem }}</button>
-      <div class="dropdown-content" v-if="!loading">
+      <button :disabled="isLoading" class="dropbtn">{{ selectedItem }}</button>
+      <div class="dropdown-content" v-if="!isLoading">
         <a
           v-for="(env, index) in environments"
           :key="index"
@@ -24,7 +24,7 @@ import { defineComponent, onMounted, ref, toRef } from "vue";
 export default defineComponent({
   setup() {
     let environments = ref<string[]>([]);
-    let loading = ref<boolean>(true);
+    let isLoading = ref(workflowStore.isLoading);
     let selectedItem = toRef(config, "uacenv");
     let showMenu = false;
     //let selectedItem = ref<string>(api.uacenv.value);
@@ -39,14 +39,14 @@ export default defineComponent({
       console.log("ToolbarComponent onMounted");
       api.getEnvironments().then((env) => {
         environments.value = env;
-        loading.value = false;
+        isLoading.value = false;
         console.log('ToolbarComnponent: env: ', env);
       });
     });
 
     return {
       environments,
-      loading,
+      isLoading,
       selectedItem,
       updateWorkflow,
     };

@@ -10,7 +10,7 @@ import { exit } from "process";
 
 const docRoot = "docRoot";
 
-export default function api(app: express.Application, config: UacConfig, token: string, uacenv: string, dummyWorkflows: WorkflowNode[], dummyTasks: WorkflowNode[]) {
+export default function api(app: express.Application, config: UacConfig, token: string, uacenv: string, workflows: WorkflowNode[], dummyTasks: WorkflowNode[]) {
   app.use(cors());
   app.use(
     express.static(docRoot, {
@@ -116,8 +116,8 @@ export default function api(app: express.Application, config: UacConfig, token: 
     const cfg = config.environments[env];
     const token = readToken(env);
 
-    if (dummyWorkflows.length > 0) {
-      const sorted = handleData(dummyWorkflows, cfg.pattern);
+    if (workflows.length > 0) {
+      const sorted = handleData(workflows, cfg.pattern);
       // console.log("sorted ", Object.keys(sorted));
       res.status(200).json(sorted);
       return;
@@ -140,7 +140,8 @@ export default function api(app: express.Application, config: UacConfig, token: 
       .then((response) => response.json())
       .then((data) => {
         console.log("Got ", data.length);
-        writeFileSync('../workflow.json', JSON.stringify(data));
+        workflows = data;
+        // writeFileSync('../workflow.json', JSON.stringify(data));
         const sorted = handleData(data, cfg.pattern);
         console.log("sorted ", sorted.length);
         res.status(200).json(sorted);

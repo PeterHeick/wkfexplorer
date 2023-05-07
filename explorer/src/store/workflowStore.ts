@@ -11,13 +11,16 @@ import { config } from "./config";
 export const workflowStore = reactive({
 
   wkf: [] as TreeNode[],
+  isLoading: false,
 
   update() {
+    this.isLoading = true;
     return api.getAllWorkflows(config.uacenv.value)
       .then((data: TreeNode[]) => {
         this.wkf = data;
         console.log('workflowStore.wkf.length ', this.wkf.length);
         console.log('workflowStore.update: api.getAllTasks ', data.length);
+        this.isLoading = false;
         return data;
       })
   }

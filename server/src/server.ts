@@ -6,7 +6,7 @@ import { UacConfig, WorkflowNode } from './interfaces';
 import api from "./api";
 
 // const data: Idata = {} as Idata;
-var dummyWorkflows: WorkflowNode[];
+var workflows: WorkflowNode[];
 var dummyTasks: WorkflowNode[];
 var config: UacConfig = {} as UacConfig;
 var uacenv = "";
@@ -14,12 +14,12 @@ var token = "";
 
 // Dummy data
 try {
-  dummyWorkflows = JSON.parse(readFileSync("../workflows.json", "utf-8"));
+  workflows = JSON.parse(readFileSync("../workflows.json", "utf-8"));
   dummyTasks = JSON.parse(readFileSync("../tasks.json", "utf-8"));
-  //let tmp = dummyWorkflows.filter((x) => x.type != "taskWorkflow")
+  //let tmp = workflows.filter((x) => x.type != "taskWorkflow")
   //writeFileSync("../tasks.json", JSON.stringify(tmp));
 } catch (e) {
-  dummyWorkflows = [];
+  workflows = [];
   dummyTasks = [];
 }
 
@@ -37,7 +37,7 @@ uacenv = config.default;
 readToken(uacenv);
 
 export const app = express();
-api(app, config, token, uacenv, dummyWorkflows, dummyTasks);
+api(app, config, token, uacenv, workflows, dummyTasks);
 
 // start serveren
 app.listen(8080, () => {
