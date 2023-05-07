@@ -1,0 +1,13 @@
+
+Checkin:
+ git add .gitignore
+ git commit -m 'fix'
+
+
+Tag:
+ git tag -a beta03 -m 'Det virker på lenovo, function readToken, TaskComponent'
+ git push --tags
+
+Gammel version
+git log api.ts
+git checkout e7462bbae947128c95826b6b36b0603562b2f8f0 -- api.ts
