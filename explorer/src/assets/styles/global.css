@@ -65,6 +65,7 @@ body {
   font-size: 14px;
   font-weight: 700;
   border-right: 2px solid grey;
+  overflow-x: auto;
   overflow-y: auto;
   resize: horizontal;
   border: 5px solid lightgrey;
@@ -79,6 +80,8 @@ body {
   left: 0px;
   margin-left: 1px;
   border: 1px solid black;
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 #right-pane {

@@ -1,5 +1,5 @@
 import { writeFileSync } from 'fs';
-import { INumberDictionary, Ivertice, WorkflowNode, TreeNode, IStringDictionary } from './interfaces';
+import { INumberDictionary, Ivertice, WorkflowNode, TreeNode, IStringDictionary, Environment } from './interfaces';
 
 var id = 0;
 let counter: INumberDictionary = {};
@@ -136,3 +136,26 @@ function handleCircularReferences() {
 function fileWriteSync(arg0: string, workflow: TreeNode[]) {
   throw new Error('Function not implemented.');
 }
+
+export function deepMerge(target: any, source: any) {
+  const output: Environment = { ...target } as Environment;
+
+  for (const key in source) {
+    if (typeof source[key] === "object") {
+      if (!(key in target)) {
+        output[key] = { ...source[key] } as typeof target[string];
+      } else {
+        output[key] = deepMerge(target[key], source[key])as typeof target[string];
+      }
+    } else {
+      output[key] = source[key];
+    }
+  }
+  return output;
+}
+
+ 
+
+// const mergedConfig: Config = deepMerge(config, userConfig);
+
+// console.log(mergedConfig);

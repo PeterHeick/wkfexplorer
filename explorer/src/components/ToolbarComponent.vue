@@ -1,6 +1,6 @@
 <template>
   <div class="toolbar">
-    <div class="dropdown" v-show="!isloading" >
+    <div class="dropdown" v-show="!isLoading" >
       <button class="dropbtn">{{ selectedItem }}</button>
       <div class="dropdown-content" v-if="!isLoading">
         <a
@@ -19,15 +19,14 @@
 import { api } from "@/api/api";
 import { config } from "@/store/config";
 import { workflowStore } from "@/store/workflowStore";
-import { defineComponent, onMounted, ref, toRef } from "vue";
+import { computed, defineComponent, onMounted, ref, toRef } from "vue";
 
 export default defineComponent({
   setup() {
     let environments = ref<string[]>([]);
-    let isLoading = ref(workflowStore.isLoading);
+    let isLoading = computed(() => workflowStore.isLoading);
     let selectedItem = toRef(config, "uacenv");
     let showMenu = false;
-    //let selectedItem = ref<string>(api.uacenv.value);
 
     function updateWorkflow(env: string) {
       selectedItem.value = env;
@@ -39,7 +38,6 @@ export default defineComponent({
       console.log("ToolbarComponent onMounted");
       api.getEnvironments().then((env) => {
         environments.value = env;
-        isLoading.value = false;
         console.log('ToolbarComnponent: env: ', env);
       });
     });

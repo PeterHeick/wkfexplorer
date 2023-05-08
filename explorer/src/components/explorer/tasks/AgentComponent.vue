@@ -95,9 +95,7 @@
                   <div style="overflow: hidden; height: 0px"></div>
                 </td>
               </tr>
-              <tr
-                  v-if="taskNode.agentCluster"
-                  >
+              <tr v-if="taskNode.agentCluster">
                 <td
                   align="left"
                   valign="top"
@@ -576,8 +574,10 @@
                                           transform: scale(0.6875, 0.6875);
                                         "
                                         class="comboBoxItemPicker uc-field"
-                                      ></span>{{ taskNode.agentCluster }}</span
-                                  ></span>
+                                      ></span
+                                      >{{ taskNode.agentCluster }}</span
+                                    ></span
+                                  >
                                 </td>
                               </tr>
                             </tbody>
@@ -800,7 +800,6 @@
                                     id="isc_4GE"
                                     handlenativeevents="false"
                                     spellcheck="true"
-                                    onselect="if (window.isc_OpswiseReferenceItem_54 == null) return;isc_OpswiseReferenceItem_54.$1162()"
                                     autocomplete="OFF"
                                     class="selectItemLiteText uc-field"
                                     style="width: 262px; height: 16px"
@@ -1022,52 +1021,19 @@
                     align="left"
                     ><label id="isc_4GW">Run as sudo</label></span
                   ><br />
-                  <table
-                    role="presentation"
-                    cellspacing="0"
-                    cellpadding="0"
-                    border="0"
-                    id="isc_4GX"
+                  <span
                     style="
-                      margin: 0px;
-                      border: 0px;
-                      padding: 0px;
-                      background-image: none;
-                      background-color: transparent;
-                      -webkit-box-shadow: none;
-                      box-shadow: none;
-                      white-space: normal;
+                      vertical-align: top;
+                      display: inline-block;
+                      transform-origin: left top;
+                      width: 25px;
+                      height: 25px;
+                      transform: scale(0.96, 0.96);
                     "
-                    class="formCell"
+                    class="checkboxTrue"
                   >
-                    <tbody>
-                      <tr>
-                        <td
-                          style="
-                            margin: 0px;
-                            border: 0px;
-                            padding: 0px;
-                            background-image: none;
-                            background-color: transparent;
-                            -webkit-box-shadow: none;
-                            box-shadow: none;
-                          "
-                          valign="middle"
-                        >
-                          <div
-                            id="isc_4GY"
-                            class="labelAnchor"
-                            style="min-width: 194px; white-space: nowrap"
-                            tabindex="3329"
-                          >
-                            <span class="uc-field">
-                              {{ taskNode.runAsSudo }}
-                            </span>
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+                    {{ taskNode.runAsSudo }}
+                  </span>
                 </td>
               </tr>
             </tbody>
