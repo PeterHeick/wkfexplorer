@@ -11,7 +11,7 @@
   </div>
 </template>
 <script lang="ts">
-import { TaskNode, TreeNode } from "@/types/interfaces";
+import { Task, TreeNode } from "@/types/interfaces";
 import { defineComponent, onMounted, reactive } from "vue";
 import GeneralComponent from "./GeneralComponent.vue";
 import TaskUnixComponent from "./TaskUnixComponent.vue";
@@ -19,7 +19,7 @@ import TaskFtpComponent from "./TaskFtpComponent.vue";
 import TaskEmailComponent from "./TaskEmailComponent.vue";
 import AgentComponent from "./AgentComponent.vue";
 import { api } from "@/api/api";
-import { config } from "@/store/config";
+import config from "@/store/config";
 
 export default defineComponent({
   components: { GeneralComponent, TaskUnixComponent, AgentComponent, TaskFtpComponent, TaskEmailComponent },
@@ -32,7 +32,7 @@ export default defineComponent({
     },
   },
   setup(props) {
-    const task = reactive({ value: {} as TaskNode });
+    const task = reactive({ value: {} as Task });
     onMounted(() => {
       console.log("taskComponent.onMounted: ");
       api.getTask(props.taskNode.name, config.uacenv.value)

@@ -229,15 +229,15 @@
 </template>
 
 <script lang="ts">
-import { TaskNode } from "@/types/interfaces";
+import { TaskUnix } from "@/types/interfaces";
 import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
   props: {
     taskNode: {
-      type: Object as () => TaskNode,
+      type: Object as () => TaskUnix,
       default: () => {
-        return {} as TaskNode;
+        return {} as TaskUnix;
       },
     },
   },

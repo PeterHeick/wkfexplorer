@@ -1,16 +1,19 @@
 <template>
-  <div v-if="isLoading" class="loader" style="justify-items: center" >Loading...</div>
-  <div v-if="isLoading">
+  <div v-if="workflowsAreLoading" class="loader" style="justify-items: center">
+    Loading...
+  </div>
+  <div v-if="workflowsAreLoading">
     <span class="spinner" />
   </div>
 
-  <TreeComponent v-if="!isLoading" :treeData="wkf"></TreeComponent>
+  <TreeComponent v-if="!workflowsAreLoading" :treeData="wkf"></TreeComponent>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed } from "vue";
+import { defineComponent, onBeforeMount, ref, computed, reactive, toRef } from "vue";
 import TreeComponent from "./TreeComponent.vue";
 import { workflowStore } from "../../store/workflowStore";
+import { TreeNode } from "@/types/interfaces";
 
 export default defineComponent({
   components: {
@@ -18,28 +21,30 @@ export default defineComponent({
   },
 
   setup() {
-    const wkf = computed(() => workflowStore.wkf);
-    const isLoading = computed(() => workflowStore.isLoading);
+    const wkf = toRef(workflowStore, 'wkf');
+    let workflowsAreLoading = toRef(workflowStore, 'isLoading');
 
-    onMounted(() => {
-      workflowStore.update()
+    onBeforeMount(() => {
+      console.log("ExplorerComponent ", workflowsAreLoading.value);
+      console.log(JSON.stringify(wkf.value));
     });
 
     return {
       wkf,
-      isLoading,
+      workflowsAreLoading,
     };
   },
 });
 </script>
 <style scoped>
-
 @keyframes spinner {
-  to {transform: rotate(360deg);}
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spinner:before {
-  content: '';
+  content: "";
   box-sizing: border-box;
   position: absolute;
   top: 50%;
@@ -51,11 +56,7 @@ export default defineComponent({
   border-radius: 50%;
   border: 2px solid #ccc;
   border-top-color: #000;
-  animation: spinner .6s linear infinite;
+  animation: spinner 0.6s linear infinite;
   position: relative;
-
 }
-
- 
-
 </style>

@@ -1,12 +1,12 @@
 import express from "express";
 import { exit } from "process";
 import { readFileSync } from "fs";
-import { UacConfig } from './interfaces';
+import { Config } from './interfaces';
 import api from "./api";
 
 // const data: Idata = {} as Idata;
 
-var config: UacConfig = {} as UacConfig;
+var config: Config = {} as Config;
 var uacenv = "";
 
 // Read Config file
@@ -22,7 +22,7 @@ try {
 uacenv = config.default;
 
 export const app = express();
-api(app, config, uacenv);
+api(app, config);
 
 // start serveren
 app.listen(8080, () => {

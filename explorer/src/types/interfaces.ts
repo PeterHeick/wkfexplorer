@@ -39,29 +39,11 @@ export type TreeNode =
   id: number;
   name: string;
   type: string;
-  summary?: string;
-  version?: number;
-  command?: string;
-  commandOrScript?: string;
-  opswiseGroups?: string[];
-  remoteServer?: string;
-  localFilename?: string;
-  remoteFilename?: string;
-  agent?: string;
-  credentials?: string;
-  runAsSudo?: boolean,
-  resolveNameImmediately?: boolean;
-  timeZonePref?: string;
-  resPriority?: number;
-  startHeld?: boolean;
-  exclusiveWithSelf?: boolean;
-  agentCluster?: string;
-  
   isVisible: boolean;
-  color: string;
   workflow: TreeNode[];
 }
 
+/*
 export interface INumberDictionary {
   [key: string]: number;
 }
@@ -69,43 +51,28 @@ export interface INumberDictionary {
 export interface IStringDictionary {
   [key: string]: Set<string>;
 }
+*/
 
-export type UacConfig = {
-  [ key: string ]: {
-    prefix: string;
+export type ConfigType = {
+  default: string;
+  environments: Environment;
+}
+
+export type Environment = {
+  [key: string]: {
+    pattern: string;
     credentials: string;
-    business_area: [ string ];
+    business_area: [string];
     agent: string;
     uachost: string;
     uacport: string;
-    jcl: string;
-    token: 'prod' | 'test';
+    token: string;
+    backgroundcolor: string;
   };
 }
 
-export interface IuserConfig {
-  token: {
-    prod: string,
-    test: string
-  },
-  uacenv: string
-}
-
-export interface RootState {} 
-
-export interface State {
-  configData: UacConfig[]
-}
-
-export interface Idata {
-  uac: WorkflowNode[];
-  globalUacConfig: UacConfig;
-  userUacConfig: IuserConfig;
-  uacenv: string;
-}
-
-
-export type TaskNode = {
+export type Task = TaskUnix | TaskFtp | TaskEmail;
+export type TaskUnix = {
   type: string;
   actions: {
     abortActions: any[];

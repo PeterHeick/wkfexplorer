@@ -89,16 +89,6 @@ function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevel
     id,
     name,
     type: wkfNode.type,
-    agent: wkfNode.agent,
-    exclusiveWithSelf: wkfNode.exclusiveWithSelf,
-    opswiseGroups: wkfNode.opswiseGroups,
-    resPriority: wkfNode.resPriority,
-    startHeld: wkfNode.startHeld,
-    summary: wkfNode.summary,
-    timeZonePref: wkfNode.timeZonePref,
-    version: wkfNode.version,
-
-    color: "white",
     isVisible: false,
     workflow: []
   };

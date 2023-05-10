@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --exec ts-node src/server.ts",
+    "plan": "nodemon --exec ts-node src/weekplan.ts",
     "build": "webpack"
   },
   "author": "",

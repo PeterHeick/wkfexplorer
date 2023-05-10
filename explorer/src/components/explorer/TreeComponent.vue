@@ -4,7 +4,7 @@
       <div v-if="node.type === 'taskWorkflow'">
         <span
           @click="handleClick(node)"
-          :style="{ backgroundColor: node.color }"
+          :style="{ backgroundColor: 'white' }"
           :class="node.workflow.length > 0 ? 'workflow' : 'wkfempty'"
         >
           {{ node.name }}</span
@@ -33,13 +33,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, onMounted, reactive } from "vue";
 import { TreeNode } from "@/types/interfaces";
 import TaskComponent from "./tasks/TaskComponent.vue";
 import { currentTask } from "@/store/currentTask";
-import { api } from "@/api/api";
-import { config } from "@/store/config";
-
 
 export default defineComponent({
   name: "TreeComponent",
@@ -52,7 +49,7 @@ export default defineComponent({
       },
     },
   },
-  setup() {
+  setup(props) {
     const handleTaskClick = (node: TreeNode) => {
       console.log("HandleTaskClick TreeComponent ", JSON.stringify(node));
       currentTask.setId(node.id);
@@ -78,6 +75,10 @@ export default defineComponent({
     const isWorkflow = (elem: TreeNode) => {
       return elem.type === "taskWorkflow";
     };
+
+    onMounted(() => {
+      console.log("TreeComponent ", JSON.stringify(props.treeData));
+    })
 
     return {
       handleClick,

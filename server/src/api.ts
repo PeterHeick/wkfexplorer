@@ -3,14 +3,13 @@ import path from "path";
 import mime from "mime";
 import cors from "cors";
 import { handleData } from './util';
-import { UacConfig, WorkflowNode, Environment } from "./interfaces";
+import { Config, WorkflowNode, Environment } from "./interfaces";
 import { readFileSync, writeFileSync } from "fs";
 import { homedir } from "node:os";
-import { exit } from "process";
 
 const docRoot = "docRoot";
 
-export default function api(app: express.Application, config: UacConfig, uacenv: string) {
+export default function api(app: express.Application, config: Config) {
   app.use(cors());
   app.use(
     express.static(docRoot, {
@@ -30,28 +29,11 @@ export default function api(app: express.Application, config: UacConfig, uacenv:
     res.sendFile(path.join(docRoot, "index.html"));
   });
 
-  app.get("/api/environments", (req: any, res: any) => {
-    console.log('\n--- /api/environments');
-    res.status(200).json(Object.keys(config.environments));
-  });
-
-  app.get("/api/uacenv", (req: any, res: any) => {
-    console.log('\n--- /uacenv');
-    console.log('Send: ', JSON.stringify(uacenv));
-    res.status(200).json(uacenv);
-  });
-
   app.get("/api/config", (req: any, res: any) => {
     console.log('\n--- /api/config');
-    let env = "";
-    try {
-      env = req.query.uacenv;
-    } catch (e) {
-      env = uacenv;
-    }
-    const cfg = config.environments[env];
-    console.log(JSON.stringify(cfg));
-    res.status(200).json(cfg);
+    console.log(Object.keys(config.environments).length);
+    console.log(Object.keys(config.environments));
+    res.status(200).json(config);
   });
 
   app.get("/api/task", (req: any, res: any) => {
@@ -104,7 +86,10 @@ export default function api(app: express.Application, config: UacConfig, uacenv:
           writeFileSync('../task.json', JSON.stringify(data));
           res.status(200).json(data);
         })
-        .catch((error: any) => console.error(error));
+      .catch((error: any) => {
+        console.error(error)
+        res.status(404).send(error);
+      });
     }
   });
 
@@ -124,7 +109,7 @@ export default function api(app: express.Application, config: UacConfig, uacenv:
     console.log("env ", env);
     console.log("cfg ", cfg);
     system = "test";
-    if (config.environments[uacenv].uachost === "s0199035.su.dk") {
+    if (config.environments[env].uachost === "s0199035.su.dk") {
       system = "prod";
     }
 
@@ -159,7 +144,10 @@ export default function api(app: express.Application, config: UacConfig, uacenv:
         console.log("sorted ", sorted.length);
         res.status(200).json(sorted);
       })
-      .catch((error: any) => console.error(error));
+      .catch((error: any) => {
+        console.error(error)
+        res.status(404).send(error);
+      });
   });
 
   function getEnv(req: any) {
@@ -167,7 +155,7 @@ export default function api(app: express.Application, config: UacConfig, uacenv:
     try {
       env = req.query.uacenv;
     } catch (e) {
-      env = uacenv;
+      env = config.default;
     }
     console.log("getEnv: ", env);
     console.log(`${JSON.stringify(config.environments[env])}`);
@@ -189,7 +177,7 @@ export default function api(app: express.Application, config: UacConfig, uacenv:
   interface Workflows {
     [key: string]: never[]
   }
-  
+
   var workflows: Workflows = {
     prod: [],
     test: []
@@ -200,6 +188,7 @@ export default function api(app: express.Application, config: UacConfig, uacenv:
 
   // Dummy data
   try {
+    //workflows.test = JSON.parse(readFileSync("../ugeplan2.json", "utf-8"));
     workflows.test = JSON.parse(readFileSync("../workflows.json", "utf-8"));
     dummyTasks = JSON.parse(readFileSync("../tasks.json", "utf-8"));
     //let tmp = workflows.filter((x) => x.type != "taskWorkflow")

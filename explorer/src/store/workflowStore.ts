@@ -1,7 +1,7 @@
 import { reactive, ref } from "vue";
 import { TreeNode } from '../types/interfaces';
 import { api } from "@/api/api";
-import { config } from "./config";
+import config from "./config";
 
 /*
  Den her holder workflow og task data fra serveren.
@@ -13,15 +13,18 @@ export const workflowStore = reactive({
   wkf: [] as TreeNode[],
   isLoading: false,
 
+  // Kaldes fra ToolbarComponent
   update() {
     this.isLoading = true;
     return api.getAllWorkflows(config.uacenv.value)
       .then((data: TreeNode[]) => {
         this.wkf = data;
-        console.log('workflowStore.wkf.length ', this.wkf.length);
-        console.log('workflowStore.update: api.getAllTasks ', data.length);
+        console.log("workflowStore.update()");
         this.isLoading = false;
-        return data;
       })
+      .catch((error) => {
+        console.log(error);
+        this.wkf = [];
+      });
   }
 })

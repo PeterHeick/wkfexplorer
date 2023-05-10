@@ -1,3 +1,4 @@
+import { Environment } from '../types/interfaces';
 
 const baseUrl = `http://localhost:8080/api/`;
 const headers = {
@@ -12,6 +13,17 @@ const headers = {
 
 export const api = {
 
+  getConfigData() {
+    console.log("api.getConfigData ")
+    const url = 'config';
+    return fetch(baseUrl + url, headers)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("api.getConfigData length: ", Object.keys(data.environments).length);
+        return data;
+      })
+  },
+
   // kaldes fra config.init
   getDefaultEnv() {
     const url = `uacenv`;
@@ -23,20 +35,7 @@ export const api = {
       })
   },
 
-  /*
-  // Benyttes vist ikke
-  getConfigData(env: string) {
-    console.log("api.getConfigData ", env)
-    const url = `config?uacenv=${env}`;
-    return fetch(baseUrl + url, headers)
-      .then((response) => response.json())
-      .then((data) => {
-        // this.configData = data;
-        return data;
-      })
-  },
-  */
-
+  // Kaldes fra 
   getEnvironments() {
     console.log("api.getEnvironments");
     const url = "environments";
@@ -65,14 +64,18 @@ export const api = {
   },
 
   // env eks: "usprod"
+  // kaldes fra workflowStore
   getAllWorkflows(env: string) {
     console.log("api.getAllWorkflows ", env);
     const url = `listadv?uacenv=${env}`;
     return fetch(baseUrl + url, headers)
       .then((response) => response.json())
       .then((data) => {
-        //  this.treeData = data;
         return data;
       })
+      .catch((error) => {
+        console.log(error);
+        return [];
+      });
   }
 }

@@ -1,10 +1,10 @@
 <template>
   <div class="toolbar">
-    <div class="dropdown" v-show="!isLoading" >
+    <div class="dropdown" v-show="!workflowsAreLoading" >
       <button class="dropbtn">{{ selectedItem }}</button>
-      <div class="dropdown-content" v-if="!isLoading">
+      <div class="dropdown-content">
         <a
-          v-for="(env, index) in environments"
+          v-for="(env, index) in environmentList"
           :key="index"
           href="#"
           @click="updateWorkflow(env)"
@@ -16,35 +16,31 @@
 </template>
 
 <script lang="ts">
-import { api } from "@/api/api";
-import { config } from "@/store/config";
+import config from "@/store/config";
 import { workflowStore } from "@/store/workflowStore";
-import { computed, defineComponent, onMounted, ref, toRef } from "vue";
+import { defineComponent, onBeforeMount, ref, toRef } from "vue";
 
 export default defineComponent({
   setup() {
-    let environments = ref<string[]>([]);
-    let isLoading = computed(() => workflowStore.isLoading);
+    let environmentList = ref<string[]>([]);
+    let workflowsAreLoading = toRef(workflowStore, 'isLoading');
     let selectedItem = toRef(config, "uacenv");
-    let showMenu = false;
 
     function updateWorkflow(env: string) {
-      selectedItem.value = env;
+      // selectedItem.value = env;
       config.setEnv(env);
       workflowStore.update();
     }
 
-    onMounted(() => {
-      console.log("ToolbarComponent onMounted");
-      api.getEnvironments().then((env) => {
-        environments.value = env;
-        console.log('ToolbarComnponent: env: ', env);
-      });
+    onBeforeMount(() => {
+      console.log("ToolbarComponent onBeforeMount");
+      environmentList.value = config.getEnvironmentList()
+      workflowStore.update();
     });
 
     return {
-      environments,
-      isLoading,
+      environmentList,
+      workflowsAreLoading,
       selectedItem,
       updateWorkflow,
     };
