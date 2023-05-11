@@ -20,16 +20,16 @@ class Config {
   setEnv(env: string) {
     console.log("setEnv: ", env);
     this.uacenv.value = env;
-  };
+  }
 
   getEnvironment() {
     console.log("getEnvironment()");
     return this.configData.environments[this.uacenv.value];
-  };
+  }
 
   getEnvironmentList() {
     return Object.keys(this.configData.environments);
-  };
+  }
 
   getBackgroundColor() {
     console.log("getBackgroundColor ", this.configData.environments[this.uacenv.value].backgroundcolor)
@@ -46,6 +46,6 @@ class Config {
         console.log("config: default UACENV: ", this.uacenv.value);
       })
   }
-};
+}
 const config = new Config();
 export default config;

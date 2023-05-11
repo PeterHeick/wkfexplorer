@@ -31,7 +31,6 @@ export default function api(app: express.Application, config: Config) {
 
   app.get("/api/config", (req: any, res: any) => {
     console.log('\n--- /api/config');
-    console.log(Object.keys(config.environments).length);
     console.log(Object.keys(config.environments));
     res.status(200).json(config);
   });
@@ -86,43 +85,39 @@ export default function api(app: express.Application, config: Config) {
           writeFileSync('../task.json', JSON.stringify(data));
           res.status(200).json(data);
         })
-      .catch((error: any) => {
-        console.error(error)
-        res.status(404).send(error);
-      });
+        .catch((error: any) => {
+          console.error(error)
+          res.status(404).send(error);
+        });
     }
   });
 
   app.get("/api/listadv", (req: any, res: any) => {
-    let system: string;
     console.log('\n--- /api/listadv');
 
-    // eks env = "usprod"
     const env = getEnv(req);
     const cfg = config.environments[env];
     const token = readToken(env);
 
     if (token === "Token not found") {
       res.status(404).send(token);
+      return;
     }
 
-    console.log("env ", env);
-    console.log("cfg ", cfg);
-    system = "test";
-    if (config.environments[env].uachost === "s0199035.su.dk") {
-      system = "prod";
-    }
+    console.log("api.ts: env ", env);
+    console.log("api.ts: cfg ", cfg);
 
-    console.log(workflows.hasOwnProperty(system));
-    if (workflows.hasOwnProperty(system) && workflows[system].length > 0) {
-      const sorted = handleData(workflows[system], cfg.pattern);
+    if (workflows.hasOwnProperty(env) && workflows[env].length > 0) {
+      const sorted = handleData(workflows[env], cfg.pattern);
       console.log("sorted ", Object.keys(sorted));
       res.status(200).json(sorted);
       return;
     }
 
-    const baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
-    const url = "uc/resources/task/listadv?type=Workflow";
+    const pattern = cfg.pattern.replace(/\.\*/, '*');
+    const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+    const url = `${baseUrl}/uc/resources/task/listadv?taskname=${pattern}&type=workflow`
+    console.log(url);
     const headers = {
       method: "GET",
       headers: {
@@ -134,12 +129,22 @@ export default function api(app: express.Application, config: Config) {
       }
     }
 
-    fetch(baseUrl + url, headers)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("Got ", data.length);
-        workflows[system] = data;
-        // writeFileSync('../workflow.json', JSON.stringify(data));
+    console.log("fetch ", JSON.stringify(headers));
+
+    fetch(url, headers)
+      .then((response) => {
+        if (response.ok) {
+          return response.json()
+        } else {
+          return response.json().then(error => {throw new Error(error.message)});
+        }
+      })
+      .then((data: any) => {
+        console.log(typeof data);
+      
+        //console.log("Got ", data.length);
+        workflows[env] = data;
+        writeFileSync('../workflow.json', JSON.stringify(data));
         const sorted = handleData(data, cfg.pattern);
         console.log("sorted ", sorted.length);
         res.status(200).json(sorted);
@@ -184,7 +189,6 @@ export default function api(app: express.Application, config: Config) {
   };
 
   var dummyTasks: WorkflowNode[];
-  let system = "test";
 
   // Dummy data
   try {
