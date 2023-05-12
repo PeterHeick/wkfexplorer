@@ -24,25 +24,18 @@ export const api = {
       })
   },
 
-  // kaldes fra config.init
-  getDefaultEnv() {
-    const url = `uacenv`;
+  getPlanData() {
+    console.log("api.getPlanData ")
+    const url = 'plan?plan=ugeplan.txt';
     return fetch(baseUrl + url, headers)
       .then((response) => response.json())
       .then((data) => {
-        console.log('api.getDefaultEnv ', data);
+        console.log("api.getPlanData length: ", Object.keys(data).length);
         return data;
       })
-  },
-
-  // Kaldes fra 
-  getEnvironments() {
-    console.log("api.getEnvironments");
-    const url = "environments";
-    return fetch(baseUrl + url, headers)
-      .then((response) => response.json())
-      .then((data) => {
-        return data;
+      .catch((error) => {
+        console.log(error);
+        return [];
       })
   },
 
@@ -58,6 +51,10 @@ export const api = {
           .then((response) => response.json())
           .then((data) => {
             resolve(data);
+          })
+          .catch((error) => {
+            console.log(error);
+            return [];
           })
       }
     })

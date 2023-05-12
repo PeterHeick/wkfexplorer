@@ -1,16 +1,14 @@
 <template>
-  <div class="toolbar">
-    <div class="dropdown" v-show="!workflowsAreLoading" >
-      <button class="dropbtn">{{ selectedItem }}</button>
-      <div class="dropdown-content">
-        <a
-          v-for="(env, index) in environmentList"
-          :key="index"
-          href="#"
-          @click="updateWorkflow(env)"
-          >{{ env }}</a
-        >
-      </div>
+  <div class="dropdown" v-show="!workflowsAreLoading">
+    <button class="dropbtn">{{ selectedItem }}</button>
+    <div class="dropdown-content">
+      <a
+        v-for="(env, index) in environmentList"
+        :key="index"
+        href="#"
+        @click="updateWorkflow(env)"
+        >{{ env }}</a
+      >
     </div>
   </div>
 </template>
@@ -21,21 +19,24 @@ import { workflowStore } from "@/store/workflowStore";
 import { defineComponent, onBeforeMount, ref, toRef } from "vue";
 
 export default defineComponent({
-  setup() {
+  props: {
+    type: String,
+  },
+  setup(props) {
     let environmentList = ref<string[]>([]);
-    let workflowsAreLoading = toRef(workflowStore, 'isLoading');
+    let workflowsAreLoading = toRef(workflowStore, "isLoading");
     let selectedItem = toRef(config, "uacenv");
 
     function updateWorkflow(env: string) {
       // selectedItem.value = env;
       config.setEnv(env);
-      workflowStore.update();
+      workflowStore.update(props.type as string,);
     }
 
     onBeforeMount(() => {
       console.log("ToolbarComponent onBeforeMount");
-      environmentList.value = config.getEnvironmentList()
-      workflowStore.update();
+      environmentList.value = config.getEnvironmentList();
+      workflowStore.update(props.type as string,);
     });
 
     return {
@@ -53,10 +54,17 @@ export default defineComponent({
 <style>
 .toolbar {
   display: flex;
-  justify-content: space-between;
+  padding-top: 2px;
+  height: 25;
+  width: 100%;
+  border: 0px;
+  cursor: default;
   background-color: white;
+  vertical-align: center;
+  margin: 0px;
+  justify-content: space-between;
   border-bottom: 1px solid #ccc;
-  padding: 4px 5px 4px 43px;
+  align-items: center;
 }
 
 .toolbar button {
@@ -65,6 +73,7 @@ export default defineComponent({
 
 .dropdown {
   position: relative;
+  padding: 2px 5px 4px 43px;
   display: inline-block;
 }
 
@@ -75,7 +84,7 @@ export default defineComponent({
   background-color: #e6e6e6;
   color: #000;
   border-radius: 4px;
-  border: 1px solid #999;;
+  border: 1px solid #999;
   cursor: pointer;
   align-items: center;
   font-size: 14px;
@@ -90,7 +99,7 @@ export default defineComponent({
   border: none;
   background-color: #f2f2f2;
   border-radius: 4px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 }
 
 .dropdown-content a {

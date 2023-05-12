@@ -13,7 +13,6 @@
 import { defineComponent, onBeforeMount, ref, computed, reactive, toRef } from "vue";
 import TreeComponent from "./TreeComponent.vue";
 import { workflowStore } from "../../store/workflowStore";
-import { TreeNode } from "@/types/interfaces";
 
 export default defineComponent({
   components: {

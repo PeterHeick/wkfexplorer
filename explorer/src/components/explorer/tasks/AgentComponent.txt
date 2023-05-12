@@ -95,7 +95,7 @@
                   <div style="overflow: hidden; height: 0px"></div>
                 </td>
               </tr>
-              <tr v-if="hasAgentCluster">
+              <tr v-if="taskNode.agentCluster">
                 <td
                   align="left"
                   valign="top"
@@ -459,7 +459,7 @@
                   </table>
                 </td>
               </tr>
-              <tr v-if="hasAgentCluster && taskNode.agentCluster.trim()">
+              <tr v-if="taskNode.agentCluster && (taskNode.agentCluster as string).trim()">
                 <td
                   align="left"
                   valign="top"
@@ -1021,7 +1021,7 @@
                     align="left"
                     ><label id="isc_4GW">Run as sudo</label></span
                   ><br />
-                  <span
+                  <span v-show="taskNode.runAsSudo"
                     style="
                       vertical-align: top;
                       display: inline-block;
@@ -1030,7 +1030,7 @@
                       height: 25px;
                       transform: scale(0.96, 0.96);
                     "
-                    :class="taskNode.runAsSudo?'checkboxTrue':'checkboxFalse'"
+                    class="checkboxTrue"
                   >
                   </span>
                 </td>
@@ -1044,23 +1044,20 @@
 </template>
 
 <script lang="ts">
-import { Task } from "@/types/interfaces";
-import { computed, defineComponent } from "vue";
+import { TaskUnix } from "@/types/interfaces";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
     taskNode: {
-      type: Object as () => Task,
+      type: Object as () => TaskUnix,
       default: () => {
-        return {} as Task;
+        return {} as TaskUnix;
       },
     },
   },
-  setup(props) {
-    const hasAgentCluster = computed(() => {
-      return 'agentCluster' in props.taskNode && props.taskNode.agentCluster;
-    })
-    return {hasAgentCluster};
+  setup() {
+    return {};
   },
 });
 </script>

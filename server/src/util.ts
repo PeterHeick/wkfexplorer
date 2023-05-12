@@ -93,8 +93,9 @@ function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevel
     workflow: []
   };
 
+  console.log(newNode.name, newNode.type);
   if (!newNode.type || newNode.type === "") {
-    newNode.type = "task";
+    newNode.type = "taskUnix";
   }
   workflow.push(newNode);
 
@@ -143,7 +144,6 @@ export function deepMerge(target: any, source: any) {
   }
   return output;
 }
-
  
 
 // const mergedConfig: Config = deepMerge(config, userConfig);

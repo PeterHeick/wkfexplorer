@@ -1,0 +1,826 @@
+<template>
+  <div
+    id="isc_7GW"
+    eventproxy="isc_OpswiseDynamicForm_7"
+    class="normal"
+    style="
+      position: absolute;
+      left: 0px;
+      top: 27px;
+      width: 455px;
+      height: 377px;
+      z-index: 240752;
+      padding: 0px;
+      overflow: visible;
+      cursor: default;
+    "
+    onscroll="return isc_OpswiseDynamicForm_7.$lh()"
+  >
+    <div
+      id="isc_7GX"
+      eventproxy="isc_OpswiseDynamicForm_7"
+      style="
+        position: relative;
+        visibility: inherit;
+        z-index: 240752;
+        cursor: default;
+        padding: 2px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-left: 2px;
+        padding-right: 2px;
+      "
+    >
+      <div
+        id="isc_7GY"
+        method="POST"
+        action="#"
+        enctype="application/x-www-form-urlencoded"
+        onsubmit="return isc_OpswiseDynamicForm_7.$10d()"
+        onreset="isc_OpswiseDynamicForm_7.resetValues(); return false;"
+        style="margin-bottom: 0px"
+        accept-charset="UTF-8"
+      >
+        <table
+          role="presentation"
+          id="isc_7GZ"
+          cellspacing="0"
+          cellpadding="3"
+          border="0"
+        >
+          <colgroup>
+            <col width="225" />
+            <col width="226" />
+          </colgroup>
+          <tbody>
+            <tr>
+              <td
+                class="ucFormSectionLabelBold"
+                style="padding: 5px"
+                align="left"
+                valign="middle"
+              >
+               Linux/Unix Details
+              </td>
+            </tr>
+            <tr>
+              <td
+                style="
+                  margin: 0px;
+                  border: 0px;
+                  padding: 0px;
+                  background-image: none;
+                  background-color: transparent;
+                  -webkit-box-shadow: none;
+                  box-shadow: none;
+                  font-size: 0px;
+                  height: 0px;
+                  overflow: hidden;
+                  padding: 0px;
+                "
+                class=""
+              >
+              </td>
+              <td
+                style="
+                  margin: 0px;
+                  border: 0px;
+                  padding: 0px;
+                  background-image: none;
+                  background-color: transparent;
+                  -webkit-box-shadow: none;
+                  box-shadow: none;
+                  font-size: 0px;
+                  height: 0px;
+                  overflow: hidden;
+                  padding: 0px;
+                "
+                class=""
+              >
+                <div style="overflow: hidden; height: 0px"></div>
+              </td>
+            </tr>
+            <tr>
+              <td align="left" valign="top" class="formCell" id="isc_7HL">
+                <span
+                  id="isc_7HM"
+                  style="display: inline-block"
+                  class="formTitle"
+                  align="left"
+                  ><label id="isc_7HN">Command or Script</label></span
+                ><br />
+                <table
+                  role="presentation"
+                  id="isc_7HP"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="cursor: default; width: 294px"
+                  class="selectItemLiteControl"
+                >
+                  <tbody>
+                    <tr>
+                      <td
+                        style="
+                          margin: 0px;
+                          border: 0px;
+                          padding: 0px;
+                          background-image: none;
+                          background-color: transparent;
+                          -webkit-box-shadow: none;
+                          box-shadow: none;
+                        "
+                      >
+                        <div
+                          id="isc_7HO"
+                          class="selectItemLiteText"
+                          style="
+                            width: 266px;
+                            height: 16px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            line-height: 16px;
+                          "
+                          tabindex="3373"
+                          role="option"
+                        >
+                          {{ taskNode.commandOrScript }}
+                        </div>
+                      </td>
+                      <td
+                        id="isc_7HQ"
+                        class="selectItemPickerIcon"
+                        style="font-size: 22px"
+                      >
+                        <span
+                          role="button"
+                          id="isc_7HR"
+                          style="margin-left: 0px; display: block; height: 22px"
+                          tabindex="-1"
+                          handlenativeevents="false"
+                          ><span
+                            spriteviewport="true"
+                            style="
+                              overflow: hidden;
+                              display: inline-block;
+                              width: 11px;
+                              height: 22px;
+                              vertical-align: middle;
+                              margin-top: 0px;
+                              margin-bottom: 0px;
+                              margin-left: 0px;
+                              display: block;
+                              cursor: pointer;
+                              -webkit-touch-callout: none;
+                            "
+                            id="isc_7HS"
+                            ><span
+                              style="
+                                vertical-align: top;
+                                display: inline-block;
+                                transform-origin: left top;
+                                width: 16px;
+                                height: 32px;
+                                background-position: 0px 12px;
+                                transform: scale(0.6875, 0.6875);
+                              "
+                              class="comboBoxItemPicker"
+                              >{{ taskNode.command }}</span
+                            ></span
+                          ></span
+                        >
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td
+                align="left"
+                valign="top"
+                class="formCell"
+                style=""
+                colspan="2"
+                id="isc_7HT"
+              >
+                <nobr
+                  ><span
+                    id="isc_7HU"
+                    style="display: inline-block"
+                    class="formTitle"
+                    align="left"
+                    ><label id="isc_7HW" for="isc_7HV">Command</label
+                    >&nbsp;<span style="color: red">*</span></span
+                  ><br /><textarea
+                    readonly
+                    name="command"
+                    id="isc_7HV"
+                    class="textAreaItemLite"
+                    style="
+                      resize: none;
+                      margin: 0px;
+                      width: 423px;
+                      height: 40px;
+                      display: block;
+                      white-space: pre-wrap;
+                    "
+                    autocomplete="OFF"
+                    spellcheck="true"
+                    wrap="SOFT"
+                    tabindex="3395"
+                    oninput="isc_OpswiseTextAreaItem_26._handleInput()"
+                    handlenativeevents="false"
+                  ></textarea>
+                </nobr>
+              </td>
+            </tr>
+            <tr>
+              <td
+                align="left"
+                valign="top"
+                class="formCell"
+                style=""
+                colspan="2"
+                id="isc_7HX"
+              >
+                <nobr
+                  ><span
+                    id="isc_7HY"
+                    style="display: inline-block"
+                    class="formTitle"
+                    align="left"
+                    ><label id="isc_7I0" for="isc_7HZ">Parameters</label></span
+                  ><br /><textarea
+                    readonly
+                    name="parameters"
+                    id="isc_7HZ"
+                    class="textAreaItemLite"
+                    style="
+                      resize: none;
+                      margin: 0px;
+                      width: 423px;
+                      height: 40px;
+                      display: block;
+                      white-space: pre-wrap;
+                    "
+                    autocomplete="OFF"
+                    spellcheck="true"
+                    wrap="SOFT"
+                    tabindex="3461"
+                    oninput="isc_OpswiseTextAreaItem_27._handleInput()"
+                    handlenativeevents="false"
+                    v-model="taskNode.parameters"
+                  ></textarea>
+                </nobr>
+              </td>
+            </tr>
+            <tr>
+              <td
+                align="left"
+                valign="top"
+                class="formCell"
+                style=""
+                colspan="2"
+                id="isc_7I1"
+              >
+                <span
+                  id="isc_7I2"
+                  style="display: inline-block"
+                  class="formTitle"
+                  align="left"
+                  ><label id="isc_7I4" for="isc_7I3"
+                    >Runtime Directory</label
+                  ></span
+                ><br />
+                <div
+                  type="TEXT"
+                  name="runtimeDir"
+                  id="isc_7I3"
+                  handlenativeevents="false"
+                  spellcheck="true"
+                  oninput="isc_OpswiseTextItem_594._handleInput()"
+                  onselect="if (window.isc_OpswiseTextItem_594 == null) return;isc_OpswiseTextItem_594.$1162()"
+                  autocomplete="OFF"
+                  class="textItemLite"
+                  style="width: 423px; height: 16px"
+                  tabindex="3483"
+                >
+                  {{ taskNode.runtimeDir }}
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td
+                align="left"
+                valign="top"
+                class="formCell"
+                style=""
+                colspan="2"
+                id="isc_7I5"
+              >
+                <span
+                  id="isc_7I6"
+                  style="display: inline-block"
+                  class="formTitle"
+                  align="left"
+                  ><label id="isc_7I7">Environment Variables</label></span
+                ><br />
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div
+        id="isc_7H0"
+        eventproxy="isc_ListGrid_4"
+        role="list"
+        class="listGrid"
+        style="
+          position: absolute;
+          left: 5px;
+          top: 252px;
+          width: 441px;
+          height: 116px;
+          z-index: 240788;
+          padding: 0px;
+          overflow: visible;
+        "
+        onscroll="return isc_ListGrid_4.$lh()"
+      >
+        <div
+          id="isc_7H1"
+          eventproxy="isc_ListGrid_4"
+          style="
+            position: relative;
+            -webkit-margin-collapse: separate separate;
+            visibility: inherit;
+            z-index: 240788;
+            cursor: default;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            padding-left: 0px;
+            padding-right: 0px;
+          "
+        >
+          &nbsp;
+          <div
+            id="isc_7H2"
+            eventproxy="isc_Toolbar_24"
+            class="headerBar"
+            style="
+              position: absolute;
+              left: 0px;
+              top: 38px;
+              width: 441px;
+              height: 28px;
+              z-index: 240776;
+              overflow: hidden;
+              cursor: default;
+            "
+            onscroll="return isc_Toolbar_24.$lh()"
+            role="toolbar"
+          >
+            &nbsp;
+            <div
+              id="isc_7H5"
+              eventproxy="isc_Button_7"
+              style="
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                width: 220px;
+                height: 28px;
+                z-index: 240806;
+                overflow: hidden;
+                background-color: rgb(240, 240, 240);
+                cursor: pointer;
+                border: 0px none rgb(97, 97, 97);
+                border-radius: 0px;
+                box-shadow: none;
+                outline-style: none;
+              "
+              onscroll="return isc_Button_7.$lh()"
+              onfocus="isc.EH.handleFocus(isc_Button_7,true);"
+              onblur="if(window.isc)isc.EH.handleBlur(isc_Button_7,true);"
+              tabindex="-1"
+              role="button"
+            >
+              <table
+                role="presentation"
+                cellspacing="0"
+                cellpadding="0"
+                width="220px"
+                style="table-layout: fixed"
+                height="28px"
+              >
+                <tbody>
+                  <tr>
+                    <td
+                      class="headerButton"
+                      style="
+                        border: none;
+                        border-radius: inherit;
+                        padding-top: 0px;
+                        padding-bottom: 0px;
+                        background-color: transparent;
+                        text-align: left;
+                        vertical-align: middle;
+                        white-space: nowrap;
+                      "
+                    >
+                      <div
+                        style="
+                          display: inline-block;
+                          max-width: 100%;
+                          text-align: left;
+                          vertical-align: middle;
+                        "
+                      >
+                        <div
+                          id="isc_7H4"
+                          style="
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                          "
+                        >
+                          Name
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div
+              id="isc_7H8"
+              eventproxy="isc_Button_5"
+              style="
+                position: absolute;
+                left: 220px;
+                top: 0px;
+                width: 221px;
+                height: 28px;
+                z-index: 240824;
+                overflow: hidden;
+                background-color: rgb(240, 240, 240);
+                cursor: pointer;
+                border: 0px none rgb(97, 97, 97);
+                border-radius: 0px;
+                box-shadow: none;
+                outline-style: none;
+              "
+              onscroll="return isc_Button_5.$lh()"
+              onfocus="isc.EH.handleFocus(isc_Button_5,true);"
+              onblur="if(window.isc)isc.EH.handleBlur(isc_Button_5,true);"
+              tabindex="-1"
+              role="button"
+            >
+              <table
+                role="presentation"
+                cellspacing="0"
+                cellpadding="0"
+                width="221px"
+                style="table-layout: fixed"
+                height="28px"
+              >
+                <tbody>
+                  <tr>
+                    <td
+                      class="headerButton"
+                      style="
+                        border: none;
+                        border-radius: inherit;
+                        padding-top: 0px;
+                        padding-bottom: 0px;
+                        background-color: transparent;
+                        text-align: left;
+                        vertical-align: middle;
+                        white-space: nowrap;
+                      "
+                    >
+                      <div
+                        style="
+                          display: inline-block;
+                          max-width: 100%;
+                          text-align: left;
+                          vertical-align: middle;
+                        "
+                      >
+                        <div
+                          id="isc_7H7"
+                          style="
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                          "
+                        >
+                          Value
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div
+            id="isc_7H9"
+            eventproxy="isc_ToolStrip_41"
+            class="toolStrip"
+            style="
+              position: absolute;
+              left: 0px;
+              top: 0px;
+              width: 437px;
+              height: 34px;
+              z-index: 240842;
+              padding: 0px;
+              overflow: visible;
+            "
+            onscroll="return isc_ToolStrip_41.$lh()"
+          >
+            <div
+              id="isc_7HA"
+              eventproxy="isc_ToolStrip_41"
+              style="
+                position: relative;
+                -webkit-margin-collapse: separate separate;
+                visibility: inherit;
+                z-index: 240842;
+                cursor: default;
+                padding-top: 4px;
+                padding-bottom: 4px;
+                padding-left: 6px;
+                padding-right: 4px;
+              "
+            >
+              &nbsp;
+              <div
+                id="isc_7HC"
+                eventproxy="isc_ToolStripButton_119"
+                role="button"
+                aria-label="Add item"
+                onfocus="isc.EH.handleFocus(isc_ToolStripButton_119,true);"
+                onblur="if(window.isc)isc.EH.handleBlur(isc_ToolStripButton_119,true);"
+                tabindex="3518"
+                style="
+                  position: absolute;
+                  left: 375px;
+                  top: 4px;
+                  width: 28px;
+                  height: 26px;
+                  z-index: 240860;
+                  padding: 0px;
+                  outline-style: none;
+                  overflow: visible;
+                "
+                onscroll="return isc_ToolStripButton_119.$lh()"
+              >
+                <div
+                  id="isc_7HB"
+                  eventproxy="isc_ToolStripButton_119"
+                  style="
+                    position: relative;
+                    -webkit-margin-collapse: separate separate;
+                    visibility: inherit;
+                    z-index: 240860;
+                    cursor: pointer;
+                    padding-top: 0px;
+                    padding-bottom: 0px;
+                    padding-left: 0px;
+                    padding-right: 0px;
+                  "
+                >
+
+                </div>
+              </div>
+              <div
+                id="isc_7HE"
+                eventproxy="isc_ToolStripButton_120"
+                role="button"
+                aria-label="Remove selected item"
+                onfocus="isc.EH.handleFocus(isc_ToolStripButton_120,true);"
+                onblur="if(window.isc)isc.EH.handleBlur(isc_ToolStripButton_120,true);"
+                tabindex="3520"
+                style="
+                  position: absolute;
+                  left: 405px;
+                  top: 4px;
+                  width: 28px;
+                  height: 26px;
+                  z-index: 240878;
+                  padding: 0px;
+                  outline-style: none;
+                  overflow: visible;
+                "
+                onscroll="return isc_ToolStripButton_120.$lh()"
+              >
+                <div
+                  id="isc_7HD"
+                  eventproxy="isc_ToolStripButton_120"
+                  style="
+                    position: relative;
+                    -webkit-margin-collapse: separate separate;
+                    visibility: inherit;
+                    z-index: 240878;
+                    cursor: pointer;
+                    padding-top: 0px;
+                    padding-bottom: 0px;
+                    padding-left: 0px;
+                    padding-right: 0px;
+                  "
+                >
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            id="isc_7HH"
+            eventproxy="isc_ListGrid_4_body"
+            class="gridBody"
+            onfocus="isc.EH.handleFocus(isc_ListGrid_4_body,true);"
+            onblur="if(window.isc)isc.EH.handleBlur(isc_ListGrid_4_body,true);"
+            tabindex="3522"
+            style="
+              position: absolute;
+              left: 0px;
+              top: 68px;
+              width: 441px;
+              height: 48px;
+              z-index: 240770;
+              padding: 0px;
+              outline-style: none;
+              overflow: visible;
+            "
+            onscroll="return isc_ListGrid_4_body.$lh()"
+          >
+            <div
+              id="isc_7HI"
+              eventproxy="isc_ListGrid_4_body"
+              style="
+                position: relative;
+                -webkit-margin-collapse: separate separate;
+                visibility: inherit;
+                z-index: 240770;
+                cursor: default;
+                padding-top: 0px;
+                padding-bottom: 0px;
+                padding-left: 0px;
+                padding-right: 0px;
+              "
+            >
+              <div
+                id="isc_7HG"
+                style="
+                  position: absolute;
+                  overflow: visible;
+                  z-index: 1000;
+                  height: 100%;
+                  width: 441px;
+                "
+              >
+                <table
+                  id="isc_7HF"
+                  role="presentation"
+                  border="0"
+                  margin="0"
+                  cellspacing="0"
+                  cellpadding="0"
+                  style="position: absolute; height: 100%; width: 441px"
+                >
+                  <tbody>
+                    <tr>
+                      <td
+                        align="CENTER"
+                        class="emptyMessage"
+                        style="
+                          padding-left: 0px;
+                          padding-right: 0px;
+                          height: 26px;
+                        "
+                      >
+                        No items to show.
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div
+            id="isc_7HK"
+            eventproxy="isc_ListGrid_4_sorter"
+            style="
+              position: absolute;
+              left: 0px;
+              top: 0px;
+              width: 16px;
+              height: 28px;
+              z-index: 240896;
+              overflow: hidden;
+              visibility: hidden;
+              background-color: rgb(240, 240, 240);
+              cursor: default;
+              border-bottom: 1.11111px solid rgb(204, 204, 204);
+              border-left: 0px none rgb(97, 97, 97);
+              border-right: 0px none rgb(97, 97, 97);
+              border-top: 0px none rgb(97, 97, 97);
+              border-radius: 0px;
+              box-shadow: none;
+              -webkit-margin-collapse: collapse collapse;
+              outline-style: none;
+            "
+            onscroll="return isc_ListGrid_4_sorter.$lh()"
+            onfocus="isc.EH.handleFocus(isc_ListGrid_4_sorter,true);"
+            onblur="if(window.isc)isc.EH.handleBlur(isc_ListGrid_4_sorter,true);"
+            tabindex="-1"
+            role="button"
+            aria-label="corner menu"
+          >
+            <table
+              role="presentation"
+              cellspacing="0"
+              cellpadding="0"
+              width="16px"
+              style="table-layout: fixed"
+              height="28px"
+            >
+              <tbody>
+                <tr>
+                  <td
+                    class="sorterButton"
+                    style="
+                      border: none;
+                      border-radius: inherit;
+                      padding-top: 0px;
+                      padding-bottom: 0px;
+                      background-color: transparent;
+                      text-align: center;
+                      vertical-align: middle;
+                      white-space: nowrap;
+                    "
+                  >
+                    <div
+                      id="isc_7HJ"
+                      unselectable="on"
+                      style="
+                        display: inline-block;
+                        box-sizing: border-box;
+                        max-width: 100%;
+                        vertical-align: middle;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                      "
+                    >
+                      <span
+                        style="
+                          display: inline-block;
+                          background-size: 100% 100%;
+                          background-image: url('https://s0299035.su.dk:8443/uc/skins/Light/images/blank.gif');
+                          width: 1px;
+                          height: 1px;
+                          vertical-align: text-top;
+                        "
+                      ></span>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { TreeNode } from "@/types/interfaces";
+import { defineComponent, onMounted } from "vue";
+
+export default defineComponent({
+  props: {
+    taskNode: {
+      type: Object as () => TreeNode,
+      default: () => {
+        return {} as TreeNode;
+      },
+    },
+  },
+  setup() {
+    onMounted(() => { console.log("onMounted TaskUnix"); });
+    return {};
+  },
+});
+</script>
+
+<style scoped>
+#unix {
+  margin-top: 20px;
+  display: none;
+  margin-top: 10px;
+}
+</style>

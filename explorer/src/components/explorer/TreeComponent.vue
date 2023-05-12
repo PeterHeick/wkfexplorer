@@ -18,7 +18,7 @@
         >
         </TreeComponent>
       </div>
-      <div v-else-if="node.type === 'task'">
+      <div v-else-if="node.type === 'taskUnix'">
         <span @click="handleTaskClick(node)"> {{ node.name }}</span>
         <teleport to="#middle">
           <TaskComponent
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { TreeNode } from "@/types/interfaces";
 import TaskComponent from "./tasks/TaskComponent.vue";
 import { currentTask } from "@/store/currentTask";
@@ -47,7 +47,7 @@ export default defineComponent({
       default: () => {
         return [] as TreeNode[];
       },
-    },
+    }
   },
   setup(props) {
     const handleTaskClick = (node: TreeNode) => {
@@ -77,7 +77,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      console.log("TreeComponent ", JSON.stringify(props.treeData));
+      console.log("TreeComponent ");
     })
 
     return {
@@ -115,4 +115,12 @@ function toggleVisibility(node: TreeNode) {
   list-style-type: none;
   margin-left: 0px;
 }
+.workflow {
+  font-weight: bold;
+}
+
+.wkfempty {
+  font-weight: 500;
+}
+
 </style>
