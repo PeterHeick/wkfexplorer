@@ -1,95 +1,74 @@
 <template>
   <ul>
-    <li v-for="(node, index) in treeData" :key="index" class="my-list">
+    <li v-for="(node, index) in treeData" :key="index" class="treeList">
       <div v-if="node.type === 'taskWorkflow'">
-        <span
-          @click="handleClick(node)"
-          :style="{ backgroundColor: 'white' }"
-          :class="node.workflow.length > 0 ? 'workflow' : 'wkfempty'"
-        >
-          {{ node.name }}</span
-        >
-        <TreeComponent
-          v-if="isWorkflow(node)"
-          v-show="node.isVisible"
-          @open="openNode(node)"
-          :treeData="node.workflow"
-          :currentTask="currentTask"
-        >
+        <span @click="handleClick(node)" :style="{ backgroundColor: 'white' }"
+          :class="node.workflow.length > 0 ? 'workflow' : 'wkfempty'">
+          {{ node.name }}</span>
+        <TreeComponent v-if="isWorkflow(node)" v-show="node.isVisible" @open="openNode(node)"
+          @currentNodeEvent="handleCurrentNodeEvent" :treeData="node.workflow" :currentTask="currentTask">
         </TreeComponent>
       </div>
       <div v-else-if="node.type === 'taskUnix'">
         <span @click="handleTaskClick(node)"> {{ node.name }}</span>
-        <teleport to="#middle">
-          <TaskComponent
-            :taskNode="node"
-            v-if="currentTask.getId() > 0 && node.id === currentTask.getId()"
-          >
-          </TaskComponent>
-        </teleport>
       </div>
     </li>
   </ul>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent, onMounted } from "vue";
 import { TreeNode } from "@/types/interfaces";
-import TaskComponent from "./tasks/TaskComponent.vue";
 import { currentTask } from "@/store/currentTask";
 
-export default defineComponent({
-  name: "TreeComponent",
-  components: {TaskComponent},
-  props: {
-    treeData: {
-      type: Array as () => TreeNode[],
-      default: () => {
-        return [] as TreeNode[];
-      },
-    }
-  },
-  setup(props) {
-    const handleTaskClick = (node: TreeNode) => {
-      console.log("HandleTaskClick TreeComponent ", JSON.stringify(node));
-      currentTask.setId(node.id);
-    };
+/*
+props: {
+  treeData: {
+    type: Array as () => TreeNode[],
+    default: () => {
+      return [] as TreeNode[];
+    },
+  }
+},
+*/
+defineProps({ treeData: { type: Array as () => TreeNode[], default: () => { return [] as TreeNode[] } } })
+const emit = defineEmits(["currentNodeEvent"])
 
-    const openNode = (node: TreeNode) => {
-      if (node.isVisible) {
-        return;
-      }
-      node.isVisible = true;
-    };
+const handleTaskClick = (node: TreeNode) => {
+  console.log("HandleTaskClick TreeComponent ", JSON.stringify(node));
+  emit("currentNodeEvent", node.name);
+};
 
-    const visible = (node: TreeNode) => {
-      return node.name === currentTask.getTask();
-    };
+const handleCurrentNodeEvent = (name: string) => {
+  console.log("HandleCurrentNodeEvent ", name);
+  emit("currentNodeEvent", name);
+}
 
-    const handleClick = (node: TreeNode) => {
-      if (node.type === "taskWorkflow") {
-        toggleVisibility(node);
-      }
-    };
+const openNode = (node: TreeNode) => {
+  if (node.isVisible) {
+    return;
+  }
+  node.isVisible = true;
+};
 
-    const isWorkflow = (elem: TreeNode) => {
-      return elem.type === "taskWorkflow";
-    };
+const visible = (node: TreeNode) => {
+  return node.name === currentTask.getTask();
+};
 
-    onMounted(() => {
-      console.log("TreeComponent ");
-    })
+const handleClick = (node: TreeNode) => {
+  if (node.type === "taskWorkflow") {
+    toggleVisibility(node);
+  }
+};
 
-    return {
-      handleClick,
-      isWorkflow,
-      handleTaskClick,
-      openNode,
-      currentTask,
-      visible,
-    };
-  },
-});
+const isWorkflow = (elem: TreeNode) => {
+  return elem.type === "taskWorkflow";
+};
+
+onMounted(() => {
+  console.log("TreeComponent ");
+})
+
 
 function closeSubtree(node: TreeNode) {
   node.isVisible = false;
@@ -111,10 +90,11 @@ function toggleVisibility(node: TreeNode) {
 </script>
 
 <style>
-.my-list {
+.treeList {
   list-style-type: none;
   margin-left: 0px;
 }
+
 .workflow {
   font-weight: bold;
 }
@@ -122,5 +102,4 @@ function toggleVisibility(node: TreeNode) {
 .wkfempty {
   font-weight: 500;
 }
-
 </style>

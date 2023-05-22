@@ -1,55 +1,102 @@
 <template>
+  <!--
   <div class="dropdown" v-show="!workflowsAreLoading">
-    <button class="dropbtn">{{ selectedItem }}</button>
-    <div class="dropdown-content">
-      <a
-        v-for="(env, index) in environmentList"
-        :key="index"
-        href="#"
-        @click="updateWorkflow(env)"
-        >{{ env }}</a
-      >
+    -->
+  <div class="dropdown">
+    <button @click="toggleDropdown" class="dropbtn">{{ selectedItem }}</button>
+    <div v-show="isDropdownVisible" class="dropdown-content">
+      <a v-for="(env, index) in environmentList" :key="index" href="#" @click="
+        $emit('envEvent', env);
+      selectedItem = env;
+      isDropdownVisible = false;
+      ">{{ env }}</a>
     </div>
+  </div>
+  <div style="display: flex; align: center">
+    <div v-if="updateProgress > 0" style="font-weight: bold; padding-right: 10px">
+      {{ updateProgress.toFixed(0) }} pct
+    </div>
+    <ButtonComponent :disable="!updateEnabled" @click="handleUpdate">Update</ButtonComponent>
+    <FilePickComponent @planEvent="handlePlanEvent" v-show="type === 'plan'"></FilePickComponent>
   </div>
 </template>
 
-<script lang="ts">
-import config from "@/store/config";
-import { workflowStore } from "@/store/workflowStore";
-import { defineComponent, onBeforeMount, ref, toRef } from "vue";
+<script lang="ts" setup>
+import { defineEmits } from "vue";
+import { config } from "@/store/config";
+import { defineProps, onBeforeMount, onUnmounted, ref, toRef } from "vue";
+import FilePickComponent from "./FilePickComponent.vue";
+import ButtonComponent from "@/components/ButtonComponent.vue";
+import { api } from "@/api/api";
+import Swal from "sweetalert2";
 
-export default defineComponent({
-  props: {
-    type: String,
-  },
-  setup(props) {
-    let environmentList = ref<string[]>([]);
-    let workflowsAreLoading = toRef(workflowStore, "isLoading");
-    let selectedItem = toRef(config, "uacenv");
+defineProps({ type: String });
+let environmentList = ref<string[]>([]);
+let updateEnabled = ref<boolean>(false);
+let selectedItem = toRef(config, "uacenv");
+let intervalId = 0;
+const updateProgress = ref(0);
+const isDropdownVisible = ref(false);
+const emit = defineEmits(["planEvent", "envEvent", "missingEvent"]);
 
-    function updateWorkflow(env: string) {
-      // selectedItem.value = env;
-      config.setEnv(env);
-      workflowStore.update(props.type as string,);
+const toggleDropdown = () => {
+  console.log("Toggle dropdown");
+  isDropdownVisible.value = !isDropdownVisible.value;
+};
+
+const handlePlanEvent = (plan: string) => {
+  console.log("Toolbar handlePlanEvent", plan);
+  updateEnabled.value = true;
+  emit("planEvent", plan);
+};
+
+const handleUpdate = async () => {
+  console.log("handleUpdate");
+  updateEnabled.value = false;
+  update();
+  const response = await api.updatePlan();
+  const data = await response.json();
+  console.log(response);
+  console.log(data);
+  if (!response.ok) {
+    Swal.fire(data.message, data.detail, 'error');
+    clearInterval(intervalId);
+    return;
+  }
+
+  // data.missing a list of missing tasks if any
+  emit("missingEvent", data.missing);
+  updateEnabled.value = true;
+  clearInterval(intervalId);
+  updateProgress.value = 0;
+};
+
+const update = async () => {
+  intervalId = setInterval(async () => {
+    const response = await api.progress();
+    const data = await response.json();
+
+    updateProgress.value = data.pct;
+
+    console.log(data.pct);
+
+    // Check if the update is finished
+    if (updateProgress.value >= 99) {
+      updateProgress.value = 100;
+      clearInterval(intervalId);
     }
+  }, 1000); // 1000 milliseconds = 1 second
+};
 
-    onBeforeMount(() => {
-      console.log("ToolbarComponent onBeforeMount");
-      environmentList.value = config.getEnvironmentList();
-      workflowStore.update(props.type as string,);
-    });
-
-    return {
-      environmentList,
-      workflowsAreLoading,
-      selectedItem,
-      updateWorkflow,
-    };
-  },
+onUnmounted(() => {
+  clearInterval(intervalId);
 });
-//<a v-for="(env, index) in environments" :key="index" href="#" @click="selectedItem =env">{{
-</script>
 
+onBeforeMount(() => {
+  console.log("ToolbarComponent onBeforeMount");
+  environmentList.value = config.getEnvironmentList();
+});
+</script>
 
 <style>
 .toolbar {
@@ -91,7 +138,6 @@ export default defineComponent({
 }
 
 .dropdown-content {
-  display: none;
   position: absolute;
   z-index: 1;
   min-width: 60px;
@@ -122,7 +168,8 @@ export default defineComponent({
 }
 
 .dropdown::after {
-  content: "\25BC"; /* pil-ned tegn */
+  content: "\25BC";
+  /* pil-ned tegn */
   font-size: 16px;
   color: #000;
   top: 0;

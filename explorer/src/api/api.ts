@@ -1,7 +1,7 @@
-import { Environment } from '../types/interfaces';
+import { config } from '@/store/config';
 
 const baseUrl = `http://localhost:8080/api/`;
-const headers = {
+const options = {
   method: "GET",
   headers: {
     Accept: "application/json",
@@ -13,59 +13,63 @@ const headers = {
 
 export const api = {
 
-  getConfigData() {
-    console.log("api.getConfigData ")
+  getConfig() {
+    console.log("api.getConfig ")
+
     const url = 'config';
-    return fetch(baseUrl + url, headers)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("api.getConfigData length: ", Object.keys(data.environments).length);
-        return data;
-      })
+    return fetch(baseUrl + url, options)
   },
 
-  getPlanData() {
+  getPlanData(file: string) {
     console.log("api.getPlanData ")
-    const url = 'plan?plan=ugeplan.txt';
-    return fetch(baseUrl + url, headers)
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("api.getPlanData length: ", Object.keys(data).length);
-        return data;
-      })
-      .catch((error) => {
-        console.log(error);
-        return [];
-      })
+    const env = config.uacenv.value;
+    const url = `plan?plan=${file}&uacenv=${env}`;
+    options.method = "GET";
+    return fetch(baseUrl + url, options)
   },
 
   // Kaldt fra handleTaskClick i TreeComponent
-  getTask(name: string, env: string) {
+  getTask(name: string) {
     console.log("api.getTask", name);
-    return new Promise((resolve, reject) => {
-      if (name === undefined) {
-        reject('Name undefined');
-      } else {
-        const url = `task?taskname=${name}&uacenv=${env}`;
-        return fetch(baseUrl + url, headers)
-          .then((response) => response.json())
-          .then((data) => {
-            resolve(data);
-          })
-          .catch((error) => {
-            console.log(error);
-            return [];
-          })
-      }
-    })
+    const env = config.uacenv.value;
+    const url = `task?taskname=${name}&uacenv=${env}`;
+    options.method = "GET";
+    return fetch(baseUrl + url, options);
+  },
+
+  updateTask(body: any) {
+    console.log("updateTask api");
+    const env = config.uacenv.value;
+    const url = `updatetask?uacenv=${env}`;
+
+    const updatedOptions = {
+      ...options,
+      method: "PUT",
+      body: JSON.stringify(body)
+    };
+    console.log(body);
+    console.log(updatedOptions);
+
+    return fetch(baseUrl + url, updatedOptions)
+      .then((data) => {
+        console.log(data)
+        return data
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   },
 
   // env eks: "usprod"
-  // kaldes fra workflowStore
-  getAllWorkflows(env: string) {
+  // kaldes fra WorkflowComponent
+  getAllWorkflows() {
+    console.log(config);
+    console.log(config.uacenv.value);
+    const env = config.uacenv.value;
     console.log("api.getAllWorkflows ", env);
     const url = `listadv?uacenv=${env}`;
-    return fetch(baseUrl + url, headers)
+    options.method = "GET";
+    return fetch(baseUrl + url, options)
       .then((response) => response.json())
       .then((data) => {
         return data;
@@ -74,5 +78,24 @@ export const api = {
         console.log(error);
         return [];
       });
-  }
+  },
+
+  // Kaldes fra Toolbar
+  updatePlan() {
+    console.log("updateplan api");
+    const env = config.uacenv.value;
+    console.log("api.put ", env);
+    const url = `plan?uacenv=${env}`;
+    options.method = "PUT";
+    return fetch(baseUrl + url, options)
+
+  },
+  // Kaldes fra Toolbar
+  progress() {
+    console.log("progress api");
+    const env = config.uacenv.value;
+    options.method = "GET";
+    const url = "progress";
+    return fetch(baseUrl + url, options)
+  },
 }

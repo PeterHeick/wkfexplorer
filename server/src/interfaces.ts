@@ -1,7 +1,7 @@
 
 export interface Ivertice {
   alias?: string;
-  task?: {
+  task: {
     value: string;
   };
   vertexId?: string;
@@ -53,19 +53,25 @@ export interface IStringDictionary {
 
 export type Environment = {
   [key: string]: {
-    pattern: string;
+    prefix: string;
     credentials: string;
     business_area: [string];
     agent: string;
     uachost: string;
     uacport: string;
     token: string;
+    planDir: string;
+    backgroundcolor: string
   };
 }
 
 export type Config = {
   default: string;
+  verticeStart: number;
+  verticeStep: number;
+  windowSize: number;
   environments: Environment;
+  paramTimeout: number;
 }
 
 export interface IuserConfig {

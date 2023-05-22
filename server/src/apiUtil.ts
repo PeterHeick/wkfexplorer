@@ -1,6 +1,7 @@
-import { readFileSync } from "fs";
+import { read, readFileSync } from "fs";
 import { homedir } from "os";
-import { WorkflowNode } from "./interfaces";
+import { Config, Environment, WorkflowNode } from "./interfaces";
+import { readTask, deleteTask } from "./uacApi";
 
 export function readToken(file: string) {
   try {
@@ -23,10 +24,39 @@ export function getWkfByName(workflowSet: WorkflowNode[], name: string): Workflo
   return {} as WorkflowNode;
 }
 
-
 export function getParm(request: any, parm: string) {
   let p = "";
   p = request.query[parm];
-  console.log("getEnv: ", p);
+  console.log("getParm: ", p);
   return p;
+}
+
+export async function deletePlan(cfg: Environment[string], currentWorkflows: string[], prefix: string) {
+  console.log("deletePlan: ", cfg, currentWorkflows, prefix)
+  for (const wkf of currentWorkflows) {
+    const wkfName = `${prefix}_${wkf}_wkf`;
+    const readResponse = await readTask(cfg, wkfName)
+    if (!readResponse.ok) {
+      // 404 task findes - ok for slet
+      if (readResponse.status != 404) {
+        console.log(`Error read task: ${readResponse.status} ${readResponse.statusText}`);
+        throw {
+          status: readResponse.status,
+          message: 'Læsning af task fejlet',
+          detail: `Læsning af ${wkfName} er fejlet ${readResponse.status}  ${readResponse.statusText}`
+        };
+      }
+    } else {
+      const delResponse = await deleteTask(cfg, wkfName)
+      if (!delResponse.ok) {
+        console.log("await del not ok ", delResponse);
+        throw {
+          status: delResponse.status,
+          message: 'Sletning af task fejlet',
+          detail: `Sletning af ${wkfName} er fejlet`
+        };
+      }
+    }
+  }
+  return true;
 }

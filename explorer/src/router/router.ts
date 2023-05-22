@@ -6,7 +6,7 @@ import PlanComponent from '@/components/PlanComponent.vue'
 
 const routes = [
   { path: '/', component: WorkflowComponent },
-  { path: '/weekplan', component: PlanComponent },
+  { path: '/plan', component: PlanComponent },
 ]
 
 const router = createRouter({

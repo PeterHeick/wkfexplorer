@@ -1,25 +1,25 @@
 <template>
-  <button><slot></slot></button>
+  <button class="buttoncmp" type="button" :disabled="disable"><slot></slot></button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue'
+<script lang="ts" setup>
+import { defineProps } from 'vue'
 
-export default defineComponent({
-  setup() {
-    return {}
-  },
-})
+defineProps({ disable: Boolean });
+
 </script>
 
 <style>
-button {
+.buttoncmp {
   width: 110px;
-  background-color: #ddd;
+  background-color: #e6e6e6;;
   font-size: small;
   border-radius: 4px;
-  height: 25px;
+  height: 21.1667px;
   cursor: pointer;
   margin-right: 10px;
+}
+button:hover {
+  background-color: #ddd;
 }
 </style>

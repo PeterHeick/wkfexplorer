@@ -1,20 +1,18 @@
-import { Response } from 'express'
 import { readToken } from "./apiUtil";
 import { Environment, WorkflowNode } from "./interfaces";
-import { handleData } from './util';
-import { global } from "./global";
 
-export function fetchTask(res: Response, cfg: Environment[string], task: string) {
-  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}/`;
-  const url = `uc/resources/task/?taskname=${task}`;
+export async function readTask(cfg: Environment[string], task: string) {
+  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const url = `${baseUrl}/uc/resources/task?taskname=${task}`
   const token = readToken(cfg.token);
-
   if (token === "") {
-    res.status(404).send("Token not found");
-    return;
+    throw {
+      message: "Token ikke fundet",
+      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
+    };
   }
 
-  const headers = {
+  const options = {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -24,30 +22,53 @@ export function fetchTask(res: Response, cfg: Environment[string], task: string)
       "Sec-Fetch-Site": "cross-site"
     }
   }
+  // console.log(url);
+  // console.log(options);
+  return await fetch(url, options);
+};
 
-  fetch(baseUrl + url, headers)
-    .then((response) => response.json())
-    .then((data) => {
-      res.status(200).json(data);
-    })
-    .catch((error: any) => {
-      console.error(error)
-      res.status(404).send(error);
-    });
-}
-
-export function fetchWorkflows(res: Response, cfg: Environment[string], env: string, pattern: string) {
+export async function updateTask(cfg: Environment[string], body: any) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const url = `${baseUrl}/uc/resources/task`
+  const token = readToken(cfg.token);
+  if (token === "") {
+    throw {
+      message: "Token ikke fundet",
+      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
+    };
+  }
+
+  const options = {
+    method: "PUT",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Host: `${cfg.uachost}:${cfg.uacport}`,
+      "Sec-Fetch-Site": "cross-site"
+    },
+    body: JSON.stringify(body)
+  }
+  console.log(url);
+  console.log(options);
+  return await fetch(url, options);
+};
+
+export function fetchWorkflows(cfg: Environment[string], prefix: string) {
+  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const pattern = `${prefix}*`;
+  console.log(pattern);
   const url = `${baseUrl}/uc/resources/task/listadv?taskname=${pattern}&type=workflow`
   const token = readToken(cfg.token);
-
   if (token === "") {
-    res.status(404).send("Token not found");
-    return;
+    throw {
+      message: "Token ikke fundet",
+      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
+    };
   }
 
-  console.log(url);
-  const headers = {
+  // console.log(url);
+  const options = {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -58,24 +79,178 @@ export function fetchWorkflows(res: Response, cfg: Environment[string], env: str
     }
   }
 
-  fetch(url, headers)
-    .then((response) => {
-      if (response.ok) {
-        return response.json()
-      } else {
-        return response.json().then(error => { throw new Error(error.message) });
-      }
-    })
-    .then((data: WorkflowNode[]) => {
-      console.log(typeof data);
-
-      global.setWorkflow(data, env);
-      const sorted = handleData(data, cfg.pattern);
-      console.log("sorted ", sorted.length);
-      res.status(200).json(sorted);
-    })
-    .catch((error: any) => {
-      console.error(error)
-      res.status(404).send(error);
-    });
+  return fetch(url, options);
 }
+
+
+export async function deleteTask(cfg: Environment[string], task: string) {
+  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const url = `${baseUrl}/uc/resources/task?taskname=${task}`
+  const token = readToken(cfg.token);
+  if (token === "") {
+    throw {
+      message: "Token ikke fundet",
+      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
+    };
+  }
+
+  const options = {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Host: `${cfg.uachost}:${cfg.uacport}`,
+      "Sec-Fetch-Site": "cross-site"
+    }
+  }
+
+  // console.log(url);
+  // console.log(options);
+  return await fetch(url, options)
+
+};
+
+export async function createTask(cfg: Environment[string], env: string, task: string) {
+  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const url = `${baseUrl}/uc/resources/task?taskname=${task}`
+  const token = readToken(cfg.token);
+  if (token === "") {
+    throw {
+      message: "Token ikke fundet",
+      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
+    };
+  }
+
+  const options = {
+    method: "DELETE",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Host: `${cfg.uachost}:${cfg.uacport}`,
+      "Sec-Fetch-Site": "cross-site"
+    }
+  }
+
+  // console.log(url);
+  // console.log(options);
+  return await fetch(url, options)
+
+};
+
+export async function createWorkflow(cfg: Environment[string], workflow: string) {
+  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const url = `${baseUrl}/uc/resources/task`
+  const token = readToken(cfg.token);
+  console.log("createWorkflows");
+
+  if (token === "") {
+    throw {
+      message: "Token ikke fundet",
+      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
+    };
+  }
+
+  const body = {
+    type: "taskWorkflow",
+    logLevel: "Inherited",
+    name: workflow,
+    notes: [],
+    opswiseGroups: cfg.business_area,
+    summary: "",
+    variables: []
+  }
+
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Host: `${cfg.uachost}:${cfg.uacport}`,
+      "Sec-Fetch-Site": "cross-site"
+    },
+    body: JSON.stringify(body)
+  }
+
+  // console.log(url);
+  // console.log("options createworkflow ", options);
+  return await fetch(url, options);
+};
+
+export async function add_task_to_workflow(cfg: Environment[string], task: string, workflow: string, x: number, y: number) {
+  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const url = `${baseUrl}/uc/resources/workflow/vertices?workflowname=${workflow}`
+  const token = readToken(cfg.token);
+  if (token === "") {
+    throw {
+      message: "Token ikke fundet",
+      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
+    };
+  }
+
+  const body =
+  {
+    alias: null,
+    task: {
+      value: `${task}`
+    },
+    vertexX: x,
+    vertexY: y
+  }
+
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Host: `${cfg.uachost}:${cfg.uacport}`,
+      "Sec-Fetch-Site": "cross-site"
+    },
+    body: JSON.stringify(body)
+  }
+
+  // console.log(url);
+  // console.log(options);
+  let ret = 0;
+  return await fetch(url, options);
+};
+
+export async function make_edge(cfg: Environment[string], workflow: string, source: number, destination: number) {
+  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const url = `${baseUrl}/uc/resources/workflow/edges?workflowname=${workflow}`
+  const token = readToken(cfg.token);
+  if (token === "") {
+    throw {
+      message: "Token ikke fundet",
+      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
+    };
+  }
+
+  const body = {
+    straightEdge: true,
+    sourceId: {
+      value: source
+    },
+    targetId: {
+      value: destination
+    }
+  }
+
+  const options = {
+    method: "POST",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(body)
+  }
+
+  // console.log(url);
+  // console.log(options);
+  return await fetch(url, options)
+
+};

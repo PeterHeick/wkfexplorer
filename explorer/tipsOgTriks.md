@@ -1,3 +1,54 @@
+
+Når du skifter mellem ruter i Vue.js, bliver data i komponenterne ikke automatisk nulstillet, da Vue.js genbruger komponenter for at optimere ydelsen. Hvis du vil nulstille data, når du skifter rute, har du flere muligheder:
+
+    Watch route changes: Du kan bruge Vue Router's watch for at overvåge ruteændringer og derefter nulstille dataene. Her er et eksempel:
+
+javascript
+
+import { watch } from 'vue';
+import { useRoute } from 'vue-router';
+
+export default {
+  setup() {
+    const route = useRoute();
+
+    watch(route, () => {
+      // reset data her
+    });
+
+    // ...
+  }
+}
+
+    beforeRouteLeave og beforeRouteEnter: Du kan bruge Vue Router's navigation guards, beforeRouteLeave og beforeRouteEnter, til at nulstille dataene, når du forlader eller går ind på en rute. For eksempel:
+
+javascript
+
+import { onBeforeRouteLeave, onBeforeRouteEnter } from 'vue-router';
+
+export default {
+  setup() {
+    onBeforeRouteLeave(() => {
+      // reset data her
+    });
+
+    onBeforeRouteEnter(() => {
+      // reset data her
+    });
+
+    // ...
+  }
+}
+
+    Key attribute: Du kan give dine rute-komponenter en unik nøgle, som ændrer sig, når ruten ændres. Dette får Vue.js til at genoprette komponenterne fra bunden, når ruten ændres, i stedet for at genbruge dem.
+
+html
+
+<router-view :key="$route.fullPath" />
+
+Vær opmærksom på, at denne metode kan påvirke appens ydeevne negativt, da det forhindrer genbrug af komponenter. Den bør kun bruges, hvis de andre metoder ikke fungerer for dit use case.
+
+
 Hvis du ønsker at funktionen kaldes hver gang der mødes en taskUnix i en v-for løkke, kan du bruge en computed property eller en metode til at generere en ny liste af objekter, som indeholder det opdaterede data. Du kan derefter bruge denne nye liste i din v-for løkke.
 
 Her er et eksempel, hvor vi bruger en metode til at generere en ny liste af objekter med det opdaterede data, når node.type er 'taskUnix':

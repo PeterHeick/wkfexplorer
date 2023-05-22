@@ -1,20 +1,22 @@
 import { api } from '@/api/api';
 import { ConfigType } from '@/types/interfaces';
 import { ref } from 'vue';
+import Swal  from 'sweetalert2';
 
 /*
   config holder styr på den aktuelle konfiguration
-  bla. uacenv. og måske configurationsdata men hvad skal vi bruge konfigurations data til her.
-  Kan ikke huske om den bruges nogen steder. Burde undersøges en dag ved lejlighed.
+  bla. uacenv.value. og dermed den aktuelle tilstand. Hvilket miljø arbejder vi med lige nu.
+  Andre komponenter spørger config om aktuel tilstand.
 */
+
 class Config {
+  isLoaded = ref(false);
   configData = {} as ConfigType;
 
-  // uacenv.value er en string der indeholder eks. "usprod"
+  // uacenv.value.value er en string der indeholder eks. "usprod"
   uacenv = ref("");
-  isLoading = ref(true);
 
-  // getEnv kan ikke bruges til at returnere uacenv.value,
+  // getEnv kan ikke bruges til at returnere uacenv.value.value,
   // så mister vi reactiviteten.
 
   setEnv(env: string) {
@@ -36,16 +38,41 @@ class Config {
     return this.configData.environments[this.uacenv.value].backgroundcolor;
   }
 
-  constructor() {
+  async init() {
     console.log("config.init()");
-    api.getConfigData()
+
+    try {
+      const response = await api.getConfig();
+      console.log(response);
+      const data = await response.json();
+
+      if (!response.ok) {
+        Swal.fire(data.message,data.detail,'error');
+      } else {
+        this.configData = data;
+        this.uacenv.value = data.default;
+        this.isLoaded.value = true;
+        console.log("api.getConfigData length: ", Object.keys(data.environments).length);
+        console.log("config: default UACENV: ", this.uacenv.value);
+      }
+    } catch (error) {
+      console.error("Fejl under anmodning:", error);
+    }
+  }
+
+  constructor() {
+    console.log("Initialising config");
+    /*
+    api.getConfig()
+      .then(response => response.json())
       .then((data) => {
         this.configData = data;
         this.uacenv.value = data.default;
-        this.isLoading.value = false;
+        this.isLoaded.value = true;
         console.log("config: default UACENV: ", this.uacenv.value);
       })
+      */
   }
 }
-const config = new Config();
-export default config;
+
+export const config = new Config();

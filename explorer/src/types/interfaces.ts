@@ -43,30 +43,25 @@ export type TreeNode =
   workflow: TreeNode[];
 }
 
-/*
-export interface INumberDictionary {
-  [key: string]: number;
-}
-
-export interface IStringDictionary {
-  [key: string]: Set<string>;
-}
-*/
-
 export type ConfigType = {
   default: string;
+  verticeStart: number;
+  verticeStep: number;
+  windowSize: number;
   environments: Environment;
+  paramTimeout: number;
 }
 
 export type Environment = {
   [key: string]: {
-    pattern: string;
+    prefix: string;
     credentials: string;
     business_area: [string];
     agent: string;
     uachost: string;
     uacport: string;
     token: string;
+    planDir: string;
     backgroundcolor: string;
   };
 }

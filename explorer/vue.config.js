@@ -3,5 +3,8 @@ module.exports = defineConfig({
   transpileDependencies: true,
   outputDir:'dist',
   publicPath: './',
-  assetsDir:'static'
+  assetsDir:'static',
+  configureWebpack: {
+    devtool: 'source-map'
+  }
 })

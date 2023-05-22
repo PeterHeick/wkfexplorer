@@ -1,0 +1,162 @@
+Oversigt over http ting
+
+HTTP-metoder er designet til at have specifikke betydninger og forventede handlinger,
+  der er almindeligt anerkendt i webudvikling.
+  Dette er kendt som REST (Representational State Transfer) principper. Her er en kort oversigt:
+    GET: Bruges til at hente data.
+         En GET-anmodning bør ikke ændre nogen data på serveren.
+         Den bør kun returnere data.
+    POST: Bruges til at sende nye data til serveren.
+         Typisk vil en POST-anmodning resultere i oprettelsen af en ny ressource.
+    PUT: Bruges til at opdatere eksisterende data på serveren.
+         Med en PUT-anmodning sender du normalt hele den opdaterede dataenhed.
+    PATCH: Ligesom PUT bruges denne metode til at opdatere data,
+        men i stedet for at sende hele dataenheden sender du kun de felter,
+        der skal opdateres.
+    DELETE: Bruges til at slette data fra serveren.
+
+Ved at følge disse principper gør du det lettere for andre udviklere (og dig selv) at forstå,
+hvad din kode gør. Det gør også dit API mere forudsigeligt og konsistent.
+Desuden kan nogle klienter, værktøjer eller mellemvare forvente,
+at du følger disse principper og kan opføre sig uventet,
+hvis du ikke gør det. For eksempel kan nogle caching-mekanismer antage,
+at GET-anmodninger er sikre og idempotente (dvs. de ændrer ikke noget),
+og kan cache resultaterne af GET-anmodninger.
+Hvis du begynder at bruge GET-anmodninger til at ændre data,
+kan det forårsage store problemer med sådanne systemer.
+
+
+HTTP statuskoder i 200-serien repræsenterer succesfulde forespørgsler. Her er de mest almindelige HTTP 200-statuskoder:
+
+    200 OK: Anmodningen var succesfuld, og svaret afhænger af den metode,
+        der blev brugt i anmodningen.
+    201 Created: Anmodningen var succesfuld, og en ny ressource blev oprettet som et resultat.
+    202 Accepted: Anmodningen blev modtaget, men er endnu ikke fuldført.
+        Dette er en asynkron respons, der angiver, at serveren arbejder på anmodningen, men endnu ikke har fuldført den.
+    203 Non-Authoritative Information: Serveren er en proxy, og svaret er fra et backend-system.
+        Informationerne kan være ugyldige.
+    204 No Content: Anmodningen var succesfuld, men der er intet repræsentativt svar
+        (dvs. kroppen er tomt).
+    205 Reset Content: Anmodningen var succesfuld, men klienten skal nulstille dokumentvisningen, der sendte denne anmodning.
+    206 Partial Content: Serveren sender kun en del af responsen på grund af en range-header,
+        der er sendt af klienten.
+
+Hver kode har sin egen specifikke betydning og bruges i forskellige situationer,
+afhængigt af resultatet af den HTTP-anmodning,
+der er blevet sendt til serveren.
+HTTP statuskoder i 400-serien repræsenterer klientfejl. Her er de mest almindelige HTTP 400-statuskoder:
+
+    400 Bad Request: Serveren kunne ikke forstå anmodningen på grund af ugyldig syntaks.
+    401 Unauthorized: Anmodningen kræver brugerautorisering. Login er nødvendigt.
+    402 Payment Required: Denne kode er ikke i almindelig brug.
+        Den er reserveret til fremtidige opdateringer.
+    403 Forbidden: Serveren forstod anmodningen, men nægter at opfylde den.
+    404 Not Found: Den ønskede ressource kunne ikke findes på serveren.
+    405 Method Not Allowed: Metoden, der er specificeret i anmodningen,
+        er ikke tilladt for den ressource, der blev anmodet om.
+    406 Not Acceptable: Den anmodede ressource er kun i stand til at generere indhold,
+        der ikke er acceptabelt i henhold til Accept-headerne sendt i anmodningen.
+    407 Proxy Authentication Required: Klienten skal først godkendes af proxyen.
+    408 Request Timeout: Serveren timeoutede venter på anmodningen.
+    409 Conflict: Anmodningen kunne ikke behandles på grund af en konflikt med
+        den nuværende tilstand af ressourcen.
+    410 Gone: Ressourcen, der blev anmodet om, er ikke længere tilgængelig
+        og vil ikke være tilgængelig igen.
+    411 Length Required: Serveren forventer, at anmodningen indeholder en Content-Length header.
+    412 Precondition Failed: En eller flere betingelser i anmodningens headerfelter
+        blev ikke opfyldt.
+    413 Payload Too Large: Anmodningen er større end serveren er villig eller i stand til at behandle.
+    414 URI Too Long: Den anmodede URI er længere end serveren er villig til at fortolke.
+    415 Unsupported Media Type: Medietypen af anmodningen er ikke understøttet af
+        serveren eller ressourcen.
+    416 Range Not Satisfiable: Rækkevidden specificeret i anmodningens Range header
+        er uden for tilgængelige data.
+    417 Expectation Failed: Serveren kan ikke opfylde kravene i Expect anmodningsheaderen.
+    418 I'm a Teapot: Dette er en påskehilsen, defineret i RFC 2324, og bruges ikke i praksis.
+    421 Misdirected Request: Anmodningen blev sendt til en server,
+        der ikke er i stand til at producere et svar.
+    422 Unprocessable Entity: Anmodningen var velformet, men kunne ikke følges på grund
+        af semantiske fejl.
+    423 Locked: Ressourcen, der bliver adgang til, er låst.
+    424 Failed Dependency: Anmodningen mislykkedes på grund af mislykket afhængighed
+        i en tidligere anmodning.
+    425 Too Early: Anmodningen er for tidlig og kan blive forsøgt igen senere.
+    426 Upgrade Required: Klienten skal skifte til en anden protokol, angivet i Upgrade header-feltet.
+    428 Precondition Required: Serveren kræver at     anmodningen er betinget.
+    429 Too Many Requests: Brugeren har sendt for mange anmodninger i et bestemt tidsrum.
+    431 Request Header Fields Too Large: Serveren er uvillig til at behandle anmodningen,
+        fordi dens headerfelter er for store.
+    451 Unavailable For Legal Reasons: Ressourcen er utilgængelig på grund af juridiske årsager.
+
+Hver kode har sin egen specifikke betydning og bruges i forskellige situationer,
+afhængigt af resultatet af den HTTP-anmodning, der er sendt til serveren.
+
+iDiverse:
+Når du bruger fetch() API'et i JavaScript og der opstår en fejl, fanges denne fejl typisk
+i et catch() blok. Fejlobjektet, der sendes til catch() blokken,
+indeholder generelt en besked om, hvad fejlen var.
+
+Her er et eksempel:
+fetch('http://example.com/movies.json')
+  .then(response => response.json())
+  .catch(error => console.log(error));
+
+Hvis der er en netværksfejl eller en anden form for fejl, der forhindrer fetch() fra at fuldføre,
+vil fejlobjektet, der fanges i catch() blokken, typisk være et Error objekt med en fejlbesked.
+
+Når du arbejder med fetch() i JavaScript, kan du støde på forskellige typer fejl,
+der kan indeholde forskellige egenskaber.
+
+    Network Errors: Disse er fejl, der opstår, når der er et problem med netværkskommunikationen,
+    som forhindrer anmodningen i at fuldføre overhovedet (f.eks. intet internetforbindelse,
+    DNS-opløsningsproblemer osv.).
+    I sådanne tilfælde vil fetch() afvise løftet med et TypeError objekt,
+    og fejlobjektet i catch() blokken vil have en message ejendom, der beskriver fejlen.
+
+    HTTP Errors: Disse er fejl, der opstår, når HTTP-anmodningen fuldføres,
+    men serveren returnerer en HTTP-statuskode i 400- eller 500-serien.
+    I sådanne tilfælde vil fetch() ikke afvise løftet,
+    men i stedet opfylde det med en Response objekt, som har en ok ejendom,
+    der vil være false og en statusText ejendom, der beskriver fejlen.
+
+Her er et eksempel på, hvordan du kan håndtere begge typer fejl:
+
+fetch('http://example.com/movies.json')
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}`);
+    }
+    return response.json();
+  })
+  .catch(error => console.log('There was a problem: ' + error.message));
+
+I dette eksempel, hvis der er en HTTP-fejl, vil error.message i catch() blokken være den streng,
+du passerer til Error konstruktøren. Denne streng indeholder HTTP-statuskoden og statusText,
+som vi får fra Response objektet. Så selvom Response objektet ikke har en message egenskab,
+kan vi stadig få en meningsfuld fejlbesked ved at kaste vores egen fejl med en tilpasset besked.
+
+Vær opmærksom på, at fetch() kun afviser et løfte med en TypeError
+("network error") når en netværksfejl opstår og ikke vil afvise promise,
+hvis HTTP-statuskoden er i 400- eller 500-serien.
+I stedet vil det promise, der returneres af fetch(), opfylde med en Response objekt,
+og du skal manuelt kontrollere Response.ok eller Response.status for at se,
+om der var en HTTP-fejl.
+
+I ovenstående kode kaster vi en ny fejl, når HTTP-statuskoden er i 400- eller 500-serien.
+Denne fejl fanges derefter i catch() blokken, og fejlbeskeden vil indeholde HTTP-statuskoden.
+
+app.get("/api/listadv", (req: Request, res: Response) => {
+    // ...
+    fetchWorkflows(cfg, pattern)
+        .then(response => {
+            if (!response.ok) {
+                throw {status: response.status, statusText: response.statusText};
+            }
+            return response.json();
+        })
+        .then(data => res.status(200).send(data))
+        .catch(error => {
+            console.error('Error:', error);
+            res.status(error.status || 500).send(error.statusText || 'An error occurred');
+        });
+});

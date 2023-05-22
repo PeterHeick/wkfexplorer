@@ -1,4 +1,81 @@
 
+# Oversigt Lige nu
+App.vue
+  routerLink  /  WorkflowComponent
+  routerLink /Plan   PlanComponent
+
+WorkflowComponent
+  HeaderComponent
+  ToolbarComponent
+  container:
+    left-pane:
+      ExplorerComponent
+        TelePort
+          TreeComponent
+            TreeComponent
+              ...
+                TaskComponent
+                  GeneralComponent,
+                  TaskUnixComponent,
+                  AgentComponent,
+                  TaskFtpComponent,
+                  TaskEmailComponent,
+    middle:
+    right-pane:  
+PlanComponent
+  HeaderComponent,
+  ToolbarComponent,
+  ExplorerComponent,
+   container:
+    left-pane:
+      ExplorerComponent
+        TelePort
+            TreeComponent
+              TreeComponent
+                ...
+
+    middle:
+    right-pane:  
+
+# Oversigt Nyt layout
+config global klasse der indeholder konfigurationsdata
+
+App.vue
+  routerLink  /  WorkflowComponent
+  routerLink /Plan   PlanComponent
+
+WorkflowComponent
+  HeaderComponent
+  ToolbarComponent
+  container:
+    left-pane:
+      ExplorerComponent
+        TreeComponent
+          TreeComponent
+            ...
+    middle:
+      TaskComponent
+        GeneralComponent,
+        TaskUnixComponent,
+        AgentComponent,
+        TaskFtpComponent,
+        TaskEmailComponent,
+    right-pane:  
+
+PlanComponent
+  HeaderComponent,
+  ToolbarComponent,
+  ExplorerComponent,
+   container:
+    left-pane:
+      ExplorerComponent
+        TreeComponent
+          TreeComponent
+            ...
+
+    middle:
+    right-pane:  
+
 # initialisering
 Når systemet startes op skal initialiseringen ske inden de forskellige komponenter renderes.
 Det klares ved at der i config.ts er en ref variabel "isLoading" som defautl er sat til true.
