@@ -16,21 +16,23 @@
     <div v-if="updateProgress > 0" style="font-weight: bold; padding-right: 10px">
       {{ updateProgress.toFixed(0) }} pct
     </div>
-    <ButtonComponent :disable="!updateEnabled" @click="handleUpdate">Update</ButtonComponent>
+    <ButtonComponent :disable="!updateEnabled || isLoading" @click="handleUpdate">Update</ButtonComponent>
     <FilePickComponent @planEvent="handlePlanEvent" v-show="type === 'plan'"></FilePickComponent>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { defineEmits } from "vue";
 import { config } from "@/store/config";
-import { defineProps, onBeforeMount, onUnmounted, ref, toRef } from "vue";
+import { defineProps, defineEmits, onBeforeMount, onUnmounted, ref, toRef } from "vue";
 import FilePickComponent from "./FilePickComponent.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import { api } from "@/api/api";
 import Swal from "sweetalert2";
 
-defineProps({ type: String });
+const props = defineProps({
+  type: String,
+  isLoading: Boolean
+});
 let environmentList = ref<string[]>([]);
 let updateEnabled = ref<boolean>(false);
 let selectedItem = toRef(config, "uacenv");

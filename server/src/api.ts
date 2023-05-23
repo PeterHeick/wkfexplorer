@@ -127,21 +127,27 @@ export default function api(app: express.Application) {
       return
     }
     // console.log(response);
+    const prefix = config.environments[env].prefix;
     try {
-      const paramList = JSON.parse(readFileSync("data/param.json", 'utf-8'));
+      const paramList = JSON.parse(readFileSync(`data/${prefix}_param.json`, 'utf-8'));
       for (let i = 0; i < paramList.length; i++) {
         paramList[i].count--;
       }
-      paramList.push({task: req.body.name, count: config.paramTimeout})
-      writeFileSync("data/param.json", JSON.stringify(paramList.filter((param: any) => param.count > 0)));
+      paramList.push({ task: req.body.name, count: config.paramTimeout })
+      console.log("Write paramfil");
+      writeFileSync(`data/${prefix}_param.json`, JSON.stringify(paramList.filter((param: any) => param.count > 0)));
+      console.log("Done");
     } catch (err) {
+      console.log("læsning af paramfil fejlet");
       try {
-        writeFileSync("data/param.json", JSON.stringify([]));
+        console.log("lav en ny");
+        writeFileSync(`data/${prefix}_param.json`, JSON.stringify([]));
       } catch (err) {
+        console.log("Den fejlede også");
         mkdir("data", (err) => {
           console.error("Fejl ved oprettelse af 'data'")
         });
-       };
+      };
     };
 
     const text = await response.text();
@@ -249,11 +255,11 @@ export default function api(app: express.Application) {
     // Slet gammel plan først
     let curWkfNames: string[] = [];
     try {
-      const curWkfNames = JSON.parse(readFileSync(`${cfg.prefix}_plan.json`, 'utf-8'));
+      const curWkfNames = JSON.parse(readFileSync(`data/${cfg.prefix}_plan.json`, 'utf-8'));
     } catch (err: any) {
-      console.log(`Current plan ${cfg.prefix}_plan findes ikke ${err.message}`);
-      res.status(404).json({ message: 'Plan findes ikke', detail: `${cfg.prefix}_plan.json findes ikke, og det er jo mærkeligt når du lige har valgt den.` });
-      return
+      console.log(`Current plan data/${cfg.prefix}_plan.json findes ikke ${err.message}`);
+      // res.status(404).json({ message: 'Plan findes ikke', detail: `data/${cfg.prefix}_plan.json findes ikke` });
+      // return
     };
     try {
       await deletePlan(cfg, curWkfNames, cfg.prefix);
@@ -269,7 +275,7 @@ export default function api(app: express.Application) {
     if (topLevelNames) {
       try {
         await deletePlan(cfg, topLevelNames.reverse(), cfg.prefix);
-        writeFileSync(`${cfg.prefix}_plan.json`, JSON.stringify(topLevelNames));
+        writeFileSync(`data/${cfg.prefix}_plan.json`, JSON.stringify(topLevelNames));
       } catch (error: any) {
         console.log("2. Delete fejlet", error);
         res.status(error.status).json(error);

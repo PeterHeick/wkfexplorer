@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, onMounted } from "vue";
+import { defineProps, defineEmits, onMounted } from "vue";
 import { TreeNode } from "@/types/interfaces";
 import { currentTask } from "@/store/currentTask";
 

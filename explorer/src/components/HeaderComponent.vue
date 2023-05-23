@@ -5,21 +5,22 @@
     </h3>
     <div class="buttons">
       <router-link to="/">
-        <ButtonComponent class="right">Workflows</ButtonComponent>
+        <ButtonComponent :disable="isLoading" class="right">Workflows</ButtonComponent>
       </router-link>
 
       <router-link to="/plan">
-        <ButtonComponent>Plan</ButtonComponent>
+        <ButtonComponent :disable="isLoading">Plan</ButtonComponent>
       </router-link>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { computed, defineComponent, onBeforeMount, ref, watch } from "vue";
+import { defineProps, computed, onBeforeMount, ref, watch } from "vue";
 import { config } from "@/store/config";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 
+const props = defineProps({ isLoading: { type: Boolean}})
 let color = computed(() => config.getBackgroundColor());
 
 onBeforeMount(() => {

@@ -270,7 +270,7 @@ import { defineComponent, onMounted } from "vue";
 
 export default defineComponent({
   props: {
-    taskNode: {
+   taskNode: { 
       type: Object as () => TaskFtp,
       default: () => {
         return {} as TaskFtp;

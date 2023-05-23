@@ -117,49 +117,51 @@
   </table>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { api } from "@/api/api";
 import { TaskUnix } from "@/types/interfaces";
-import { defineComponent, onMounted, ref, toRef } from 'vue';
+import { defineProps, onMounted, ref, toRef } from 'vue';
+import { watchEffect } from 'vue';
 
-export default defineComponent({
-  props: {
-    taskNode: {
-      type: Object as () => TaskUnix,
-      default: () => {
-        return {} as TaskUnix;
-      },
+const props = defineProps({
+  taskNode: {
+    type: Object as () => TaskUnix,
+    default: () => {
+      return {} as TaskUnix;
     },
-  },
-  setup(props) {
-    const parameters = toRef(props.taskNode, "parameters");
-    const show = ref(false);
+  }
+});
+const parameters = ref(props.taskNode.parameters);
+// const parameters = computed(() => props.taskNode.parameters);
+const show = ref(false);
 
-    const updateParameters = async () => {
-      console.log("Parameter updated:", parameters.value);
-      const elem = document.getElementById("paramField");
-      console.log("elem ", elem);
-      if (elem) elem.blur();
-      const paramObj = {
-        sysId: props.taskNode.sysId,
-        name: props.taskNode.name,
-        type: props.taskNode.type,
-        agent: props.taskNode.agent,
-        command: props.taskNode.command,
-        exitCodes: props.taskNode.exitCodes,
-        parameters: parameters.value
-      };
-      await api.updateTask(paramObj);
-      show.value = true;
-      setTimeout(() => {
-        show.value = false;
-      }, 2000);
-    };
-    onMounted(() => {
-      console.log("TaskUnixComponent.onMounted: ", props.taskNode.name);
-    });
-    return { parameters, show, updateParameters };
-  },
+const updateParameters = async () => {
+  console.log("Parameter updated:", parameters.value);
+  const elem = document.getElementById("paramField");
+  console.log("elem ", elem);
+  if (elem) elem.blur();
+  const paramObj = {
+    sysId: props.taskNode.sysId,
+    name: props.taskNode.name,
+    type: props.taskNode.type,
+    agent: props.taskNode.agent,
+    command: props.taskNode.command,
+    exitCodes: props.taskNode.exitCodes,
+    parameters: parameters.value
+  };
+  await api.updateTask(paramObj);
+  show.value = true;
+  setTimeout(() => {
+    show.value = false;
+  }, 2000);
+};
+onMounted(() => {
+  console.log("TaskUnixComponent.onMounted: ", props.taskNode.name);
+});
+
+watchEffect(() => {
+  console.log('taskNode changed:', props.taskNode);
+  parameters.value = props.taskNode.parameters;
 });
 </script>
 

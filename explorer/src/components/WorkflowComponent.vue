@@ -1,10 +1,10 @@
 <template>
   <div>
     <div class="header">
-      <HeaderComponent>Workflow explorer</HeaderComponent>
+      <HeaderComponent :isLoading="isLoading">Workflow explorer</HeaderComponent>
     </div>
     <div class="toolbar">
-      <ToolbarComponent @envEvent="handleEnvEvent" type="workflow"></ToolbarComponent>
+      <ToolbarComponent :isLoading="isLoading" @envEvent="handleEnvEvent" type="workflow"></ToolbarComponent>
     </div>
     <div id="container">
       <div id="left-pane">
