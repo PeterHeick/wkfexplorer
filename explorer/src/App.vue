@@ -1,26 +1,20 @@
 <template>
-  <div v-if="isLoaded">
+  <div v-if="state.isConfigLoaded">
     <router-view />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, onMounted, ref, toRef } from "vue";
+<script lang="ts" setup>
+import { onMounted } from "vue";
 import { config } from "./store/config";
+import { state } from "./store/state";
 
-
-export default defineComponent({
-  setup() {
-    let isLoaded = ref(false);
-
-    onMounted(() => {
-      config.init()
-        .then(() => {
-          isLoaded.value = true;
-        });
-    })
-    return {isLoaded};
-  }
+onMounted(() => {
+  config.init()
+    .then(() => {
+      state.isConfigLoaded = true;
+    });
 })
+
 </script>
 <style lang="scss"></style>

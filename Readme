@@ -8,6 +8,10 @@ Tag:
  git tag -a beta03 -m 'Det virker på lenovo, function readToken, TaskComponent'
  git push --tags
 
+ git tag vers.1.08
+ git push origin vers.1.08
+
+
 Gammel version
 git log api.ts
 git checkout e7462bbae947128c95826b6b36b0603562b2f8f0 -- api.ts

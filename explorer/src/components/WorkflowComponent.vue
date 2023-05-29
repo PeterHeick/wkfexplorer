@@ -1,21 +1,21 @@
 <template>
   <div>
     <div class="header">
-      <HeaderComponent :isLoading="isLoading">Workflow explorer</HeaderComponent>
+      <HeaderComponent>Workflow explorer</HeaderComponent>
     </div>
     <div class="toolbar">
-      <ToolbarComponent :isLoading="isLoading" @envEvent="handleEnvEvent" type="workflow"></ToolbarComponent>
+      <ToolbarComponent @envEvent="handleEnvEvent" type="workflow"></ToolbarComponent>
     </div>
     <div id="container">
       <div id="left-pane">
-        <div v-if="isLoading" class="loader" style="justify-items: center">
+        <div v-if="!state.isWkfLoaded" class="loader" style="justify-items: center">
           Loading...
         </div>
-        <div v-if="isLoading">
+        <div v-if="!state.isWkfLoaded">
           <span class="spinner" />
         </div>
 
-        <TreeComponent v-if="!isLoading" :treeData="wkf" @currentNodeEvent="handleCurrentNodeEvent"></TreeComponent>
+        <TreeComponent v-if="state.isWkfLoaded" :treeData="wkf" @currentNodeEvent="handleCurrentNodeEvent"></TreeComponent>
       </div>
       <div id="middle">
         <TaskComponent v-if="nodeName != ''" :nodeName="nodeName"></TaskComponent>
@@ -34,12 +34,13 @@ import TaskComponent from "@/components/explorer/tasks/TaskComponent.vue";
 import { TreeNode } from "@/types/interfaces";
 import { api } from "@/api/api";
 import { config } from "@/store/config";
+import { state } from "@/store/state";
 
 let wkf = ref([] as TreeNode[]);
-let isLoading = ref(true);
 const nodeName = ref("");
 
 const handleEnvEvent = (env: string) => {
+  console.log("Skift environment til: ", env);
   config.setEnv(env);
   update();
 };
@@ -50,28 +51,28 @@ const handleCurrentNodeEvent = (name: string) => {
 };
 
 const update = () => {
-  isLoading.value = true;
+  state.isWkfLoaded = false;
   api
     .getAllWorkflows()
     .then((data: TreeNode[]) => {
       wkf.value = data;
-      isLoading.value = false;
+      state.isWkfLoaded = true;
       console.log(wkf.value);
       console.log(
         "workflowComponent.update() done length of data ",
         wkf.value.length
       );
-      console.log("isLoading ", isLoading.value);
+      console.log("isLoaded ", state.isWkfLoaded);
     })
     .catch((error) => {
       console.log("catch ", error);
-      isLoading.value = false;
+      state.isWkfLoaded = true;
       wkf.value = [];
     });
 };
 onMounted(() => {
   console.log("WorkflowComponent");
-  if (!config.isLoaded.value) {
+  if (!state.isConfigLoaded) {
     config.init();
   }
   update();

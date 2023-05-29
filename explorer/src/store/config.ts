@@ -1,7 +1,7 @@
 import { api } from '@/api/api';
 import { ConfigType } from '@/types/interfaces';
 import { ref } from 'vue';
-import Swal  from 'sweetalert2';
+import Swal from 'sweetalert2';
 
 /*
   config holder styr på den aktuelle konfiguration
@@ -10,7 +10,6 @@ import Swal  from 'sweetalert2';
 */
 
 class Config {
-  isLoaded = ref(false);
   configData = {} as ConfigType;
 
   // uacenv.value.value er en string der indeholder eks. "usprod"
@@ -38,20 +37,36 @@ class Config {
     return this.configData.environments[this.uacenv.value].backgroundcolor;
   }
 
+  async loadConfig() {
+    try {
+      const response = await api.getConfig();
+      const data = await response.json();
+      if (!response.ok) {
+        Swal.fire(data.message, data.detail, 'error');
+        return;
+      }
+      this.configData = data;
+      if (!this.uacenv.value) {
+        this.uacenv.value = data.default;
+      }
+    } catch (error: any) {
+      Swal.fire("Reload af config fejlet", error.status, 'error');
+    }
+  }
+
   async init() {
     console.log("config.init()");
 
     try {
       const response = await api.getConfig();
-      console.log(response);
+      // console.log(response);
       const data = await response.json();
 
       if (!response.ok) {
-        Swal.fire(data.message,data.detail,'error');
+        Swal.fire(data.message, data.detail, 'error');
       } else {
         this.configData = data;
         this.uacenv.value = data.default;
-        this.isLoaded.value = true;
         console.log("api.getConfigData length: ", Object.keys(data.environments).length);
         console.log("config: default UACENV: ", this.uacenv.value);
       }
@@ -62,16 +77,6 @@ class Config {
 
   constructor() {
     console.log("Initialising config");
-    /*
-    api.getConfig()
-      .then(response => response.json())
-      .then((data) => {
-        this.configData = data;
-        this.uacenv.value = data.default;
-        this.isLoaded.value = true;
-        console.log("config: default UACENV: ", this.uacenv.value);
-      })
-      */
   }
 }
 

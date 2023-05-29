@@ -59,6 +59,20 @@ export const api = {
         console.log(error);
       });
   },
+  
+  getParamList() {
+    const env = config.uacenv.value;
+    const url = `parameters?uacenv=${env}`;
+    options.method = "GET";
+    return fetch(baseUrl + url, options);
+  },
+
+  getMissing() {
+    const env = config.uacenv.value;
+    const url = `missing?uacenv=${env}`;
+    options.method = "GET";
+    return fetch(baseUrl + url, options);
+  },
 
   // env eks: "usprod"
   // kaldes fra WorkflowComponent
@@ -88,14 +102,23 @@ export const api = {
     const url = `plan?uacenv=${env}`;
     options.method = "PUT";
     return fetch(baseUrl + url, options)
-
   },
+
   // Kaldes fra Toolbar
   progress() {
     console.log("progress api");
-    const env = config.uacenv.value;
     options.method = "GET";
     const url = "progress";
+    return fetch(baseUrl + url, options)
+  },
+
+  // Kaldes fra Toolbar
+  deletePlan() {
+    console.log("updateplan api");
+    const env = config.uacenv.value;
+    console.log("api.delete ", env);
+    const url = `plan?uacenv=${env}`;
+    options.method = "DELETE";
     return fetch(baseUrl + url, options)
   },
 }

@@ -6,7 +6,7 @@
           :class="node.workflow.length > 0 ? 'workflow' : 'wkfempty'">
           {{ node.name }}</span>
         <TreeComponent v-if="isWorkflow(node)" v-show="node.isVisible" @open="openNode(node)"
-          @currentNodeEvent="handleCurrentNodeEvent" :treeData="node.workflow" :currentTask="currentTask">
+          @currentNodeEvent="handleCurrentNodeEvent" :treeData="node.workflow">
         </TreeComponent>
       </div>
       <div v-else-if="node.type === 'taskUnix'">
@@ -17,21 +17,15 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, defineEmits, onMounted } from "vue";
+import { defineProps, defineEmits } from "vue";
 import { TreeNode } from "@/types/interfaces";
-import { currentTask } from "@/store/currentTask";
 
-/*
-props: {
+defineProps({
   treeData: {
     type: Array as () => TreeNode[],
-    default: () => {
-      return [] as TreeNode[];
-    },
+    default: () => { return [] as TreeNode[] }
   }
-},
-*/
-defineProps({ treeData: { type: Array as () => TreeNode[], default: () => { return [] as TreeNode[] } } })
+})
 const emit = defineEmits(["currentNodeEvent"])
 
 const handleTaskClick = (node: TreeNode) => {
@@ -51,10 +45,6 @@ const openNode = (node: TreeNode) => {
   node.isVisible = true;
 };
 
-const visible = (node: TreeNode) => {
-  return node.name === currentTask.getTask();
-};
-
 const handleClick = (node: TreeNode) => {
   if (node.type === "taskWorkflow") {
     toggleVisibility(node);
@@ -64,11 +54,6 @@ const handleClick = (node: TreeNode) => {
 const isWorkflow = (elem: TreeNode) => {
   return elem.type === "taskWorkflow";
 };
-
-onMounted(() => {
-  console.log("TreeComponent ");
-})
-
 
 function closeSubtree(node: TreeNode) {
   node.isVisible = false;
@@ -85,7 +70,6 @@ function toggleVisibility(node: TreeNode) {
   } else {
     node.isVisible = true;
   }
-  console.log(node.isVisible ? "Visible" : "Not visible");
 }
 </script>
 

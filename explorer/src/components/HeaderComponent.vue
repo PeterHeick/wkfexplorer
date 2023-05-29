@@ -4,24 +4,34 @@
       <slot></slot>
     </h3>
     <div class="buttons">
-      <router-link to="/">
-        <ButtonComponent :disable="isLoading" class="right">Workflows</ButtonComponent>
+      <router-link to="/" @click="handleClick">
+        <ButtonComponent>Workflows</ButtonComponent>
       </router-link>
 
-      <router-link to="/plan">
-        <ButtonComponent :disable="isLoading">Plan</ButtonComponent>
+      <router-link to="/plan" @click="handleClick">
+        <ButtonComponent>Plan</ButtonComponent>
       </router-link>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { defineProps, computed, onBeforeMount, ref, watch } from "vue";
+import { computed, onBeforeMount } from "vue";
 import { config } from "@/store/config";
+import { state } from "@/store/state";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 
-const props = defineProps({ isLoading: { type: Boolean}})
 let color = computed(() => config.getBackgroundColor());
+
+const disable = computed(() => {
+  return !state.isWkfLoaded || !state.isPlanRead || state.planUpdateInProgress
+});
+
+const handleClick = ((event: any) => {
+  if (disable.value) {
+    event.preventDefault;
+  }
+})
 
 onBeforeMount(() => {
   console.log("HeaderComponent.onBeforeMount: ", color.value);

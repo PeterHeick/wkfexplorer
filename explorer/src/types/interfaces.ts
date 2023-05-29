@@ -46,10 +46,12 @@ export type TreeNode =
 export type ConfigType = {
   default: string;
   verticeStart: number;
-  verticeStep: number;
+  verticeStepX: number;
+  verticeStepY: number;
   windowSize: number;
   environments: Environment;
   paramTimeout: number;
+  localConfig: string;
 }
 
 export type Environment = {

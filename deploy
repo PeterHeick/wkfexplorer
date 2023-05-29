@@ -7,5 +7,5 @@ cp -rp explorer/dist/* deployment/docRoot
 (
  cd deployment
  tar cfv deploy.tar server.js docRoot
- scp deploy.tar peter@unisoft.dk:
+ scp deploy.tar peter@unisoft.dk:deploy
 )

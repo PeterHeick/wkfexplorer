@@ -120,7 +120,7 @@
 <script lang="ts" setup>
 import { api } from "@/api/api";
 import { TaskUnix } from "@/types/interfaces";
-import { defineProps, onMounted, ref, toRef } from 'vue';
+import { defineProps, onMounted, ref } from 'vue';
 import { watchEffect } from 'vue';
 
 const props = defineProps({
@@ -132,13 +132,11 @@ const props = defineProps({
   }
 });
 const parameters = ref(props.taskNode.parameters);
-// const parameters = computed(() => props.taskNode.parameters);
 const show = ref(false);
 
 const updateParameters = async () => {
   console.log("Parameter updated:", parameters.value);
   const elem = document.getElementById("paramField");
-  console.log("elem ", elem);
   if (elem) elem.blur();
   const paramObj = {
     sysId: props.taskNode.sysId,

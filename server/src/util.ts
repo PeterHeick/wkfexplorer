@@ -1,39 +1,38 @@
-import { writeFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { INumberDictionary, Ivertice, WorkflowNode, TreeNode, IStringDictionary, Environment } from './interfaces';
-import { wkfData } from './wkfData';
+import { homedir } from 'os';
 
 var id = 0;
 let counter: INumberDictionary = {};
 //let envTable: IStringDictionary = {};
 
-function findTopLevel(workflows: WorkflowNode[]) {
-  console.log("toplevel");
-  counter = {};
-  for (const wkf of workflows) {
-    if (wkf.name) {
-      if (counter[wkf.name] === undefined) {
-        counter[wkf.name] = 0;
-      } else {
-        counter[wkf.name] += 1;
-      }
-    }
-    if (wkf.type === "taskWorkflow") {
-      if (wkf.workflowVertices) {
-        for (const vertice of wkf.workflowVertices) {
-          if (vertice?.task) {
-            if (counter[vertice?.task?.value] === undefined) {
-              counter[vertice.task.value] = 0;
-            } else {
-              counter[vertice.task.value] += 1;
-            }
-          }
-        }
-      }
-    }
+export function readToken(file: string) {
+  try {
+    const homeDir = homedir();
+    const filePath = file.replace(/^~(?=$|\/|\\)/, homeDir);
+    return readFileSync(filePath, "utf-8");
+
+  } catch (e) {
+    console.error(e);
+    return "";
   }
-  writeFileSync('../counter.json', JSON.stringify(counter));
 }
 
+export function getWkfByName(workflowSet: WorkflowNode[], name: string): WorkflowNode {
+  for (const wkfNode of workflowSet) {
+    if (wkfNode.name == name) {
+      return wkfNode;
+    }
+  }
+  return {} as WorkflowNode;
+}
+
+export function getParm(request: any, parm: string) {
+  let p = "";
+  p = request.query[parm];
+  // console.log("getParm: ", p);
+  return p;
+}
 // kaldt fra api/plan og api/listadv
 export function handleData(data: WorkflowNode[]): TreeNode[] {
   let workflow: TreeNode[] = [];
@@ -52,7 +51,7 @@ export function handleData(data: WorkflowNode[]): TreeNode[] {
       sequence[wkf.name] = count;
     }
   }
-  console.log("No of nodes before ", workflow.length);
+  // console.log("No of nodes before ", workflow.length);
   workflow.sort((a: TreeNode, b: TreeNode) => {
     if (a.name && b.name) {
       return sequence[b.name] - sequence[a.name];
@@ -64,15 +63,6 @@ export function handleData(data: WorkflowNode[]): TreeNode[] {
 
   // writeFileSync('../sorted.json', JSON.stringify(workflow));
   return workflow;
-}
-
-function getWkfByName(workflowSet: WorkflowNode[], name: string): WorkflowNode {
-  for (const wkfNode of workflowSet) {
-    if (wkfNode.name == name) {
-      return wkfNode;
-    }
-  }
-  return {} as WorkflowNode;
 }
 
 function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevelName: string): number {
@@ -103,22 +93,65 @@ function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevel
   }
   return count;
 }
+export function deepMerge(target: any, source: any): any {
+  if (typeof source !== 'object' || source === null) {
+    return source;
+  }
 
-function handleCircularReferences() {
-  const visitedObjects = new WeakSet();
+  if (target === undefined) target = Array.isArray(source) ? [] : {};
 
-  return (key: string, value: any) => {
-    if (typeof value === "object" && value !== null) {
-      if (visitedObjects.has(value)) {
-        return; // eller returner en brugerdefineret værdi som "CIRCULAR"
+  if (typeof target !== 'object' || target === null) {
+    return source;
+  }
+
+  for (const key in source) {
+    if (source.hasOwnProperty(key)) {
+      if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        target[key] = deepMerge(target[key], source[key]);
+      } else {
+        target[key] = source[key];
       }
-      visitedObjects.add(value);
     }
-    return value;
-  };
+  }
+  return target;
 }
 
-export function deepMerge(target: any, source: any) {
+
+export function deepMerge4(target: any, source: any) {
+  const output = { ...target };
+
+  if (typeof source === 'object' && source !== null) {
+    for (const key in source) {
+      if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+        output[key] = key in target
+          ? deepMerge(target[key], source[key])
+          : source[key];
+      } else {
+        output[key] = source[key];
+      }
+    }
+  }
+  
+  return output;
+}
+
+export function deepMerge3(target: any, source: any) {
+  const output: any = { ...target };
+
+  for (const key in source) {
+    if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+      if (!(key in target)) {
+        output[key] = { ...source[key] };
+      } else {
+        output[key] = deepMerge(target[key], source[key]);
+      }
+    } else {
+      output[key] = source[key];
+    }
+  }
+  return output;
+}
+export function deepMerge2(target: any, source: any) {
   const output: Environment = { ...target } as Environment;
 
   for (const key in source) {
@@ -135,6 +168,16 @@ export function deepMerge(target: any, source: any) {
   return output;
 }
 
+export function sortPlan(workflows: WorkflowNode[]) {
+  const graph = createGraph(workflows as Task[]);
+  let sortedTasks = topologicalSort(graph);
+
+  const workflownames = workflows.filter(task => task.type === 'taskWorkflow').map(task => task.name);
+  if (sortedTasks) {
+    sortedTasks = sortedTasks.filter((task) => workflownames.includes(task));
+  }
+  return sortedTasks;
+}
 
 interface Vertex {
   task: {
@@ -153,6 +196,18 @@ interface Graph {
   [index: string]: string[];
 }
 
+function topologicalSort(graph: Graph) {
+  const stack: string[] = [];
+  const visited: { [index: string]: boolean } = {};
+
+  for (const node in graph) {
+    if (!visited[node]) {
+      topologicalSortUtil(node, visited, stack, graph);
+    }
+  }
+
+  return stack;
+}
 function createGraph(tasks: Task[]): Graph {
   const graph: Graph = {};
 
@@ -179,35 +234,30 @@ function topologicalSortUtil(v: string, visited: { [index: string]: boolean }, s
   stack.push(v);
 }
 
-function topologicalSort(graph: Graph) {
-  const stack: string[] = [];
-  const visited: { [index: string]: boolean } = {};
-
-  for (const node in graph) {
-    if (!visited[node]) {
-      topologicalSortUtil(node, visited, stack, graph);
+function findTopLevel(workflows: WorkflowNode[]) {
+  console.log("toplevel");
+  counter = {};
+  for (const wkf of workflows) {
+    if (wkf.name) {
+      if (counter[wkf.name] === undefined) {
+        counter[wkf.name] = 0;
+      } else {
+        counter[wkf.name] += 1;
+      }
+    }
+    if (wkf.type === "taskWorkflow") {
+      if (wkf.workflowVertices) {
+        for (const vertice of wkf.workflowVertices) {
+          if (vertice?.task) {
+            if (counter[vertice?.task?.value] === undefined) {
+              counter[vertice.task.value] = 0;
+            } else {
+              counter[vertice.task.value] += 1;
+            }
+          }
+        }
+      }
     }
   }
-
-  return stack;
+  writeFileSync('../counter.json', JSON.stringify(counter));
 }
-
-export function getNewPlan() {
-  const workflowsTasks = wkfData.getPlan();
-  const graph = createGraph(workflowsTasks as Task[]);
-  let sortedTasks = topologicalSort(graph);
-
-  const workflownames = workflowsTasks.filter(task => task.type === 'taskWorkflow').map(task => task.name);
-  if (sortedTasks) {
-    sortedTasks = sortedTasks.filter((task) => workflownames.includes(task));
-  }
-  return sortedTasks;
-}
-
-// Brug af funktionerne:
-/*
-const graph = createGraph(tasks);
-const sortedTasks = topologicalSort(graph);
-
-console.log(sortedTasks);
-*/

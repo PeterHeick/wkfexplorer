@@ -9,39 +9,26 @@
   <TreeComponent v-if="!isLoading" :treeData="wkf"></TreeComponent>
 </template>
 
-<script lang="ts">
-import {
-  defineComponent,
-  onBeforeMount,
-} from "vue";
+<script lang="ts" setup>
+import { defineProps, onBeforeMount, } from "vue";
 import TreeComponent from "./TreeComponent.vue";
 import { TreeNode } from "@/types/interfaces";
 
-export default defineComponent({
-  components: {
-    TreeComponent,
-  },
-  props: {
-    wkf: {
-      type: Array as () => TreeNode[],
-      default: () => {
-        return [] as TreeNode[];
-      },
-    },
-    isLoading: {
-      type: Boolean,
-      default: true,
+defineProps({
+  wkf: {
+    type: Array as () => TreeNode[],
+    default: () => {
+      return [] as TreeNode[];
     },
   },
-  setup() {
-    onBeforeMount(() => {
-      console.log("ExplorerComponent ");
-    });
+  isLoading: {
+    type: Boolean,
+    default: true,
+  },
+})
 
-    return {};
-  },
-});
 </script>
+
 <style scoped>
 @keyframes spinner {
   to {

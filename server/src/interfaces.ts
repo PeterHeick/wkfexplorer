@@ -68,10 +68,12 @@ export type Environment = {
 export type Config = {
   default: string;
   verticeStart: number;
-  verticeStep: number;
+  verticeStepX: number;
+  verticeStepY: number;
   windowSize: number;
   environments: Environment;
   paramTimeout: number;
+  localConfig: string;
 }
 
 export interface IuserConfig {

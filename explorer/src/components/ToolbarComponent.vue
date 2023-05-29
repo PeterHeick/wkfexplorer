@@ -1,9 +1,6 @@
 <template>
-  <!--
-  <div class="dropdown" v-show="!workflowsAreLoading">
-    -->
   <div class="dropdown">
-    <button @click="toggleDropdown" class="dropbtn">{{ selectedItem }}</button>
+    <button :disabled="disable" @click="toggleDropdown" class="dropbtn">{{ selectedItem }}</button>
     <div v-show="isDropdownVisible" class="dropdown-content">
       <a v-for="(env, index) in environmentList" :key="index" href="#" @click="
         $emit('envEvent', env);
@@ -12,50 +9,70 @@
       ">{{ env }}</a>
     </div>
   </div>
-  <div style="display: flex; align: center">
+
+  <div v-show="type === 'plan'" style="display: flex; align: center">
     <div v-if="updateProgress > 0" style="font-weight: bold; padding-right: 10px">
       {{ updateProgress.toFixed(0) }} pct
     </div>
-    <ButtonComponent :disable="!updateEnabled || isLoading" @click="handleUpdate">Update</ButtonComponent>
-    <FilePickComponent @planEvent="handlePlanEvent" v-show="type === 'plan'"></FilePickComponent>
+    <ButtonComponent :disable="state.planDeleted || !state.isPlanRead" @buttonClicked="handleDelete">Delete</ButtonComponent>
+    <ButtonComponent :disable="!state.isPlanRead" @buttonClicked="handleUpdate">Update</ButtonComponent>
+    <FilePickComponent @planRead="handlePlanRead"></FilePickComponent>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { config } from "@/store/config";
-import { defineProps, defineEmits, onBeforeMount, onUnmounted, ref, toRef } from "vue";
+import { computed, defineProps, defineEmits, onBeforeMount, onUnmounted, ref, toRef } from "vue";
 import FilePickComponent from "./FilePickComponent.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import { api } from "@/api/api";
 import Swal from "sweetalert2";
+import { state } from "@/store/state";
 
-const props = defineProps({
-  type: String,
-  isLoading: Boolean
-});
 let environmentList = ref<string[]>([]);
-let updateEnabled = ref<boolean>(false);
 let selectedItem = toRef(config, "uacenv");
 let intervalId = 0;
 const updateProgress = ref(0);
 const isDropdownVisible = ref(false);
-const emit = defineEmits(["planEvent", "envEvent", "missingEvent"]);
+
+const emit = defineEmits(["planRead", "envEvent", "missingEvent"]);
+defineProps({ type: String });
+
+// disable button if something is not loaded
+const disable = computed(() => {
+  return !state.isWkfLoaded || state.planUpdateInProgress
+})
 
 const toggleDropdown = () => {
   console.log("Toggle dropdown");
   isDropdownVisible.value = !isDropdownVisible.value;
 };
 
-const handlePlanEvent = (plan: string) => {
-  console.log("Toolbar handlePlanEvent", plan);
-  updateEnabled.value = true;
-  emit("planEvent", plan);
+const handlePlanRead = (plan: string) => {
+  console.log("Toolbar handlePlanRead", plan);
+  state.planDeleted = false;
+  emit("planRead", plan);
 };
+
+const handleDelete = async () => {
+  console.log("handleDelete");
+  state.planDeleted = true;
+  const response = await api.deletePlan();
+  console.log("delete plan, ", response)
+  if (!response.ok) {
+    console.log(response);
+    Swal.fire("delete fejlet", "To be defined", 'error');
+    clearInterval(intervalId);
+    return;
+  }
+  Swal.fire("Plan slettet", "", 'success');
+}
 
 const handleUpdate = async () => {
   console.log("handleUpdate");
-  updateEnabled.value = false;
-  update();
+  updateProgress.value = 0;
+  state.planUpdateInProgress = true;
+  startProgressCounter();
   const response = await api.updatePlan();
   const data = await response.json();
   console.log(response);
@@ -68,12 +85,12 @@ const handleUpdate = async () => {
 
   // data.missing a list of missing tasks if any
   emit("missingEvent", data.missing);
-  updateEnabled.value = true;
+  state.planUpdateInProgress = false;
   clearInterval(intervalId);
   updateProgress.value = 0;
 };
 
-const update = async () => {
+const startProgressCounter = async () => {
   intervalId = setInterval(async () => {
     const response = await api.progress();
     const data = await response.json();
@@ -87,7 +104,7 @@ const update = async () => {
       updateProgress.value = 100;
       clearInterval(intervalId);
     }
-  }, 1000); // 1000 milliseconds = 1 second
+  }, 1000); 
 };
 
 onUnmounted(() => {

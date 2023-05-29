@@ -477,24 +477,17 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import { Task } from "@/types/interfaces";
-import { defineComponent, onMounted } from "vue";
+import { defineProps } from "vue";
 
-export default defineComponent({
-  props: {
-    taskNode: {
-      type: Object as () => Task,
-      default: () => {
-        return {} as Task;
-      },
+defineProps({
+  taskNode: {
+    type: Object as () => Task,
+    default: () => {
+      return {} as Task;
     },
   },
-  setup(props) {
-    onMounted(() => {
-      console.log("generalComponent.onMounted: ", props.taskNode.name);
-    })
-    return {}
-  },
-}); 
+});
+
 </script>
