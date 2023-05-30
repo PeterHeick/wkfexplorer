@@ -5,6 +5,7 @@ import mime from "mime";
 import apiTask from "./apiTask";
 import { apiConfig } from "./apiConfig";
 import { apiPlan } from "./apiPlan";
+import { apiFile } from "./apiFile";
 
 const docRoot = "docRoot";
 const app = express();
@@ -33,6 +34,7 @@ app.get("/", (req, res) => {
 apiConfig(app);
 apiTask(app);
 apiPlan(app);
+apiFile(app);
 
 // start serveren
 app.listen(8080, () => {

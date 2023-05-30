@@ -9,35 +9,42 @@ import Swal from 'sweetalert2';
   Andre komponenter spørger config om aktuel tilstand.
 */
 
-class Config {
-  configData = {} as ConfigType;
+//class Config {
+export const config =  {
+  configData: {} as ConfigType,
 
   // uacenv.value.value er en string der indeholder eks. "usprod"
-  uacenv = ref("");
+  uacenv: ref(""),
 
   // getEnv kan ikke bruges til at returnere uacenv.value.value,
   // så mister vi reactiviteten.
 
   setEnv(env: string) {
-    console.log("setEnv: ", env);
+    console.log("setEnv1: ", env);
     this.uacenv.value = env;
-  }
+    console.log("setEnv2: ", env);
+  },
+
+  getEnv() {
+    console.log("getEnv() ", this.uacenv.value);
+    return this.uacenv.value;
+  },
 
   getEnvironment() {
-    console.log("getEnvironment()");
+    console.log("getEnvironment() ", this.uacenv.value);
     return this.configData.environments[this.uacenv.value];
-  }
+  },
 
   getEnvironmentList() {
     return Object.keys(this.configData.environments);
-  }
+  },
 
   getBackgroundColor() {
     console.log("getBackgroundColor ", this.configData.environments[this.uacenv.value].backgroundcolor)
     return this.configData.environments[this.uacenv.value].backgroundcolor;
-  }
+  },
 
-  async loadConfig() {
+  loadConfig: async function() {
     try {
       const response = await api.getConfig();
       const data = await response.json();
@@ -52,9 +59,9 @@ class Config {
     } catch (error: any) {
       Swal.fire("Reload af config fejlet", error.status, 'error');
     }
-  }
+  },
 
-  async init() {
+  init: async function() {
     console.log("config.init()");
 
     try {
@@ -74,10 +81,6 @@ class Config {
       console.error("Fejl under anmodning:", error);
     }
   }
-
-  constructor() {
-    console.log("Initialising config");
-  }
 }
 
-export const config = new Config();
+// export const config = new Config();

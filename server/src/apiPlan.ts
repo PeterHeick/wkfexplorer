@@ -30,7 +30,7 @@ export function apiPlan(app: express.Application) {
 
     const planDir = config.environments[env].planDir;
 
-    readFileAndParseWorkflow(`${planDir}/${plan}`)
+    readFileAndParseWorkflow(`${plan}`)
       .then((obj: any) => {
         // console.log(workflowItems);
         let { workflowItems, count, ok } = obj;

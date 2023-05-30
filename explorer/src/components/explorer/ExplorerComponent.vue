@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineProps, onBeforeMount, } from "vue";
+import { defineProps, } from "vue";
 import TreeComponent from "./TreeComponent.vue";
 import { TreeNode } from "@/types/interfaces";
 

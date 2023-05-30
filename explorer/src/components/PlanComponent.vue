@@ -34,7 +34,9 @@
           </ul>
         </div>
       </div>
-      <div id="right-pane"></div>
+      <div id="right-pane">
+        <FileComponent @planRead="handlePlanRead"></FileComponent>
+      </div>
     </div>
   </div>
 </template>
@@ -43,6 +45,7 @@ import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import HeaderComponent from "@/components/HeaderComponent.vue";
 import ToolbarComponent from "@/components/ToolbarComponent.vue";
 import TreeComponent from "@/components/explorer/TreeComponent.vue";
+import FileComponent from "@/components/FileComponent.vue";
 
 import { api } from "@/api/api";
 import { TreeNode } from "@/types/interfaces";
@@ -66,35 +69,28 @@ const taskList = reactive({ value: [] as TaskItem[] });
 const show = ref(false);
 
 const handleEnvEvent = async (env: string) => {
-  config.setEnv(env);
+  console.log("PlanComponent handleEvent env: ", env);
+  config.getEnv();
+  config.uacenv.value = env;
+  //config.setEnv(env);
+  config.getEnv();
   missingList.value = [];
-  /*
-  const missResponse = await api.getMissing();
-  if (missResponse.ok) {
-    missingList.value = await missResponse.json()
-  } else {
-    missingList.value = [];
-  }
-  console.log(missingList.value)
-  */
-};
+}
 
 // handlePlanRead => get plan from server (Do something)
 const handlePlanRead = async (file: string) => {
   console.log("handleEvent ", file);
-  // Is plan loaded / read from server  (is it done?)
-  state.isPlanRead = false;
-  missingList.value = [];
-  try {
+  
+  clearPlanData();
+  
+    try {
     const response = await api.getPlanData(file)
     const data = await response.json();
-    console.log("response.ok ", response.ok);
-    console.log("data ", JSON.stringify(data));
+ ;
     if (!response.ok) {
-      Swal.fire(data.message, data.detail, 'error');
-      wkf.value = [];
-      state.isPlanRead = false;
-      return;
+      // Swal.fire(data.message, data.detail, 'error');
+      throw data;
+ 
     }
     wkf.value = data.wkf;
     console.log("workflowStore.update()");
@@ -108,6 +104,11 @@ const handlePlanRead = async (file: string) => {
   }
 }
 
+function clearPlanData() {
+  wkf.value = [];
+  state.isPlanRead = false;
+  missingList.value = [];
+}
 const handleMissing = (list: Array<string>) => {
   console.log("handle missing list ", list);
   for (const element of list) {
@@ -144,14 +145,6 @@ onBeforeMount(async () => {
     console.log("Got tasklist 2", taskList);
     console.log("Got tasklist ", taskList.value.length);
   }
-  /*
-  const missResponse = await api.getMissing();
-  if (missResponse.ok) {
-    missingList.value = await missResponse.json()
-  } else {
-    missingList.value = [];
-  }
-  */
 })
 
 </script>

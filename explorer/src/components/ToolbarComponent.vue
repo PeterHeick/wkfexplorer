@@ -16,7 +16,9 @@
     </div>
     <ButtonComponent :disable="state.planDeleted || !state.isPlanRead" @buttonClicked="handleDelete">Delete</ButtonComponent>
     <ButtonComponent :disable="!state.isPlanRead" @buttonClicked="handleUpdate">Update</ButtonComponent>
+    <!--
     <FilePickComponent @planRead="handlePlanRead"></FilePickComponent>
+    -->
   </div>
 </template>
 

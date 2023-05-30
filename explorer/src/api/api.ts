@@ -121,4 +121,13 @@ export const api = {
     options.method = "DELETE";
     return fetch(baseUrl + url, options)
   },
+
+  
+  getPlandir(file: string) {
+    const env = config.uacenv.value;
+    console.log("api.getPlandir ", file);
+    const url = `plandir/?file=${file}`;
+    options.method = "GET";
+    return fetch(baseUrl + url, options)
+  },
 }

@@ -8,8 +8,7 @@
 body {
   font-family: 'Open Sans';
   background: #ece6d9;
-  width: 100%;
-  height: 90vh;
+  width: 99vw;
   padding: 0px;
   margin: 0px;
 }
@@ -20,8 +19,7 @@ body {
 #container {
   display: flex;
   top: 0px;
-  height: 90vh;
-  width: 100%;
+  height: 88.6vh;
   z-index: 1;
   background-color: rgb(250, 250, 250);
   overflow: visible;
@@ -30,7 +28,6 @@ body {
 }
 
 #left-pane {
-  height: 90vh;
   min-width: 200px;
   font-size: 14px;
   font-weight: 700;
@@ -38,23 +35,27 @@ body {
   overflow-x: auto;
   overflow-y: auto;
   resize: horizontal;
-  border: 5px solid lightgrey;
+  border: 2px solid lightgrey;
   padding-right: 10px;
 }
 
 #middle {
   flex-grow: 1;
-  min-width: 650;
-  border: 5px solid lightgrey;
+  min-width: 400;
+  border: 2px solid lightgrey;
   padding: 10px;
   left: 0px;
   margin-left: 1px;
-  border: 1px solid black;
+  resize: horizontal;
   overflow-x: auto;
   overflow-y: auto;
 }
 
 #right-pane {
-  width: 200px;
+  min-width: 200;
   border: 1px solid black;
+  overflow-x: auto;
+  overflow-y: auto;
+  padding: 10px;
+  border: 2px solid lightgrey;
 }

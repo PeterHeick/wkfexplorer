@@ -2,7 +2,7 @@
   <ul>
     <li v-for="(node, index) in treeData" :key="index" class="treeList">
       <div v-if="node.type === 'taskWorkflow'">
-        <span @click="handleClick(node)" :style="{ backgroundColor: 'white' }"
+        <span @click="handleClick(node)" style="background-color: white; cursor: pointer;"
           :class="node.workflow.length > 0 ? 'workflow' : 'wkfempty'">
           {{ node.name }}</span>
         <TreeComponent v-if="isWorkflow(node)" v-show="node.isVisible" @open="openNode(node)"
@@ -10,7 +10,7 @@
         </TreeComponent>
       </div>
       <div v-else-if="node.type === 'taskUnix'">
-        <span @click="handleTaskClick(node)"> {{ node.name }}</span>
+        <span @click="handleTaskClick(node)" style="cursor: 'pointer'" > {{ node.name }}</span>
       </div>
     </li>
   </ul>
