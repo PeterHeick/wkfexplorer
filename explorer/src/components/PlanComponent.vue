@@ -74,50 +74,55 @@ const handleEnvEvent = async (env: string) => {
   config.uacenv.value = env;
   //config.setEnv(env);
   config.getEnv();
+  const response = await api.getParamList();
+  if (response.ok) {
+    taskList.value = await response.json();
+  }
   missingList.value = [];
 }
 
 // handlePlanRead => get plan from server (Do something)
 const handlePlanRead = async (file: string) => {
-  console.log("handleEvent ", file);
-  
-  clearPlanData();
-  
-    try {
+  console.log("handlePlanRead ", file);
+
+  state.isPlanRead = false;
+  missingList.value = [];
+  try {
     const response = await api.getPlanData(file)
+    console.log("response: ", response);
     const data = await response.json();
- ;
+    console.log("data: ", data);
+
     if (!response.ok) {
-      // Swal.fire(data.message, data.detail, 'error');
       throw data;
- 
     }
     wkf.value = data.wkf;
-    console.log("workflowStore.update()");
     state.isPlanRead = true;
-    console.log("api.getPlanData length: ", Object.keys(data).length);
-  } catch (error) {
-    console.log(error);
-    Swal.fire("Fejl ved indlæsning af plan", `Et eller andet gik galt ${error}}`, 'error');
+
+  } catch (error: any) {
+    console.log("error: ", error);
+    console.log("error.message: ", error.message);
+    console.log("error.detail: ", error.detail);
+    if (error.message === 'Failed to fetch') {
+      Swal.fire('Netværks fejl', 'Fejl ved læsning fra netværk, er serveren startet?', 'error');
+      return;
+    }
+
+    Swal.fire(error.message, error.detail, 'error');
     wkf.value = [];
     state.isPlanRead = false;
   }
 }
 
-function clearPlanData() {
-  wkf.value = [];
-  state.isPlanRead = false;
-  missingList.value = [];
-}
+// Handle missing tasks / workflows
 const handleMissing = (list: Array<string>) => {
   console.log("handle missing list ", list);
   for (const element of list) {
     missingList.value.push(element);
   }
-
-  console.log(missingList.value);
 }
 
+// Handle param update, opdater task
 const handleParamUpdate = async (task: TaskItem) => {
   console.log("handle param update");
   const elem = document.getElementById("paramField");
@@ -131,19 +136,16 @@ const handleParamUpdate = async (task: TaskItem) => {
 
 onBeforeMount(async () => {
   console.log("PlanComponent mounted");
-  // Den her er ikke relevant for plan, den skal være true her for at knapperne vises.
+  // state.isWkfLoaded = true; er ikke relevant for plan, den skal være true i
+  // her for at Workflows og Plan knapperne vises.
   state.isWkfLoaded = true;
   state.isPlanRead = false;
   if (!state.isConfigLoaded) {
     config.init();
   }
   const response = await api.getParamList();
-  console.log("Get paramlist");
   if (response.ok) {
     taskList.value = await response.json();
-    // tempTaskList.forEach((item: TaskItem) => taskList.push(item));
-    console.log("Got tasklist 2", taskList);
-    console.log("Got tasklist ", taskList.value.length);
   }
 })
 
@@ -165,6 +167,11 @@ onBeforeMount(async () => {
 .parameter {
   max-width: 300px;
   border: 1px solid lightgray;
+  cursor: pointer;
+}
+
+.parameter:hover {
+  background-color: #ddd;
 }
 
 .popup {

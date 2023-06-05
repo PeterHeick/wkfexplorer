@@ -52,7 +52,7 @@ body {
 }
 
 #right-pane {
-  min-width: 200;
+  min-width: 250;
   border: 1px solid black;
   overflow-x: auto;
   overflow-y: auto;

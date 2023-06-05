@@ -74,6 +74,7 @@ export type Config = {
   environments: Environment;
   paramTimeout: number;
   localConfig: string;
+  editor: string;
 }
 
 export interface IuserConfig {

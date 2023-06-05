@@ -5,19 +5,12 @@ Funktions to communicate with UAC Universal Automation Center
 */
 
 import { readToken } from "./util";
-import { Config, Environment } from "./interfaces";
-import { read } from "fs";
+import { Environment } from "./interfaces";
 
-export async function readTask(cfg: Environment[string], task: string) {
+export async function readTask(cfg: Environment[string], task: string): Promise<Response> {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/task?taskname=${task}`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
 
   const options = {
     method: "GET",
@@ -37,13 +30,7 @@ export async function readTask(cfg: Environment[string], task: string) {
 export async function updateTask(cfg: Environment[string], body: any) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/task`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
 
   const options = {
     method: "PUT",
@@ -64,15 +51,9 @@ export async function updateTask(cfg: Environment[string], body: any) {
 export function fetchWorkflows(cfg: Environment[string], prefix: string) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const pattern = `${prefix}*`;
-  console.log(pattern);
+  console.log("fetcWorkflows");
   const url = `${baseUrl}/uc/resources/task/listadv?taskname=${pattern}&type=workflow`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
 
   // console.log(url);
   const options = {
@@ -86,20 +67,14 @@ export function fetchWorkflows(cfg: Environment[string], prefix: string) {
     }
   }
 
+  console.log("fetchWorkflows: return fetch");
   return fetch(url, options);
 }
-
 
 export async function deleteTask(cfg: Environment[string], task: string) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/task?taskname=${task}`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
 
   const options = {
     method: "DELETE",
@@ -118,19 +93,14 @@ export async function deleteTask(cfg: Environment[string], task: string) {
 
 };
 
-export async function createWorkflow(cfg: Environment[string], name: string) {
+export async function createWorkflow(cfg: Environment[string], name: string): Promise<Response> {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/task`
-  const token = readToken(cfg.token);
+  const token = readToken(cfg);
   console.log("createWorkflow", name);
 
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
   const response = await readTask(cfg, name);
+  // Findes i forvejen
   if (response.ok) {
     return response;
   }
@@ -164,13 +134,7 @@ export async function createWorkflow(cfg: Environment[string], name: string) {
 export async function add_task_to_workflow(cfg: Environment[string], task: string, workflow: string, x: number, y: number) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/workflow/vertices?workflowname=${workflow}`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
   console.log(`add_task ${task} to ${workflow}`);
 
   const body =
@@ -204,13 +168,7 @@ export async function add_task_to_workflow(cfg: Environment[string], task: strin
 export async function remove_task_from_workflow(cfg: Environment[string], task: string, workflow: string) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/workflow/vertices?workflowname=${workflow}`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
   console.log(`remove_task ${task} from ${workflow}`);
 
   const options = {
@@ -233,13 +191,7 @@ export async function remove_task_from_workflow(cfg: Environment[string], task: 
 export async function make_edge(cfg: Environment[string], workflow: string, source: number, destination: number) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/workflow/edges?workflowname=${workflow}`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
 
   const body = {
     straightEdge: true,
@@ -270,13 +222,7 @@ export async function make_edge(cfg: Environment[string], workflow: string, sour
 export async function readTriggerTask(cfg: Environment[string], trigger: string) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/trigger?triggername=${trigger}`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
 
   const options = {
     method: "GET",
@@ -297,13 +243,7 @@ export async function readTriggerTask(cfg: Environment[string], trigger: string)
 export async function createTrigger(cfg: Environment[string], data: any) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/trigger?triggername=${data.trigger}`
-  const token = readToken(cfg.token);
-  if (token === "") {
-    throw {
-      message: "Token ikke fundet",
-      detail: `For at ungå denne fejl skal der oprettes en token i H:\\uac\\${cfg.token}`
-    };
-  }
+  const token = readToken(cfg);
 
   const body = {
     type: "triggerTime",

@@ -52,6 +52,7 @@ export type ConfigType = {
   environments: Environment;
   paramTimeout: number;
   localConfig: string;
+  editor: string;
 }
 
 export type Environment = {

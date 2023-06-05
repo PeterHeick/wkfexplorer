@@ -1,4 +1,5 @@
 import { config } from '@/store/config';
+import Swal from 'sweetalert2';
 
 const baseUrl = `http://localhost:8080/api/`;
 const options = {
@@ -84,14 +85,6 @@ export const api = {
     const url = `listadv?uacenv=${env}`;
     options.method = "GET";
     return fetch(baseUrl + url, options)
-      .then((response) => response.json())
-      .then((data) => {
-        return data;
-      })
-      .catch((error) => {
-        console.log(error);
-        return [];
-      });
   },
 
   // Kaldes fra Toolbar
@@ -130,4 +123,27 @@ export const api = {
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },
+
+  startEditor(file: string) {
+    console.log("api.editor ", file);
+    const url = `editor/?fileName=${file}`;
+    options.method = "GET";
+    return fetch(baseUrl + url, options)
+  },
+
+  startExplorer(file: string) {
+    console.log("api.explorer ", file);
+    const url = `explorer/?dirName=${file}`;
+    options.method = "GET";
+    return fetch(baseUrl + url, options)
+  },
+
+  /*
+  delete(file: string) {
+    console.log("api.editor ", file);
+    const url = `delete/?fileName=${file}`;
+    options.method = "DELETE";
+    return fetch(baseUrl + url, options)
+  },
+  */
 }

@@ -88,7 +88,7 @@
             <span id="isc_7HY" style="display: inline-block" class="formTitle" align="left"><label id="isc_7I0"
                 for="isc_7HZ">Parameters</label></span><br />
             <div v-show="show" class="popup">Opdateret</div>
-            <div style="display: flex; align: center">
+            <div style="display: flex; align: center ">
               <input type="TEXT" name="credentials" id="paramField" autocomplete="OFF" class="uc-field"
                 style="width: 262px; height: 16px; width: 423px; height: 40px" tabindex="3325" ref="paramField"
                 @keyup.enter="updateParameters" v-model="parameters" />
@@ -164,6 +164,10 @@ watchEffect(() => {
 </script>
 
 <style>
+#paramField:hover {
+  background-color: #ddd;
+  cursor: pointer;
+}
 .popup {
   opacity: 1;
   transition: opacity 2s linear;

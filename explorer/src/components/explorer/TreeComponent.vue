@@ -10,7 +10,7 @@
         </TreeComponent>
       </div>
       <div v-else-if="node.type === 'taskUnix'">
-        <span @click="handleTaskClick(node)" style="cursor: 'pointer'" > {{ node.name }}</span>
+        <span @click="handleTaskClick(node)" style="cursor: pointer" > {{ node.name }}</span>
       </div>
     </li>
   </ul>

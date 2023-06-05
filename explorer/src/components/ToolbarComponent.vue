@@ -1,31 +1,33 @@
 <template>
-  <div class="dropdown">
-    <button :disabled="disable" @click="toggleDropdown" class="dropbtn">{{ selectedItem }}</button>
-    <div v-show="isDropdownVisible" class="dropdown-content">
-      <a v-for="(env, index) in environmentList" :key="index" href="#" @click="
-        $emit('envEvent', env);
-      selectedItem = env;
-      isDropdownVisible = false;
-      ">{{ env }}</a>
+  <div class="toolbar">
+    <div v-show="type === 'plan'" class="planButtons">
+      <ButtonComponent :disable="state.planDeleted || !state.isPlanRead" @buttonClicked="handleDelete">
+        Slet fra UAC
+      </ButtonComponent>
+      <ButtonComponent :disable="!state.isPlanRead" @buttonClicked="handleUpdate">
+        Flyt til UAC
+      </ButtonComponent>
+      <div v-if="updateProgress > 0" style="font-weight: bold; padding-right: 10px">
+        {{ updateProgress.toFixed(0) }} pct
+      </div>
     </div>
-  </div>
-
-  <div v-show="type === 'plan'" style="display: flex; align: center">
-    <div v-if="updateProgress > 0" style="font-weight: bold; padding-right: 10px">
-      {{ updateProgress.toFixed(0) }} pct
+    <div class="dropdown">
+      <button :disabled="disable" @click="toggleDropdown" class="dropbtn">{{ selectedItem }}</button>
+      <div v-show="isDropdownVisible" class="dropdown-content">
+        <a v-for="(env, index) in environmentList" :key="index" href="#" @click="
+          $emit('envEvent', env);
+        selectedItem = env;
+        isDropdownVisible = false;">
+          {{ env }}
+        </a>
+      </div>
     </div>
-    <ButtonComponent :disable="state.planDeleted || !state.isPlanRead" @buttonClicked="handleDelete">Delete</ButtonComponent>
-    <ButtonComponent :disable="!state.isPlanRead" @buttonClicked="handleUpdate">Update</ButtonComponent>
-    <!--
-    <FilePickComponent @planRead="handlePlanRead"></FilePickComponent>
-    -->
   </div>
 </template>
 
 <script lang="ts" setup>
 import { config } from "@/store/config";
 import { computed, defineProps, defineEmits, onBeforeMount, onUnmounted, ref, toRef } from "vue";
-import FilePickComponent from "./FilePickComponent.vue";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import { api } from "@/api/api";
 import Swal from "sweetalert2";
@@ -50,11 +52,13 @@ const toggleDropdown = () => {
   isDropdownVisible.value = !isDropdownVisible.value;
 };
 
+/*
 const handlePlanRead = (plan: string) => {
   console.log("Toolbar handlePlanRead", plan);
   state.planDeleted = false;
   emit("planRead", plan);
 };
+*/
 
 const handleDelete = async () => {
   console.log("handleDelete");
@@ -75,11 +79,12 @@ const handleUpdate = async () => {
   updateProgress.value = 0;
   state.planUpdateInProgress = true;
   startProgressCounter();
+
   const response = await api.updatePlan();
   const data = await response.json();
-  console.log(response);
-  console.log(data);
+
   if (!response.ok) {
+    console.log(response);
     Swal.fire(data.message, data.detail, 'error');
     clearInterval(intervalId);
     return;
@@ -90,6 +95,7 @@ const handleUpdate = async () => {
   state.planUpdateInProgress = false;
   clearInterval(intervalId);
   updateProgress.value = 0;
+  Swal.fire('Plan opdateret', '', 'success');
 };
 
 const startProgressCounter = async () => {
@@ -106,7 +112,7 @@ const startProgressCounter = async () => {
       updateProgress.value = 100;
       clearInterval(intervalId);
     }
-  }, 1000); 
+  }, 1000);
 };
 
 onUnmounted(() => {
@@ -121,16 +127,13 @@ onBeforeMount(() => {
 
 <style>
 .toolbar {
+  position: relative;
   display: flex;
   padding-top: 2px;
-  height: 25;
-  width: 100%;
-  border: 0px;
+  height: 25px;
   cursor: default;
   background-color: white;
-  vertical-align: center;
   margin: 0px;
-  justify-content: space-between;
   border-bottom: 1px solid #ccc;
   align-items: center;
 }
@@ -139,9 +142,16 @@ onBeforeMount(() => {
   width: 90px;
 }
 
+.planButtons {
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  min-width: 150px;
+}
+
 .dropdown {
-  position: relative;
-  padding: 2px 5px 4px 43px;
+  position: absolute;
+  left: 400px;
   display: inline-block;
 }
 
@@ -154,14 +164,15 @@ onBeforeMount(() => {
   border-radius: 4px;
   border: 1px solid #999;
   cursor: pointer;
-  align-items: center;
   font-size: 14px;
 }
 
 .dropdown-content {
   position: absolute;
   z-index: 1;
-  min-width: 60px;
+  top: 100%;
+  left: 0;
+  width: 60px;
   font-size: 14px;
   border: none;
   background-color: #f2f2f2;
@@ -186,16 +197,5 @@ onBeforeMount(() => {
 
 .dropdown:hover .dropbtn {
   background-color: #ddd;
-}
-
-.dropdown::after {
-  content: "\25BC";
-  /* pil-ned tegn */
-  font-size: 16px;
-  color: #000;
-  top: 0;
-  right: 0;
-  padding: 12px 12px 12px 1px;
-  pointer-events: none;
 }
 </style>

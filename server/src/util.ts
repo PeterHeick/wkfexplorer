@@ -6,15 +6,27 @@ var id = 0;
 let counter: INumberDictionary = {};
 //let envTable: IStringDictionary = {};
 
-export function readToken(file: string) {
+export function readToken(cfg: Environment[string]) {
   try {
     const homeDir = homedir();
-    const filePath = file.replace(/^~(?=$|\/|\\)/, homeDir);
+    const filePath = cfg.token.replace(/^~(?=$|\/|\\)/, homeDir);
     return readFileSync(filePath, "utf-8");
 
-  } catch (e) {
-    console.error(e);
-    return "";
+  } catch (e: any) {
+    if (e.code === 'ENOENT') {
+      throw {
+        message: "Token ikke fundet",
+        detail: `For at ungå denne fejl skal der oprettes en token: ${cfg.token}`,
+        status: 404
+      };
+    } else {
+      throw {
+        message: "Fejl ved læsning af token",
+        detail: `e.message ${cfg.token}`,
+        status: 500
+      };
+
+    }
   }
 }
 
@@ -30,7 +42,7 @@ export function getWkfByName(workflowSet: WorkflowNode[], name: string): Workflo
 export function getParm(request: any, parm: string) {
   let p = "";
   p = request.query[parm];
-  // console.log("getParm: ", p);
+  console.log("getParm: ", p);
   return p;
 }
 // kaldt fra api/plan og api/listadv
@@ -131,7 +143,7 @@ export function deepMerge4(target: any, source: any) {
       }
     }
   }
-  
+
   return output;
 }
 

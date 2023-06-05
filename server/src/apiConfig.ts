@@ -22,7 +22,6 @@ function readConfig() {
       json = readFileSync(config.localConfig, "utf-8");
       const localConfig = JSON.parse(json);
       deepMerge(config, localConfig);
-      console.log("read local config ", localConfig);
     } catch (e: any) {
       console.log("Kan ikke læse local json ", e, e.message);
       if (e.code !== "ENOENT") {
@@ -39,11 +38,12 @@ function readConfig() {
       detail: e.message,
     };
   }
-  console.log("read config ", config);
 }
 
 export function checkConfig() {
-  if (!(Object.keys(config).length === 0)) {
+  console.log("checkConfig: ", config);
+  console.log(Object.keys(config).length);
+  if (!config || (Object.keys(config).length === 0)) {
     readConfig();
   }
 }

@@ -1,10 +1,11 @@
 import express, { Request, Response } from 'express';
-import { createReadStream, readFileSync, writeFileSync } from "fs";
+import { createReadStream, existsSync, readFileSync, unlinkSync, writeFileSync } from "fs";
 import * as readline from 'readline';
 import { createWorkflow, add_task_to_workflow, make_edge, deleteTask, remove_task_from_workflow } from "./uacApi";
 import { handleData, sortPlan, getParm, getWkfByName } from "./util";
 import { checkConfig, config } from "./apiConfig";
 import { Environment, WorkflowNode } from './interfaces';
+import { spawn } from 'child_process';
 
 export function apiPlan(app: express.Application) {
   let numberOfNodes = 0;
@@ -28,7 +29,7 @@ export function apiPlan(app: express.Application) {
       return;
     }
 
-    const planDir = config.environments[env].planDir;
+    // const planDir = config.environments[env].planDir;
 
     readFileAndParseWorkflow(`${plan}`)
       .then((obj: any) => {
@@ -49,11 +50,11 @@ export function apiPlan(app: express.Application) {
           res.status(200).json({ ok: true, wkf: sorted });
         }
       })
-      .catch(() => {
-        console.log('Plan ikke fundet ', plan, planDir);
+      .catch((err: any) => {
+        console.log('Plan ikke fundet ', plan, err);
         res.status(404).json({
           message: "Plan ikke fundet",
-          detail: `Plan ${plan} blev ikke fundet planen skal ligge i ${planDir}`,
+          detail: `Plan ${plan} blev ikke fundet`,
           status: 404,
           ok: false
         });
@@ -77,7 +78,7 @@ export function apiPlan(app: express.Application) {
         return;
       } catch (error: any) {
         console.log("Delete fejlet", error);
-        res.status(error.status).json(error);
+        res.status(error.status || 500).json(error);
         return;
       }
     }
@@ -112,10 +113,17 @@ export function apiPlan(app: express.Application) {
       try {
         await deletePlan(cfg, workflows, topLevelNames.reverse());
         // Gem plan, så vi kan slette den næste gang.
-        writeFileSync(`data/${env}_plan.json`, JSON.stringify(topLevelNames));
+        try {
+          writeFileSync(`data/${env}_plan.json`, JSON.stringify(topLevelNames));
+        } catch (e: any) {
+          res.status(500).json({
+            message: "Fejl ved skrivning af plan",
+            detail: `Fejl ved skrivning af data/${env}_plan.json, ${e.code}`
+          });
+        }
       } catch (error: any) {
         console.log("Delete fejlet", error);
-        res.status(error.status).json(error);
+        res.status(error.status || 500).json(error);
         return;
       }
     }
@@ -125,7 +133,13 @@ export function apiPlan(app: express.Application) {
     let wkfName = "";
     for (const wkf of topLevelNames.reverse()) {
       wkfName = `${cfg.prefix}_${wkf}_wkf`;
-      const wkfResponse = await createWorkflow(cfg, wkfName)
+      let wkfResponse;
+      try {
+        wkfResponse = await createWorkflow(cfg, wkfName)
+      } catch (error: any) {
+        res.status(error.status).json(error);
+        return;
+      }
       if (!wkfResponse.ok) {
         console.log(wkfResponse);
         console.log("createTask failed");
@@ -157,28 +171,32 @@ export function apiPlan(app: express.Application) {
           numberOfNodesProcessed++;
           const wkfTask = `${cfg.prefix}_${vertice.task.value}_wkf`;
 
-          const response = await add_task_to_workflow(cfg, wkfTask, wkfName, x, y);
-          if (!response.ok) {
-            if (response.status === 400) {
-              console.error(`task missing:  ${wkfTask}`)
-              status.missing.add(wkfTask)
-              continue;
+          try {
+            const response = await add_task_to_workflow(cfg, wkfTask, wkfName, x, y);
+            if (!response.ok) {
+              if (response.status === 400) {
+                console.error(`task missing:  ${wkfTask}`)
+                status.missing.add(wkfTask)
+                continue;
+              }
+              if (response.status === 404) {
+                console.error(`task missing:  ${wkfName}`)
+                status.missing.add(wkfName)
+                continue;
+              }
+              console.log("add task to workflow failed ", response.status, response);
+              res.status(response.status).json({
+                message: 'Tilføj task fejlet',
+                detail: `Tilføj ${wkfTask} til ${wkfName} fejlet: ${response.statusText}`
+              });
+              return;
+            } else {
+              const vertex = await response.json();
+              // console.log("vertex ", vertex);
+              destId = vertex.vertexId;
             }
-            if (response.status === 404) {
-              console.error(`task missing:  ${wkfName}`)
-              status.missing.add(wkfName)
-              continue;
-            }
-            console.log("add task to workflow failed ", response.status, response);
-            res.status(response.status).json({
-              message: 'Tilføj task fejlet',
-              detail: `Tilføj ${wkfTask} til ${wkfName} fejlet: ${response.statusText}`
-            });
-            return;
-          } else {
-            const vertex = await response.json();
-            // console.log("vertex ", vertex);
-            destId = vertex.vertexId;
+          } catch (error: any) {
+            res.status(error.status).json(error);
           }
 
           // console.log("destId ", destId);
@@ -213,6 +231,42 @@ export function apiPlan(app: express.Application) {
     }
     res.status(201).json(returnStatus);
   })
+
+  app.get("/api/editor", (req: any, res: any) => {
+    console.log('\n--- /api/editor');
+    const fileName = getParm(req, 'fileName');
+
+    if (!existsSync(fileName)) {
+      writeFileSync(fileName, '', 'utf8');
+    }
+    spawn(config.editor, [fileName], { detached: true, stdio: 'ignore' });
+    res.status(201).json({});
+  })
+
+
+  app.get("/api/explorer", (req: any, res: any) => {
+    console.log('\n--- /api/explorer');
+    const dirName = getParm(req, 'dirName');
+
+    spawn('explorer', [dirName], { detached: true, stdio: 'ignore' });
+    res.status(201).json({});
+  })
+
+  app.get("/api/delete", (req: any, res: any) => {
+    console.log('\n--- /api/delete');
+    const fileName = getParm(req, 'fileName');
+
+    try {
+      unlinkSync('path_to_your_file');
+      console.log('File deleted successfully');
+      res.status(200).json({});
+      return;
+    } catch (err) {
+      console.error('There was an error:', err);
+      res.status(403).json({ "message": "Fejl ved sletning", "details": err });
+      return;
+    }
+  })
 }
 
 const deleteOldPlan = async (cfg: Environment[string], env: string, workflows: WorkflowNode[]) => {
@@ -220,21 +274,23 @@ const deleteOldPlan = async (cfg: Environment[string], env: string, workflows: W
   try {
     curWorkflows = JSON.parse(readFileSync(`data/${env}_plan.json`, 'utf-8'));
     console.log("Delete current plan ", curWorkflows);
-    await deletePlan(cfg, workflows, curWorkflows);
+    try {
+      await deletePlan(cfg, workflows, curWorkflows);
+    } catch (error) {
+      throw error;
+    }
   } catch (err: any) {
-    console.log(`Current plan data/${env}_plan.json findes ikke ${err.message}`);
+    throw {
+      message: "Fejl ved læsning af plan",
+      detail: `Current plan data/${env}_plan.json findes ikke ${err.message}`,
+    }
   }
 }
 
 async function deletePlan(cfg: Environment[string], workflows: WorkflowNode[], sortedPlan: string[]): Promise<void> {
   for (const name of sortedPlan) {
-    try {
-      const wf = getWkfByName(workflows, name);
-      await deleteNode(cfg, wf);
-    } catch (error: any) {
-      console.log("Delete plan fejlet", error);
-      throw error;
-    }
+    const wf = getWkfByName(workflows, name);
+    await deleteNode(cfg, wf);
   }
 }
 
@@ -259,7 +315,8 @@ async function deleteNode(cfg: Environment[string], node: WorkflowNode): Promise
           console.log("remove task from workflow failed ", rmResponse.status, rmResponse);
           throw {
             message: 'Fjern task fejlet',
-            detail: `Fjern ${itemName} fra ${name} fejlet: ${rmResponse.statusText}`
+            detail: `Fjern ${itemName} fra ${name} fejlet: ${rmResponse.statusText}`,
+            status: 403
           };
         }
       }
@@ -268,7 +325,8 @@ async function deleteNode(cfg: Environment[string], node: WorkflowNode): Promise
   }
   throw {
     message: 'Delete task fejlet',
-    detail: `Sletning af ${name} fejlet: ${response.statusText}`
+    detail: `Sletning af ${name} fejlet: ${response.statusText}`,
+    status: 500
   };
 }
 
@@ -278,7 +336,7 @@ interface WorkflowResult {
   ok: boolean;
 }
 
-export default async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResult> {
+async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResult> {
   const fileStream = createReadStream(filePath, { encoding: 'utf-8' });
 
   // console.log('readFileAndParseWorkflow ', filePath);

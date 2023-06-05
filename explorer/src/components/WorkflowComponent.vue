@@ -3,7 +3,7 @@
     <div class="header">
       <HeaderComponent>Workflow explorer</HeaderComponent>
     </div>
-    <div class="toolbar">
+    <div>
       <ToolbarComponent @envEvent="handleEnvEvent" type="workflow"></ToolbarComponent>
     </div>
     <div id="container">
@@ -15,7 +15,8 @@
           <span class="spinner" />
         </div>
 
-        <TreeComponent v-if="state.isWkfLoaded" :treeData="wkf" @currentNodeEvent="handleCurrentNodeEvent"></TreeComponent>
+        <TreeComponent v-if="state.isWkfLoaded" :treeData="wkf" @currentNodeEvent="handleCurrentNodeEvent">
+        </TreeComponent>
       </div>
       <div id="middle">
         <TaskComponent v-if="nodeName != ''" :nodeName="nodeName"></TaskComponent>
@@ -35,6 +36,7 @@ import { TreeNode } from "@/types/interfaces";
 import { api } from "@/api/api";
 import { config } from "@/store/config";
 import { state } from "@/store/state";
+import Swal from "sweetalert2";
 
 let wkf = ref([] as TreeNode[]);
 const nodeName = ref("");
@@ -50,26 +52,26 @@ const handleCurrentNodeEvent = (name: string) => {
   nodeName.value = name;
 };
 
-const update = () => {
+const update = async () => {
   state.isWkfLoaded = false;
-  api
-    .getAllWorkflows()
-    .then((data: TreeNode[]) => {
-      wkf.value = data;
-      state.isWkfLoaded = true;
-      console.log(wkf.value);
-      console.log(
-        "workflowComponent.update() done length of data ",
-        wkf.value.length
-      );
-      console.log("isLoaded ", state.isWkfLoaded);
-    })
-    .catch((error) => {
-      console.log("catch ", error);
-      state.isWkfLoaded = true;
-      wkf.value = [];
-    });
+  const response = await api.getAllWorkflows();
+  const data = await response.json();
+  if (!response.ok) {
+    Swal.fire(data.message, data.detail, 'error');
+    state.isWkfLoaded = true;
+    wkf.value = [];
+    return;
+  }
+  wkf.value = data;
+  state.isWkfLoaded = true;
+  console.log(wkf.value);
+  console.log(
+    "workflowComponent.update() done length of data ",
+    wkf.value.length
+  );
+  console.log("isLoaded ", state.isWkfLoaded);
 };
+
 onMounted(() => {
   console.log("WorkflowComponent");
   if (!state.isConfigLoaded) {

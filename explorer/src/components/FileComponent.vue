@@ -1,8 +1,8 @@
 <template>
   <div class="file-explorer" style="padding-right: 10px;">
-    <span style="padding: 20px; font-weight: bold;">{{ directory }}</span>
+    <span @click="openFileExplorer" class="dirHeader">{{ directory }}</span>
     <ul>
-      <file-item v-for="item in items" :key="item.name" :item="item"  @file-clicked="emitFileClicked"/>
+      <file-item v-for="item in items" :key="item.name" :item="item" @file-clicked="emitFileClicked" />
     </ul>
   </div>
 </template>
@@ -37,6 +37,10 @@ async function fetchData(directoryPath: string) {
   }
 }
 
+const openFileExplorer = () => {
+  api.startExplorer(directory.value);
+}
+
 const emitFileClicked = (fileName: string) => {
   emit('planRead', fileName);
 }
@@ -62,6 +66,18 @@ onMounted(() => {
 });
 
 function watchEffect(arg0: () => void) {
-throw new Error('Function not implemented.');
+  throw new Error('Function not implemented.');
 }
 </script>
+
+<style>
+.dirHeader {
+  padding: 20px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.dirHeader:hover {
+  background-color: #ddd;
+}
+</style>
