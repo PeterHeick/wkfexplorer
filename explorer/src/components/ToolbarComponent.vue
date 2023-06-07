@@ -1,7 +1,7 @@
 <template>
   <div class="toolbar">
     <div v-show="type === 'plan'" class="planButtons">
-      <ButtonComponent :disable="state.planDeleted || !state.isPlanRead" @buttonClicked="handleDelete">
+      <ButtonComponent :disable="state.planDelete || !state.isPlanRead" @buttonClicked="handleDelete">
         Slet fra UAC
       </ButtonComponent>
       <ButtonComponent :disable="!state.isPlanRead" @buttonClicked="handleUpdate">
@@ -55,23 +55,24 @@ const toggleDropdown = () => {
 /*
 const handlePlanRead = (plan: string) => {
   console.log("Toolbar handlePlanRead", plan);
-  state.planDeleted = false;
+  state.planDelete = false;
   emit("planRead", plan);
 };
 */
 
 const handleDelete = async () => {
   console.log("handleDelete");
-  state.planDeleted = true;
+  state.planDelete = true;
   const response = await api.deletePlan();
   console.log("delete plan, ", response)
   if (!response.ok) {
     console.log(response);
-    Swal.fire("delete fejlet", "To be defined", 'error');
+    Swal.fire("delete fejlet", "", 'error');
     clearInterval(intervalId);
     return;
   }
   Swal.fire("Plan slettet", "", 'success');
+  state.planDelete = false;
 }
 
 const handleUpdate = async () => {

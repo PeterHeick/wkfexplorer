@@ -190,9 +190,18 @@ export default function apiTask(app: express.Application) {
           message: "Fejl ved indlæsning af workflows",
           detail
         });
-        return
+        return;
       };
       const data = await response.json();
+      console.log(data);
+      console.log(data.length);
+      if (data.length === 0) {
+        res.status(404).json({
+          message: "Ingen workflows",
+          detail: `Der findes ingen workflows i ${env}`
+        });
+        return;
+      }
       const sorted = handleData(data);
       res.status(200).json(sorted);
     } catch (error: any) {

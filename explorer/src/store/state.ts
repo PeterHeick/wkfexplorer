@@ -6,5 +6,5 @@ export const state = reactive({
   // isPlanLoaded: true,
   isPlanRead: true,           // 
   planUpdateInProgress: false,
-  planDeleted: false
+  planDelete: false
 })

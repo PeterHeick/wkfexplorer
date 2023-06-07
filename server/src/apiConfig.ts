@@ -41,7 +41,7 @@ function readConfig() {
 }
 
 export function checkConfig() {
-  console.log("checkConfig: ", config);
+  console.log("checkConfig: ");
   console.log(Object.keys(config).length);
   if (!config || (Object.keys(config).length === 0)) {
     readConfig();

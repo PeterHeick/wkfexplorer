@@ -105,7 +105,13 @@ export function apiPlan(app: express.Application) {
     // Slet gammel plan først, hvis der laves om på planen, ligger der muligvis
     // nogle workflows som ikke længere er i brug, derfor slettes først den game plan.
 
-    await deleteOldPlan(cfg, env, workflows);
+    await deleteOldPlan(cfg, env, workflows)
+    .catch((error) => {
+        console.log("Delete Old plan fejlet", error);
+        console.log(error);
+        //  res.status(error.status || 500).json(error);
+        //  console.log("før return");
+    })
 
     const topLevelNames: string[] = sortPlan(workflows);
 
@@ -272,6 +278,7 @@ export function apiPlan(app: express.Application) {
 const deleteOldPlan = async (cfg: Environment[string], env: string, workflows: WorkflowNode[]) => {
   let curWorkflows = [];
   try {
+    console.log(`deleteOldPlan: data/${env}_plan.json`);
     curWorkflows = JSON.parse(readFileSync(`data/${env}_plan.json`, 'utf-8'));
     console.log("Delete current plan ", curWorkflows);
     try {
