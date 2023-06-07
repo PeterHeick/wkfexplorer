@@ -18,3 +18,4 @@ server/Root
 tasks.json
 workflows.json
 deployment
+explorer/graph.svg
