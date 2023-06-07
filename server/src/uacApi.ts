@@ -48,9 +48,9 @@ export async function updateTask(cfg: Environment[string], body: any) {
   return await fetch(url, options);
 };
 
-export function fetchWorkflows(cfg: Environment[string], prefix: string) {
+export async function fetchWorkflows(cfg: Environment[string], prefix: string) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
-  const pattern = `${prefix}*`;
+  const pattern = `${prefix}_*`;
   console.log("fetcWorkflows");
   const url = `${baseUrl}/uc/resources/task/listadv?taskname=${pattern}&type=workflow`
   const token = readToken(cfg);
