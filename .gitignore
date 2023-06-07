@@ -6,6 +6,7 @@ vue-tips-og-triks.txt
 xxx
 setup
 server/dist/src/
+server/dist/server.js
 server/workflow.json
 server/docRoot
 explorer/package-lock.json
@@ -16,4 +17,4 @@ all.workflows.json
 server/Root
 tasks.json
 workflows.json
-
+deployment
