@@ -52,7 +52,6 @@ export function apiConfig(app: express.Application) {
   app.get("/api/config", (req: any, res: any) => {
     console.log('\n--- /api/config');
 
-    //if (Object.keys(config).length > 0 || readConfig(res)) {
     try {
       readConfig();
       res.status(200).json(config);

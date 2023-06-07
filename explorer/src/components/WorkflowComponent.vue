@@ -43,6 +43,7 @@ const nodeName = ref("");
 
 const handleEnvEvent = (env: string) => {
   console.log("Skift environment til: ", env);
+  config.loadConfig();
   config.setEnv(env);
   update();
 };

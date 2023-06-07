@@ -45,6 +45,7 @@ export const config =  {
   },
 
   loadConfig: async function() {
+    console.log("config.loadConfig()");
     try {
       const response = await api.getConfig();
       const data = await response.json();
@@ -66,9 +67,7 @@ export const config =  {
 
     try {
       const response = await api.getConfig();
-      // console.log(response);
       const data = await response.json();
-
       if (!response.ok) {
         Swal.fire(data.message, data.detail, 'error');
       } else {
@@ -77,8 +76,9 @@ export const config =  {
         console.log("api.getConfigData length: ", Object.keys(data.environments).length);
         console.log("config: default UACENV: ", this.uacenv.value);
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error("Fejl under anmodning:", error);
+      Swal.fire("Load af config fejlet", error.status, 'error');
     }
   }
 }

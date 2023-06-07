@@ -143,7 +143,11 @@ export default function apiTask(app: express.Application) {
           }
           taskList.push(paramObj);
         } else {
-          console.log("response: ", response);
+          if (response.status === 404) {
+            console.log(`task i paramlist: ${obj.task} er i mellemtiden blevet slettet, ikke noget problem`);
+          } else {
+            console.log("response: ", response);
+          }
         }
       } catch (error: any) {
         res.status(error.status || 500).json(error);

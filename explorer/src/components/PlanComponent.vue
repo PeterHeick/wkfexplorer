@@ -70,6 +70,7 @@ const show = ref(false);
 
 const handleEnvEvent = async (env: string) => {
   console.log("PlanComponent handleEvent env: ", env);
+  config.loadConfig();
   config.getEnv();
   config.uacenv.value = env;
   //config.setEnv(env);
