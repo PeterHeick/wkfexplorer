@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { createReadStream, existsSync, readFileSync, unlinkSync, writeFileSync } from "fs";
+import { createReadStream, existsSync, mkdir, readFileSync, unlinkSync, writeFileSync } from "fs";
 import * as readline from 'readline';
 import { createWorkflow, add_task_to_workflow, make_edge, deleteTask, remove_task_from_workflow } from "./uacApi";
 import { handleData, sortPlan, getParm, getWkfByName } from "./util";
@@ -106,12 +106,12 @@ export function apiPlan(app: express.Application) {
     // nogle workflows som ikke længere er i brug, derfor slettes først den game plan.
 
     await deleteOldPlan(cfg, env, workflows)
-    .catch((error) => {
+      .catch((error) => {
         console.log("Delete Old plan fejlet", error);
         console.log(error);
         //  res.status(error.status || 500).json(error);
         //  console.log("før return");
-    })
+      })
 
     const topLevelNames: string[] = sortPlan(workflows);
 
@@ -122,10 +122,17 @@ export function apiPlan(app: express.Application) {
         try {
           writeFileSync(`data/${env}_plan.json`, JSON.stringify(topLevelNames));
         } catch (e: any) {
-          res.status(500).json({
-            message: "Fejl ved skrivning af plan",
-            detail: `Fejl ved skrivning af data/${env}_plan.json, ${e.code}`
+          mkdir("data", (err) => {
+            console.error("Fejl ved oprettelse af 'data'")
           });
+          try {
+            writeFileSync(`data/${env}_plan.json`, JSON.stringify(topLevelNames));
+          } catch (e: any) {
+            res.status(500).json({
+              message: "Fejl ved skrivning af plan",
+              detail: `Fejl ved skrivning af data/${env}_plan.json, ${e.code}`
+            });
+          }
         }
       } catch (error: any) {
         console.log("Delete fejlet", error);
@@ -371,14 +378,16 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
       continue;
     }
 
+    console.log(taskLine);
     let groupName = "";
-    let matched = taskLine.match(/^(.+):$/);
+    let matched = taskLine.match(/^([\wæøåÆØÅ]+):$/);
     if (matched) {
       groupName = matched[1];
     }
+    console.log("groupName ", groupName);
 
-    const groupMember = taskLine.match(/^(\w+)$/);
-
+    const groupMember = taskLine.match(/^([\wæøåÆØÅ]+)$/);
+    console.log("groupMember ", groupMember);
     const test = groupName || groupMember;
     if (!test) {
       return ({ workflowItems: {} as WorkflowNode[], count: lineNumber, ok: false })
