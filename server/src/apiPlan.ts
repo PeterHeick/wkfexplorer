@@ -1,10 +1,10 @@
 import express, { Request, Response } from 'express';
 import { createReadStream, existsSync, mkdir, readFileSync, unlinkSync, writeFileSync } from "fs";
 import * as readline from 'readline';
-import { createWorkflow, add_task_to_workflow, make_edge, deleteTask, remove_task_from_workflow } from "./uacApi";
+import { createWorkflow, add_task_to_workflow, make_edge, deleteTask, remove_task_from_workflow, list_vertices } from "./uacApi";
 import { handleData, sortPlan, getParm, getWkfByName } from "./util";
 import { checkConfig, config } from "./apiConfig";
-import { Environment, WorkflowNode } from './interfaces';
+import { Environment, Ivertice, WorkflowNode } from './interfaces';
 import { spawn } from 'child_process';
 
 export function apiPlan(app: express.Application) {
@@ -86,11 +86,16 @@ export function apiPlan(app: express.Application) {
   });
 
   // Make new workflow
+  interface Istatus {
+      missing: Set<string>;
+      text: "status";
+  }
+
   app.put("/api/plan", async (req: Request, res: Response) => {
     console.log("\n-- put api/plan");
     const env = getParm(req, 'uacenv');
     const cfg = config.environments[env];
-    const status = {
+    const status: Istatus = {
       missing: new Set<string>(),
       text: "status"
     };
@@ -109,8 +114,7 @@ export function apiPlan(app: express.Application) {
       .catch((error) => {
         console.log("Delete Old plan fejlet", error);
         console.log(error);
-        //  res.status(error.status || 500).json(error);
-        //  console.log("før return");
+        // Det gør ikke noget at den gamle plan ikke kan slettes
       })
 
     const topLevelNames: string[] = sortPlan(workflows);
@@ -141,8 +145,22 @@ export function apiPlan(app: express.Application) {
       }
     }
 
+    await createNewPlan(res, cfg, topLevelNames, status);
+
+    console.log("Created");
+    console.log("status ", status);
+    // writeFileSync(`data/${env}_missing.json`, JSON.stringify(Array.from(status.missing)));
+    const returnStatus = {
+      missing: Array.from(status.missing),
+      text: "status"
+    }
+    res.status(201).json(returnStatus);
+  })
+
+  async function createNewPlan(res: Response, cfg: Environment[string], topLevelNames: string[], status: Istatus) {
     // Opret ny plan
     numberOfNodesProcessed = 0;
+    let vertexMap: { [key: string]: number } = {};
     let wkfName = "";
     for (const wkf of topLevelNames.reverse()) {
       wkfName = `${cfg.prefix}_${wkf}_wkf`;
@@ -207,26 +225,51 @@ export function apiPlan(app: express.Application) {
               const vertex = await response.json();
               // console.log("vertex ", vertex);
               destId = vertex.vertexId;
+              vertexMap[wkfTask] = destId;
             }
           } catch (error: any) {
             res.status(error.status).json(error);
           }
 
           // console.log("destId ", destId);
-          if (!firstNode) {
-            const response = await make_edge(cfg, wkfName, sourceId, destId);
-            if (!response.ok) {
-              console.log("make edge add task failed ", response.statusText, response.status);
-              res.status(response.status).json({
+          if (vertice.dependant) {
+            const depTask = `${cfg.prefix}_${vertice.dependant}_wkf`;
+            let sId = destId;
+            let dId = vertexMap[depTask];
+            if (!dId) {
+              res.status(400).json({
+                message: `Connection mellem ${wkfTask} og ${depTask} fejlede`,
+                detail: `${depTask} findes ikke, den skal angives i workflow inden ${wkfTask}`
+              });
+            }
+            const resp = await make_edge(cfg, wkfName, sId, dId);
+            if (!resp.ok) {
+              console.log("make edge add task failed ", resp.statusText, resp.status);
+              res.status(resp.status).json({
                 message: 'Tilføj afhængighed fejlet',
-                detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${response.statusText}`
+                detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${resp.statusText}`
               });
               return;
             }
+            x = x + vstepX;
+            y = vstart;
+
+          } else {
+            if (!firstNode) {
+              const response = await make_edge(cfg, wkfName, sourceId, destId);
+              if (!response.ok) {
+                console.log("make edge add task failed ", response.statusText, response.status);
+                res.status(response.status).json({
+                  message: 'Tilføj afhængighed fejlet',
+                  detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${response.statusText}`
+                });
+                return;
+              }
+            }
+            sourceId = destId;
+            firstNode = false;
+            oldWkfTask = wkfTask;
           }
-          sourceId = destId;
-          firstNode = false;
-          oldWkfTask = wkfTask;
           x = x + vstepX;
           if (x > vmax) {
             x = vstart;
@@ -235,15 +278,7 @@ export function apiPlan(app: express.Application) {
         }
       }
     }
-    console.log("Created");
-    console.log("status ", status);
-    // writeFileSync(`data/${env}_missing.json`, JSON.stringify(Array.from(status.missing)));
-    const returnStatus = {
-      missing: Array.from(status.missing),
-      text: "status"
-    }
-    res.status(201).json(returnStatus);
-  })
+  }
 
   app.get("/api/editor", (req: any, res: any) => {
     console.log('\n--- /api/editor');
@@ -372,7 +407,8 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
     }
     // console.log(line);
 
-    const taskLine = line.split('#')[0].trim();
+    let taskLine = line.split('#')[0].trim();
+    let dependant = ""
 
     if (taskLine.trim().length === 0) {
       continue;
@@ -388,10 +424,18 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
 
     const groupMember = taskLine.match(/^([\wæøåÆØÅ]+)$/);
     console.log("groupMember ", groupMember);
-    const test = groupName || groupMember;
+
+    const groupMemberAlt = taskLine.match(/^([\wæøåÆØÅ]+).*-> *([\wæøåÆØÅ]+)$/);
+    if (groupMemberAlt) {
+      taskLine = taskLine.split('>')[0].trim();
+      dependant = taskLine.split('>')[1].trim();
+    }
+
+    const test = groupName || groupMember || groupMemberAlt;
     if (!test) {
       return ({ workflowItems: {} as WorkflowNode[], count: lineNumber, ok: false })
     }
+
 
     count++;
     if (groupName) {
@@ -408,8 +452,9 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
     } else if (currentWorkflowItem) {
       const item = {
         task: {
-          value: taskLine.trim(),
-        }
+          value: taskLine      // her stod .trim() før, men burde være overflødig
+        },
+        dependant
       };
       // console.log("item: ",item);
       if (item && currentWorkflowItem.workflowVertices) {

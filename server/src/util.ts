@@ -56,8 +56,10 @@ export function handleData(data: WorkflowNode[]): TreeNode[] {
   console.log("after toplevel");
   id = 0;
   for (const wkf of data) {
+    // Only top level nodes
     if (wkf.name && counter[wkf.name] === 0) {
       wkf.name = wkf.name.trim().replace(/-/g, "_");
+      // Det ser ud til at topLevelName ikke bliver brugt.
       let topLevelName = wkf.name;
       count = parse(workflow, data, wkf.name, topLevelName);
       sequence[wkf.name] = count;
@@ -77,6 +79,8 @@ export function handleData(data: WorkflowNode[]): TreeNode[] {
   return workflow;
 }
 
+// Det ser ud til at topLevelName ikke bliver brugt.
+// Build TreeNodes from WorkflowNodes
 function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevelName: string): number {
   let wkfNode = getWkfByName(wkf, name);
 
@@ -105,6 +109,7 @@ function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevel
   }
   return count;
 }
+
 export function deepMerge(target: any, source: any): any {
   if (typeof source !== 'object' || source === null) {
     return source;

@@ -4,9 +4,10 @@ export interface Ivertice {
   task: {
     value: string;
   };
-  vertexId?: string;
-  vertexX?: string;
-  vertexY?: string;
+  vertexId?: number;
+  vertexX?: number;
+  vertexY?: number;
+  dependant?: string;
 }
 
 export type WorkflowNode = {

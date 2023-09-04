@@ -165,6 +165,24 @@ export async function add_task_to_workflow(cfg: Environment[string], task: strin
   return await fetch(url, options);
 };
 
+export async function list_vertices(cfg: Environment[string], workflow: string) {
+  const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
+  const url = `${baseUrl}/uc/resources/workflow/vertices`
+  const token = readToken(cfg);
+
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+      Host: `${cfg.uachost}:${cfg.uacport}`,
+      "Sec-Fetch-Site": "cross-site"
+    }
+  }
+  return await fetch(url, options);
+}
+
 export async function remove_task_from_workflow(cfg: Environment[string], task: string, workflow: string) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/workflow/vertices?workflowname=${workflow}`
