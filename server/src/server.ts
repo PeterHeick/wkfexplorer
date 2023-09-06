@@ -1,5 +1,6 @@
 import express from "express";
-import history from "connect-history-api-fallback";import path from "path";
+import history from "connect-history-api-fallback";
+import path from "path";
 import cors from "cors";
 import mime from "mime";
 import apiTask from "./apiTask";

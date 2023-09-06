@@ -159,6 +159,7 @@ export function apiPlan(app: express.Application) {
 
   async function createNewPlan(res: Response, cfg: Environment[string], topLevelNames: string[], status: Istatus) {
     // Opret ny plan
+    console.log("createNewPlan");
     numberOfNodesProcessed = 0;
     let vertexMap: { [key: string]: number } = {};
     let wkfName = "";
@@ -425,11 +426,14 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
     const groupMember = taskLine.match(/^([\wæøåÆØÅ]+)$/);
     console.log("groupMember ", groupMember);
 
-    const groupMemberAlt = taskLine.match(/^([\wæøåÆØÅ]+).*-> *([\wæøåÆØÅ]+)$/);
+    const groupMemberAlt = taskLine.match(/^([\wæøåÆØÅ]+) *-> *([\wæøåÆØÅ]+)$/);
     if (groupMemberAlt) {
-      taskLine = taskLine.split('>')[0].trim();
-      dependant = taskLine.split('>')[1].trim();
+      console.log(`alt[0] ${groupMemberAlt[0]}, alt[1] ${groupMemberAlt[1]}`);
+      taskLine = taskLine.split('->')[0];
+      dependant = taskLine.split('->')[1];
+      console.log(`taskLine ${taskLine} dependant ${dependant}`);
     }
+    console.log("groupMemberAlt ", groupMemberAlt);
 
     const test = groupName || groupMember || groupMemberAlt;
     if (!test) {
@@ -452,7 +456,7 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
     } else if (currentWorkflowItem) {
       const item = {
         task: {
-          value: taskLine      // her stod .trim() før, men burde være overflødig
+          value: taskLine.trim()
         },
         dependant
       };

@@ -27,7 +27,7 @@
     "@types/http-proxy-middleware": "^1.0.0",
     "@types/mime": "^3.0.1",
     "@types/node": "^18.15.10",
-    "nodemon": "^2.0.22",
+    "nodemon": "^3.0.1",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
     "typescript": "^5.0.2",
