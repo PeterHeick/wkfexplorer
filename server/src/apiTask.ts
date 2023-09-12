@@ -65,9 +65,9 @@ export default function apiTask(app: express.Application) {
       }
       // console.log(response);
       const task = { task: req.body.name, count: config.paramTimeout };
-      const paramFile = `data/${env}_param.json`;
+      const paramFile = `${config.dataDir}/${env}_param.json`;
       try {
-        const paramList: ParamItem[] = JSON.parse(readFileSync(paramFile, 'utf-8'));
+        const paramList: ParamItem[] = JSON.parse(readFileSync(paramFile, 'latin1'));
         for (let i = 0; i < paramList.length; i++) {
           paramList[i].count--;
         }
@@ -87,8 +87,8 @@ export default function apiTask(app: express.Application) {
           writeFileSync(paramFile, JSON.stringify([task]));
         } catch (err) {
           console.log("Den fejlede");
-          mkdir("data", (err) => {
-            console.error("Fejl ved oprettelse af 'data'")
+          mkdir(config.dataDir, (err) => {
+            console.error(`Fejl ved oprettelse af '${config.dataDir}'`)
           });
           writeFileSync(paramFile, JSON.stringify([task]));
         };
@@ -113,13 +113,13 @@ export default function apiTask(app: express.Application) {
     }
     const env = getParm(req, 'uacenv');
     const cfg = config.environments[env];
-    const paramFile = `data/${env}_param.json`;
+    const paramFile = `${config.dataDir}/${env}_param.json`;
     taskList = [];
 
     let paramList = [];
     try {
       console.log("Read ", paramFile);
-      paramList = JSON.parse(readFileSync(paramFile, 'utf-8'));
+      paramList = JSON.parse(readFileSync(paramFile, 'latin1'));
     } catch (e) {
       console.log("Endnu ingen param.json fil");
       res.status(200).json(paramList);
@@ -144,7 +144,7 @@ export default function apiTask(app: express.Application) {
           taskList.push(paramObj);
         } else {
           if (response.status === 404) {
-            console.log(`task i paramlist: ${obj.task} er i mellemtiden blevet slettet, ikke noget problem`);
+            console.log(`task listet i paramlist: ${obj.task} er slettet i UAC, (ikke noget problem)`);
           } else {
             console.log("response: ", response);
           }
@@ -162,21 +162,16 @@ export default function apiTask(app: express.Application) {
     console.log('\n--- /api/listadv');
 
     try {
-      console.log('\n--- /api/listadv checkConfig');
-
       checkConfig();
     } catch (error) {
-      console.log('\n--- /api/listadv error');
+      console.log('\n--- checkConfig: /api/listadv error');
 
       res.status(400).json(error);
       return;
     }
-    console.log('\n--- /api/listadv før getParm');
 
     const env = getParm(req, 'uacenv');
     const cfg = config.environments[env];
-
-    console.log('\n--- /api/listadv efter getParm');
 
     try {
       const response = await fetchWorkflows(cfg, cfg.prefix)
@@ -197,8 +192,7 @@ export default function apiTask(app: express.Application) {
         return;
       };
       const data = await response.json();
-      console.log(data);
-      console.log(data.length);
+      console.log(`Number of tasks: ${data.length}`);
       if (data.length === 0) {
         res.status(404).json({
           message: "Ingen workflows",

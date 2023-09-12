@@ -72,6 +72,7 @@ export type Config = {
   verticeStepX: number;
   verticeStepY: number;
   windowSize: number;
+  dataDir: string;
   environments: Environment;
   paramTimeout: number;
   localConfig: string;

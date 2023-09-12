@@ -4,11 +4,15 @@ import path from "path";
 import cors from "cors";
 import mime from "mime";
 import apiTask from "./apiTask";
-import { apiConfig } from "./apiConfig";
+import { apiConfig, apiVersion } from "./apiConfig";
 import { apiPlan } from "./apiPlan";
 import { apiFile } from "./apiFile";
 
-const docRoot = "docRoot";
+// Når versions nummeret skifter, skal der også rettes i HeaderComponent.vue linje 30.
+// De to versions numre skal følges ad.
+const version = "v1.101";
+//const docRoot = "docRoot";
+const docRoot = "testDocRoot";
 const app = express();
 
 app.use(history());
@@ -26,12 +30,15 @@ app.use(
   })
 );
 
+/*
 app.get("/", (req, res) => {
   console.log('\n--- /');
   console.log(`Send index.html ${docRoot}`);
   res.sendFile(path.join(docRoot, "index.html"));
 });
+*/
 
+apiVersion(app, version);
 apiConfig(app);
 apiTask(app);
 apiPlan(app);

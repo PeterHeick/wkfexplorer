@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { readFileSync, writeFileSync } from 'fs';
 import { INumberDictionary, Ivertice, WorkflowNode, TreeNode, IStringDictionary, Environment } from './interfaces';
 import { homedir } from 'os';
@@ -57,7 +58,9 @@ export function handleData(data: WorkflowNode[]): TreeNode[] {
   id = 0;
   for (const wkf of data) {
     // Only top level nodes
+    // console.log(`util.ts: handleData ${wkf.name}`)
     if (wkf.name && counter[wkf.name] === 0) {
+      // console.log(`  count: ${count}`)
       wkf.name = wkf.name.trim().replace(/-/g, "_");
       // Det ser ud til at topLevelName ikke bliver brugt.
       let topLevelName = wkf.name;
@@ -277,4 +280,88 @@ function findTopLevel(workflows: WorkflowNode[]) {
     }
   }
   writeFileSync('../counter.json', JSON.stringify(counter));
+}
+
+type Ugeplan = { [ugedag: number]: string };
+const weekDays = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'lørdag'];
+
+export function fixDates(filename: string) {
+  console.log("fixDates()");
+  const yearMatch = filename.match(/SU(\d+)/);
+  const weekMatch = filename.match(/Uge(\d+)/);
+
+  if (yearMatch && weekMatch) {
+    const year = yearMatch[1]
+    const week = weekMatch[1];
+    const weekPlan: Ugeplan = findWeekDays(year, week);
+    const encoding = "latin1";
+    let tekstfilIndhold = fs.readFileSync(filename, encoding);
+
+    const varObj: { [key: string]: string } = {
+      ÅR: year,
+      UGE: week,
+      FRA: weekPlan[1],
+      TIL: weekPlan[0],
+    }
+    for (let day = 0; day < 7; day++) {
+      varObj[weekDays[day]] = weekPlan[day]
+    }
+    console.log(`var obj: ${JSON.stringify(varObj)}`);
+
+    for (const attr in varObj) {
+      if (varObj.hasOwnProperty(attr)) {
+        // Gennemgå arrayet og erstat variablerne i tekstfilen
+        const value = varObj[attr];
+        console.log(`Erstat ${attr} med ${value}`)
+        const variabelErstatning = new RegExp('\\$' + attr, 'gi');
+        tekstfilIndhold = tekstfilIndhold.replace(variabelErstatning, value);
+      }
+    }
+    // Skriv det ændrede indhold tilbage i tekstfilen
+    fs.writeFileSync(filename, tekstfilIndhold, encoding);
+  } else {
+    throw {
+      message: "Fejl ved variabel substitution",
+      detail: `Kunne ikke finde år eller uge nr i ${filename}`,
+      status: 400
+    }
+  }
+}
+
+const mdr = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun",
+  "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
+function findWeekDays(year: string, weekNumber: string): Ugeplan {
+  console.log("findWeekDays()");
+  const ugeplan: Ugeplan = [];
+  // const ugeplan: Ugeplan = {};
+  const date = new Date(parseInt(year, 10), 0, 4);
+  const dayOffset = date.getDay() === 0 ? 6 : date.getDay() - 1;
+
+  date.setDate(4 - dayOffset);
+  date.setDate(date.getDate() + (parseInt(weekNumber, 10) - 1) * 7);
+  console.log(date.toLocaleDateString());
+
+  for (let i = 0; i < 7; i++) {
+    const nextDay = new Date(date.getTime());
+    nextDay.setDate(date.getDate() + i);
+
+    let dd, mm, yy: string = "";
+    const dateRegex = /(\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})/;
+    const match = nextDay.toLocaleDateString().match(dateRegex);
+
+    if (match) {
+      dd = match[1];
+      mm = match[2];
+      yy = match[3];
+    }
+
+    // console.log(`${dage[nextDay.getDay()]} ${dd}.${mm}.${yy}`);
+    // ugeplan[dage[nextDay.getDay()]] = `${dd}.${mm}.${yy}`
+    if (mm) {
+      const mdrnr = parseInt(mm, 10);
+      ugeplan[nextDay.getDay()] = `${dd} ${mdr[mdrnr-1]}`
+    }
+  }
+
+  return ugeplan;
 }

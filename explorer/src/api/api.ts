@@ -18,6 +18,15 @@ export const api = {
     console.log("api.getConfig ")
 
     const url = 'config';
+    options.method = "GET";
+    return fetch(baseUrl + url, options)
+  },
+
+  getVersion() {
+    console.log("getVersion")
+
+    const url = 'version';
+    options.method = "GET";
     return fetch(baseUrl + url, options)
   },
 

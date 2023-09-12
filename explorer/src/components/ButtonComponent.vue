@@ -9,7 +9,8 @@ import { state } from "@/store/state";
 import { computed, defineEmits, defineProps } from 'vue';
 
 const isDisabled = computed(() => {
-  console.log("ButtoComponent plan read: ", state.isPlanRead);
+  console.log("ButtonComponent plan read: ", state.isPlanRead);
+  console.log(props.disable,  !state.isWkfLoaded, state.planUpdateInProgress);
   return props.disable || !state.isWkfLoaded || state.planUpdateInProgress
 })
 

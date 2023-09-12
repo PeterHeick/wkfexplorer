@@ -60,3 +60,17 @@ export function apiConfig(app: express.Application) {
     }
   });
 }
+
+export function apiVersion(app: express.Application, version: string) {
+  app.get("/api/version", (req: Request, res: Response) => {
+    console.log('\n--- /');
+    console.log(`\n--- Get version ${version}`);
+    const obj = { version };
+    try {
+      res.status(200).json(obj);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  });
+
+}

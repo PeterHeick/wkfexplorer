@@ -88,6 +88,7 @@ const handleUpdate = async () => {
     console.log(response);
     Swal.fire(data.message, data.detail, 'error');
     clearInterval(intervalId);
+    state.planUpdateInProgress = false;
     return;
   }
 

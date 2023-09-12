@@ -4,22 +4,36 @@
       <HeaderComponent>Workflow explorer</HeaderComponent>
     </div>
     <div>
-      <ToolbarComponent @envEvent="handleEnvEvent" type="workflow"></ToolbarComponent>
+      <ToolbarComponent
+        @envEvent="handleEnvEvent"
+        type="workflow"
+      ></ToolbarComponent>
     </div>
     <div id="container">
       <div id="left-pane">
-        <div v-if="!state.isWkfLoaded" class="loader" style="justify-items: center">
+        <div
+          v-if="!state.isWkfLoaded"
+          class="loader"
+          style="justify-items: center"
+        >
           Loading...
         </div>
         <div v-if="!state.isWkfLoaded">
           <span class="spinner" />
         </div>
 
-        <TreeComponent v-if="state.isWkfLoaded" :treeData="wkf" @currentNodeEvent="handleCurrentNodeEvent">
+        <TreeComponent
+          v-if="state.isWkfLoaded"
+          :treeData="wkf"
+          @currentNodeEvent="handleCurrentNodeEvent"
+        >
         </TreeComponent>
       </div>
       <div id="middle">
-        <TaskComponent v-if="nodeName != ''" :nodeName="nodeName"></TaskComponent>
+        <TaskComponent
+          v-if="nodeName != ''"
+          :nodeName="nodeName"
+        ></TaskComponent>
       </div>
       <div id="right-pane"></div>
     </div>
@@ -39,6 +53,7 @@ import { state } from "@/store/state";
 import Swal from "sweetalert2";
 
 let wkf = ref([] as TreeNode[]);
+
 const nodeName = ref("");
 
 const handleEnvEvent = (env: string) => {
@@ -55,10 +70,11 @@ const handleCurrentNodeEvent = (name: string) => {
 
 const update = async () => {
   state.isWkfLoaded = false;
+
   const response = await api.getAllWorkflows();
   const data = await response.json();
   if (!response.ok) {
-    Swal.fire(data.message, data.detail, 'error');
+    Swal.fire(data.message, data.detail, "error");
     state.isWkfLoaded = true;
     wkf.value = [];
     return;
@@ -80,7 +96,6 @@ onMounted(() => {
   }
   update();
 });
-
 </script>
 
 <style scoped>

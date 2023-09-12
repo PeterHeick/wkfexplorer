@@ -206,13 +206,13 @@ export async function remove_task_from_workflow(cfg: Environment[string], task: 
   return await fetch(url, options);
 };
 
-export async function make_edge(cfg: Environment[string], workflow: string, source: number, destination: number) {
+export async function make_edge(cfg: Environment[string], workflow: string, source: number, destination: number, straightEdge: boolean) {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/workflow/edges?workflowname=${workflow}`
   const token = readToken(cfg);
 
   const body = {
-    straightEdge: true,
+    straightEdge,
     sourceId: {
       value: source
     },

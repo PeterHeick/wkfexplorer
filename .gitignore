@@ -20,3 +20,9 @@ workflows.json
 deployment
 explorer/graph.svg
 deploy
+data/
+deploy.ps1
+save/
+server/dist/tedstServer.js.LICENSE.txt
+server/dist/testServer.js
+

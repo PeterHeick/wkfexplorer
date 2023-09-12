@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { createReadStream, existsSync, mkdir, readFileSync, unlinkSync, writeFileSync } from "fs";
 import * as readline from 'readline';
 import { createWorkflow, add_task_to_workflow, make_edge, deleteTask, remove_task_from_workflow, list_vertices } from "./uacApi";
-import { handleData, sortPlan, getParm, getWkfByName } from "./util";
+import { handleData, sortPlan, getParm, getWkfByName, fixDates } from "./util";
 import { checkConfig, config } from "./apiConfig";
 import { Environment, Ivertice, WorkflowNode } from './interfaces';
 import { spawn } from 'child_process';
@@ -28,8 +28,6 @@ export function apiPlan(app: express.Application) {
       res.status(400).json(error);
       return;
     }
-
-    // const planDir = config.environments[env].planDir;
 
     readFileAndParseWorkflow(`${plan}`)
       .then((obj: any) => {
@@ -87,8 +85,8 @@ export function apiPlan(app: express.Application) {
 
   // Make new workflow
   interface Istatus {
-      missing: Set<string>;
-      text: "status";
+    missing: Set<string>;
+    text: "status";
   }
 
   app.put("/api/plan", async (req: Request, res: Response) => {
@@ -124,17 +122,17 @@ export function apiPlan(app: express.Application) {
         await deletePlan(cfg, workflows, topLevelNames.reverse());
         // Gem plan, så vi kan slette den næste gang.
         try {
-          writeFileSync(`data/${env}_plan.json`, JSON.stringify(topLevelNames));
+          writeFileSync(`${config.dataDir}/${env}_plan.json`, JSON.stringify(topLevelNames));
         } catch (e: any) {
-          mkdir("data", (err) => {
-            console.error("Fejl ved oprettelse af 'data'")
+          mkdir(config.dataDir, (err) => {
+            console.error(`Fejl ved oprettelse af '${config.dataDir}'`)
           });
           try {
-            writeFileSync(`data/${env}_plan.json`, JSON.stringify(topLevelNames));
+            writeFileSync(`${config.dataDir}/${env}_plan.json`, JSON.stringify(topLevelNames));
           } catch (e: any) {
             res.status(500).json({
               message: "Fejl ved skrivning af plan",
-              detail: `Fejl ved skrivning af data/${env}_plan.json, ${e.code}`
+              detail: `Fejl ved skrivning af ${config.dataDir}/${env}_plan.json, ${e.code}`
             });
           }
         }
@@ -145,11 +143,16 @@ export function apiPlan(app: express.Application) {
       }
     }
 
-    await createNewPlan(res, cfg, topLevelNames, status);
+    try {
+      await createNewPlan(res, cfg, topLevelNames, status);
+    } catch (error: any) {
+      res.status(error.status).json(error);
+      return;
+    }
 
     console.log("Created");
     console.log("status ", status);
-    // writeFileSync(`data/${env}_missing.json`, JSON.stringify(Array.from(status.missing)));
+    // writeFileSync(`${config.dataDir}/${env}_missing.json`, JSON.stringify(Array.from(status.missing)));
     const returnStatus = {
       missing: Array.from(status.missing),
       text: "status"
@@ -157,140 +160,21 @@ export function apiPlan(app: express.Application) {
     res.status(201).json(returnStatus);
   })
 
-  async function createNewPlan(res: Response, cfg: Environment[string], topLevelNames: string[], status: Istatus) {
-    // Opret ny plan
-    console.log("createNewPlan");
-    numberOfNodesProcessed = 0;
-    let vertexMap: { [key: string]: number } = {};
-    let wkfName = "";
-    for (const wkf of topLevelNames.reverse()) {
-      wkfName = `${cfg.prefix}_${wkf}_wkf`;
-      let wkfResponse;
-      try {
-        wkfResponse = await createWorkflow(cfg, wkfName)
-      } catch (error: any) {
-        res.status(error.status).json(error);
-        return;
-      }
-      if (!wkfResponse.ok) {
-        console.log(wkfResponse);
-        console.log("createTask failed");
-        res.status(wkfResponse.status).json({
-          message: 'Opret plan fejlet',
-          detail: wkfResponse.statusText
-        });
-        return
-      }
-
-      console.log("Progress ", numberOfNodesProcessed, numberOfNodes);
-      numberOfNodesProcessed++;
-
-      const vstart = config.verticeStart;
-      const vstepX = config.verticeStepX;
-      const vstepY = config.verticeStepY;
-
-      const vmax = config.windowSize;
-      let x = vstart;
-      let y = vstart;
-      let sourceId = 0;
-      let destId = 0;
-      let firstNode = true;
-      let oldWkfTask = "";
-      // const planNodes = wkfData.getPlan();
-      const wf = workflows.find(w => w.name === wkf);
-      if (wf?.workflowVertices) {
-        for (const vertice of wf.workflowVertices) {
-          numberOfNodesProcessed++;
-          const wkfTask = `${cfg.prefix}_${vertice.task.value}_wkf`;
-
-          try {
-            const response = await add_task_to_workflow(cfg, wkfTask, wkfName, x, y);
-            if (!response.ok) {
-              if (response.status === 400) {
-                console.error(`task missing:  ${wkfTask}`)
-                status.missing.add(wkfTask)
-                continue;
-              }
-              if (response.status === 404) {
-                console.error(`task missing:  ${wkfName}`)
-                status.missing.add(wkfName)
-                continue;
-              }
-              console.log("add task to workflow failed ", response.status, response);
-              res.status(response.status).json({
-                message: 'Tilføj task fejlet',
-                detail: `Tilføj ${wkfTask} til ${wkfName} fejlet: ${response.statusText}`
-              });
-              return;
-            } else {
-              const vertex = await response.json();
-              // console.log("vertex ", vertex);
-              destId = vertex.vertexId;
-              vertexMap[wkfTask] = destId;
-            }
-          } catch (error: any) {
-            res.status(error.status).json(error);
-          }
-
-          // console.log("destId ", destId);
-          if (vertice.dependant) {
-            const depTask = `${cfg.prefix}_${vertice.dependant}_wkf`;
-            let sId = destId;
-            let dId = vertexMap[depTask];
-            if (!dId) {
-              res.status(400).json({
-                message: `Connection mellem ${wkfTask} og ${depTask} fejlede`,
-                detail: `${depTask} findes ikke, den skal angives i workflow inden ${wkfTask}`
-              });
-            }
-            const resp = await make_edge(cfg, wkfName, sId, dId);
-            if (!resp.ok) {
-              console.log("make edge add task failed ", resp.statusText, resp.status);
-              res.status(resp.status).json({
-                message: 'Tilføj afhængighed fejlet',
-                detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${resp.statusText}`
-              });
-              return;
-            }
-            x = x + vstepX;
-            y = vstart;
-
-          } else {
-            if (!firstNode) {
-              const response = await make_edge(cfg, wkfName, sourceId, destId);
-              if (!response.ok) {
-                console.log("make edge add task failed ", response.statusText, response.status);
-                res.status(response.status).json({
-                  message: 'Tilføj afhængighed fejlet',
-                  detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${response.statusText}`
-                });
-                return;
-              }
-            }
-            sourceId = destId;
-            firstNode = false;
-            oldWkfTask = wkfTask;
-          }
-          x = x + vstepX;
-          if (x > vmax) {
-            x = vstart;
-            y = y + vstepY;
-          }
-        }
-      }
-    }
-  }
-
   app.get("/api/editor", (req: any, res: any) => {
     console.log('\n--- /api/editor');
     const fileName = getParm(req, 'fileName');
 
     if (!existsSync(fileName)) {
-      writeFileSync(fileName, '', 'utf8');
+      writeFileSync(fileName, '', 'latin1');
     }
-    spawn(config.editor, [fileName], { detached: true, stdio: 'ignore' });
+    const match =  fileName.match(/Uge(\d+)/);
+    if (match) {
+      fixDates(fileName);
+    }
+    spawn(config.editor, [fileName], { detached: false, stdio: 'ignore' });
     res.status(201).json({});
   })
+
 
 
   app.get("/api/explorer", (req: any, res: any) => {
@@ -316,13 +200,149 @@ export function apiPlan(app: express.Application) {
       return;
     }
   })
+
+  async function createNewPlan(res: Response, cfg: Environment[string], topLevelNames: string[], status: Istatus) {
+    // Opret ny plan
+    console.log("createNewPlan");
+    numberOfNodesProcessed = 0;
+    let vertexMap: { [key: string]: number } = {};
+    let wkfName = "";
+    for (const wkf of topLevelNames.reverse()) {
+      wkfName = `${cfg.prefix}_${wkf}_wkf`;
+      let wkfResponse;
+      try {
+        wkfResponse = await createWorkflow(cfg, wkfName)
+      } catch (error: any) {
+        res.status(error.status).json(error);
+        throw {
+          message: "Fejl ved create plan",
+          detail: `${error}`,
+          status: error.status
+        }
+      }
+      if (!wkfResponse.ok) {
+        console.log(wkfResponse);
+        console.log("createTask failed");
+        throw {
+          message: "Fejl ved create plan",
+          detail: wkfResponse.statusText,
+          status: wkfResponse.status
+        }
+      }
+
+      console.log("Progress ", numberOfNodesProcessed, numberOfNodes);
+      numberOfNodesProcessed++;
+
+      const vstart = config.verticeStart;
+      const vstepX = config.verticeStepX;
+      const vstepY = config.verticeStepY;
+      let yCounted = false;
+
+      const vmax = config.windowSize;
+      let x = vstart;
+      let y = vstart;
+      let sourceId = 0;
+      let destId = 0;
+      let firstNode = true;
+      let oldWkfTask = "";
+      // const planNodes = wkfData.getPlan();
+      const wf = workflows.find(w => w.name === wkf);
+      if (wf?.workflowVertices) {
+        for (const vertice of wf.workflowVertices) {
+          numberOfNodesProcessed++;
+          const wkfTask = `${cfg.prefix}_${vertice.task.value}_wkf`;
+
+          if (vertice.dependant != "") {
+            x = vstart;
+            if (!yCounted) {
+              y = y + vstepY;
+            }
+          }
+          yCounted = false;
+          const response = await add_task_to_workflow(cfg, wkfTask, wkfName, x, y);
+          if (!response.ok) {
+            if (response.status === 400) {
+              console.error(`task missing:  ${wkfTask}`)
+              status.missing.add(wkfTask)
+              continue;
+            }
+            if (response.status === 404) {
+              console.error(`task missing:  ${wkfName}`)
+              status.missing.add(wkfName)
+              continue;
+            }
+            console.log("add task to workflow failed ", response.status, response);
+            throw {
+              message: 'Tilføj task fejlet',
+              detail: `Tilføj ${wkfTask} til ${wkfName} fejlet: ${response.statusText}`,
+              status: response.status
+            }
+          } else {
+            const vertex = await response.json();
+            // console.log("vertex ", vertex);
+            destId = vertex.vertexId;
+            vertexMap[wkfTask] = destId;
+          }
+
+          // console.log("destId ", destId);
+          console.log(`vertice ${JSON.stringify(vertice)}`);
+          if (vertice.dependant != "") {
+            const depTask = `${cfg.prefix}_${vertice.dependant}_wkf`;
+            console.log(`  depTask: ${depTask}`);
+            let sId = destId;
+            console.log(`vertexMap ${JSON.stringify(vertexMap)}`);
+            let dId = vertexMap[depTask];
+            if (!dId) {
+              throw {
+                message: `Fejl ved oprettelse af afhængighed`,
+                detail: `"${depTask}" findes ikke, den skal angives i ${wkfName} før ${wkfTask}`,
+                status: 400
+              }
+            }
+            const resp = await make_edge(cfg, wkfName, sId, dId, vertice.dependant === "");
+            if (!resp.ok) {
+              console.log("make edge add task failed ", resp.statusText, resp.status);
+              throw {
+                message: 'Tilføj afhængighed fejlet',
+                detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${resp.statusText}`,
+                status: resp.status
+              }
+            }
+            x = vmax + 1;
+
+          } else {
+            if (!firstNode) {
+              const response = await make_edge(cfg, wkfName, sourceId, destId, vertice.dependant === "");
+              if (!response.ok) {
+                console.log("make edge add task failed ", response.statusText, response.status);
+                throw {
+                  message: 'Tilføj afhængighed fejlet',
+                  detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${response.statusText}`,
+                  status: response.status
+                }
+              }
+            }
+            sourceId = destId;
+            firstNode = false;
+            oldWkfTask = wkfTask;
+          }
+          x = x + vstepX;
+          if (x > vmax) {
+            x = vstart;
+            y = y + vstepY;
+            yCounted = true;
+          }
+        }
+      }
+    }
+  }
 }
 
 const deleteOldPlan = async (cfg: Environment[string], env: string, workflows: WorkflowNode[]) => {
   let curWorkflows = [];
   try {
-    console.log(`deleteOldPlan: data/${env}_plan.json`);
-    curWorkflows = JSON.parse(readFileSync(`data/${env}_plan.json`, 'utf-8'));
+    console.log(`deleteOldPlan: ${config.dataDir}/${env}_plan.json`);
+    curWorkflows = JSON.parse(readFileSync(`${config.dataDir}/${env}_plan.json`, 'utf-8'));
     console.log("Delete current plan ", curWorkflows);
     try {
       await deletePlan(cfg, workflows, curWorkflows);
@@ -332,7 +352,7 @@ const deleteOldPlan = async (cfg: Environment[string], env: string, workflows: W
   } catch (err: any) {
     throw {
       message: "Fejl ved læsning af plan",
-      detail: `Current plan data/${env}_plan.json findes ikke ${err.message}`,
+      detail: `Current plan ${config.dataDir}/${env}_plan.json findes ikke ${err.message}`,
     }
   }
 }
@@ -389,7 +409,7 @@ interface WorkflowResult {
 async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResult> {
   const fileStream = createReadStream(filePath, { encoding: 'utf-8' });
 
-  // console.log('readFileAndParseWorkflow ', filePath);
+  console.log('readFileAndParseWorkflow ', filePath);
   const rl = readline.createInterface({
     input: fileStream,
     crlfDelay: Infinity,
@@ -409,42 +429,49 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
     // console.log(line);
 
     let taskLine = line.split('#')[0].trim();
-    let dependant = ""
 
     if (taskLine.trim().length === 0) {
       continue;
     }
 
-    console.log(taskLine);
+    console.log(`Read taskline: ${taskLine}`);
     let groupName = "";
-    let matched = taskLine.match(/^([\wæøåÆØÅ]+):$/);
-    if (matched) {
-      groupName = matched[1];
+    const groupNameMatched = taskLine.match(/^([\wæøåÆØÅ]+):$/);
+    if (groupNameMatched) {
+      console.log("groupName matched");
+      groupName = groupNameMatched[1];
+      console.log("  ", groupName);
     }
-    console.log("groupName ", groupName);
 
-    const groupMember = taskLine.match(/^([\wæøåÆØÅ]+)$/);
-    console.log("groupMember ", groupMember);
-
-    const groupMemberAlt = taskLine.match(/^([\wæøåÆØÅ]+) *-> *([\wæøåÆØÅ]+)$/);
-    if (groupMemberAlt) {
-      console.log(`alt[0] ${groupMemberAlt[0]}, alt[1] ${groupMemberAlt[1]}`);
-      taskLine = taskLine.split('->')[0];
-      dependant = taskLine.split('->')[1];
-      console.log(`taskLine ${taskLine} dependant ${dependant}`);
+    let groupMember = "";
+    const groupMemberMatched = taskLine.match(/^([\wæøåÆØÅ]+)$/);
+    if (groupMemberMatched) {
+      console.log("groupMember matched");
+      groupMember = groupMemberMatched[1];
+      console.log("  ", groupMember);
+      console.log("  ", groupMemberMatched);
     }
-    console.log("groupMemberAlt ", groupMemberAlt);
 
-    const test = groupName || groupMember || groupMemberAlt;
-    if (!test) {
+    let dependant = ""
+    const dependanceMatched = taskLine.match(/^([\wæøåÆØÅ]+) *-> *([\wæøåÆØÅ]+)$/);
+    if (dependanceMatched) {
+      console.log("groupMember dependancy matched");
+      groupMember = dependanceMatched[1];
+      dependant = dependanceMatched[2];
+      console.log(dependanceMatched);
+      console.log(`  groupMember ${groupMember}, dependant ${dependant}`);
+    }
+
+    const ok = groupNameMatched || groupMemberMatched || dependanceMatched;
+    if (!ok) {
       return ({ workflowItems: {} as WorkflowNode[], count: lineNumber, ok: false })
     }
 
-
     count++;
-    if (groupName) {
-      // console.log(wkfName);
+    if (groupNameMatched) {
+      console.log(`Add group: ${groupName}`);
       if (currentWorkflowItem) {
+        console.log(`Add group member: ${currentWorkflowItem.name}`)
         workflowItems.push(currentWorkflowItem);
       }
       // console.log("groupName: ", groupName);
@@ -453,14 +480,15 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
         type: "taskWorkflow",
         workflowVertices: [],
       };
+      console.log(`Create currentWorkflowItem: ${currentWorkflowItem.name}`)
     } else if (currentWorkflowItem) {
       const item = {
         task: {
-          value: taskLine.trim()
+          value: groupMember.trim()
         },
         dependant
       };
-      // console.log("item: ",item);
+      console.log("item: ", item);
       if (item && currentWorkflowItem.workflowVertices) {
         currentWorkflowItem.workflowVertices.push(item);
       }
@@ -473,3 +501,4 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
 
   return { workflowItems, count, ok: true };
 }
+
