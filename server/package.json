@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec ts-node src/server.ts",
+    "start2": "nodemon --exec ts-node src/server.ts",
     "plan": "nodemon --exec ts-node src/weekplan.ts",
-    "build": "webpack"
+    "build": "webpack  && npm run copy-to-testServer",
+    "start": "nodemon --watch src -e ts --exec npm run build",
+    "copy-to-testServer": "mv dist/server.js I:/EDBGruppe/Projekter/uacwebserver/testServer.js"
   },
   "author": "",
   "license": "ISC",

@@ -3,7 +3,7 @@
     <h3>
       <slot></slot>
       <br/>
-      <span style="font-size: small">{{ version }}</span>
+      <span style="font-size: small">{{ message }}</span>
     </h3>
     <div class="buttons">
       <router-link to="/" @click="handleClick">
@@ -23,11 +23,11 @@ import { config } from "@/store/config";
 import { state } from "@/store/state";
 import ButtonComponent from "@/components/ButtonComponent.vue";
 import { api } from "@/api/api";
+import { version } from "../../../version.json";
 
-defineProps({ version: String });
+defineProps({ message: String });
 let color = computed(() => config.getBackgroundColor());
-const version = ref("");
-const explorerVersion = "v1.101";
+const message = ref("");
 
 const disable = computed(() => {
   return !state.isWkfLoaded || !state.isPlanRead || state.planUpdateInProgress
@@ -46,12 +46,12 @@ const updateVersion = async () => {
   const vdata = await v.json();
   console.log(vdata);
   console.log(JSON.stringify(vdata));
-  version.value = "";
+  message.value = "";
   if (v.ok) {
-    console.log(`version: ${vdata.version} explorerV: ${explorerVersion}`);
-    console.log(`version: ${typeof vdata.version} explorerV: ${typeof explorerVersion}`);
-    if (vdata.version !== explorerVersion) {
-      version.value = `Version mismatch: server: ${vdata.version}, client: ${explorerVersion}`;
+    console.log(`version: ${vdata.version} explorerV: ${version}`);
+    console.log(`version: ${typeof vdata.version} explorerV: ${typeof version}`);
+    if (vdata.version !== version) {
+      message.value = `Version mismatch: server: ${vdata.version}, client: ${version}`;
     }
   }
 

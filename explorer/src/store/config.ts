@@ -35,6 +35,11 @@ export const config =  {
     return this.configData.environments[this.uacenv.value];
   },
 
+  getPlanDir() {
+    console.log(`config.planDir() ${this.uacenv.value} return ${this.configData.environments[this.uacenv.value].planDir}`);
+    return this.configData.environments[this.uacenv.value].planDir;
+  },
+
   getEnvironmentList() {
     return Object.keys(this.configData.environments);
   },

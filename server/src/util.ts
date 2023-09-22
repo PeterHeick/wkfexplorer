@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import { readFileSync, writeFileSync } from 'fs';
-import { INumberDictionary, Ivertice, WorkflowNode, TreeNode, IStringDictionary, Environment } from './interfaces';
+import { INumberDictionary, Ivertice, WorkflowNode, TreeNode, Environment } from './interfaces';
 import { homedir } from 'os';
+import path from 'path';
 
 var id = 0;
 let counter: INumberDictionary = {};
@@ -287,7 +288,7 @@ const weekDays = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag',
 
 export function fixDates(filename: string) {
   console.log("fixDates()");
-  const yearMatch = filename.match(/SU(\d+)/);
+  const yearMatch = filename.match(/(202[0-9])/);
   const weekMatch = filename.match(/Uge(\d+)/);
 
   if (yearMatch && weekMatch) {
@@ -364,4 +365,23 @@ function findWeekDays(year: string, weekNumber: string): Ugeplan {
   }
 
   return ugeplan;
+}
+
+export function getFiles(dirPath: string): any {
+  let items = [];
+  const dirents = fs.readdirSync(dirPath, { withFileTypes: true });
+
+  for (const dirent of dirents) {
+    const fullPath = path.join(dirPath, dirent.name);
+    if (dirent.isDirectory()) {
+      items.push({ name: dirent.name, path: fullPath, type: 'folder', children: getFiles(fullPath) });
+    } else {
+      if (dirent.name.endsWith('.txt')) {
+        items.push({ name: dirent.name, path: fullPath, type: 'file' });
+      }
+    }
+  }
+
+  return items;
+
 }

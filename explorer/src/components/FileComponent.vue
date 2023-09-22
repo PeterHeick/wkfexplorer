@@ -2,7 +2,7 @@
   <div class="file-explorer" style="padding-right: 10px;">
     <span @click="openFileExplorer" class="dirHeader">{{ directory }}</span>
     <ul>
-      <file-item v-for="item in items" :key="item.name" :item="item" @file-clicked="emitFileClicked" />
+      <file-item v-for="item in items" :key="item.name" :item="item" @file-clicked="emitFileClicked" @editorFinished="fetchData" />
     </ul>
   </div>
 </template>

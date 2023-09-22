@@ -18,7 +18,7 @@
             <li v-for="(task, index) in taskList.value" :key="index">
               <div class="paramLinje">
                 <div class="name"> {{ task.name }} </div>
-                <input class="parameter" type="TEXT" id="paramField" @keyup.enter="handleParamUpdate(task)"
+                <input class="parameter" type="TEXT" :ref="el => { paramFields[index] = el; }" @keyup.enter="handleParamUpdate(task, index)"
                   v-model="task.parameters" />
               </div>
             </li>
@@ -67,6 +67,7 @@ let wkf = ref([] as TreeNode[]);
 const missingList = ref([] as string[]);
 const taskList = reactive({ value: [] as TaskItem[] });
 const show = ref(false);
+const paramFields = ref<HTMLElement[]>([]);
 
 const handleEnvEvent = async (env: string) => {
   console.log("PlanComponent handleEvent env: ", env);
@@ -124,11 +125,11 @@ const handleMissing = (list: Array<string>) => {
 }
 
 // Handle param update, opdater task
-const handleParamUpdate = async (task: TaskItem) => {
+const handleParamUpdate = async (task: TaskItem, index: number) => {
   console.log("handle param update");
-  const elem = document.getElementById("paramField");
-  if (elem) elem.blur();
   await api.updateTask(task);
+  const elem = paramFields.value[index];
+  if (elem) elem.blur();
   show.value = true;
   setTimeout(() => {
     show.value = false;
@@ -161,14 +162,18 @@ onBeforeMount(async () => {
 }
 
 .name {
-  width: 400px;
+  flex: 1;
+  width: 50%;
   border: 1px solid lightgray;
+  box-sizing: border-box;
 }
 
 .parameter {
-  max-width: 300px;
+  flex: 1;
+  width: 50%;
   border: 1px solid lightgray;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .parameter:hover {

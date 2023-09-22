@@ -52,52 +52,49 @@ export default function apiTask(app: express.Application) {
     console.log('\n--- /api/updatetask');
     const env = getParm(req, 'uacenv');
 
-    console.log(req.body);
+    const wkfTask = req.body.name;
     try {
-      const response = await updateTask(config.environments[env], req.body)
-      if (!response.ok) {
-        console.log("Update task response not ok ", response.statusText);
-        res.status(response.status || 500).json({
-          message: "Noget gik galt",
-          detail: response.statusText || 'An error occurred',
-        });
-        return
-      }
-      // console.log(response);
-      const task = { task: req.body.name, count: config.paramTimeout };
-      const paramFile = `${config.dataDir}/${env}_param.json`;
-      try {
-        const paramList: ParamItem[] = JSON.parse(readFileSync(paramFile, 'latin1'));
-        for (let i = 0; i < paramList.length; i++) {
-          paramList[i].count--;
-        }
-        let index = paramList.findIndex(item => item.task === req.body.name);
-        if (index !== -1) {
-          paramList.splice(index, 1, task);
-        } else {
-          paramList.push(task);
-        }
-
-        console.log("Write paramfil");
-        writeFileSync(paramFile, JSON.stringify(paramList.filter((param: any) => param.count > 0)));
-        console.log("Done");
-      } catch (err) {
+      console.log(`Env: ${config.environments[env]}`);
+      const response = await readTask(config.environments[env], wkfTask);
+      if (response.ok) {
+        let task = await response.json();
+        task.parameters = req.body.parameters;
         try {
-          console.log("Ingen paramfil - lav en ny");
-          writeFileSync(paramFile, JSON.stringify([task]));
-        } catch (err) {
-          console.log("Den fejlede");
-          mkdir(config.dataDir, (err) => {
-            console.error(`Fejl ved oprettelse af '${config.dataDir}'`)
-          });
-          writeFileSync(paramFile, JSON.stringify([task]));
-        };
-      };
+          const response = await updateTask(config.environments[env], task)
+          if (!response.ok) {
+            console.log("Update task response not ok ", response.statusText);
+            res.status(response.status || 500).json({
+              message: "Noget gik galt",
+              detail: response.statusText || 'An error occurred',
+            });
+            return
+          }
+          // console.log(response);
+          updateParmfile(req.body.name, env);
 
-      const text = await response.text();
-      console.log(text);
-      res.status(response.status).json({ message: 'Task opdateret', detail: text });
+          const text = await response.text();
+          console.log(text);
+          res.status(response.status).json({ message: 'Task opdateret', detail: text });
+        } catch (error: any) {
+          res.status(error.status || 500).json(error);
+        }
+      } else {
+        if (response.status === 404) {
+          console.log(`${wkfTask} findes ikke i UAC`)
+          throw {
+            message: `${wkfTask} findes ikke`,
+            detail: `${wkfTask} findes ikke i UAC`
+          };
+        } else {
+          console.log(`Fejl  i ${wkfTask} ${response.status}`);
+          throw {
+            message: `Fejl ved læsning af ${wkfTask}`,
+            detail: `Fejlkode: ${response.status}`
+          };
+        }
+      }
     } catch (error: any) {
+      console.log(`Last catch Fejl ${wkfTask} ${JSON.stringify(error)}`);
       res.status(error.status || 500).json(error);
     }
   });
@@ -133,13 +130,9 @@ export default function apiTask(app: express.Application) {
           const task = await response.json();
 
           const paramObj = {
-            sysId: task.sysId,
             name: task.name,
             type: task.type,
-            agent: task.agent,
-            command: task.command,
-            exitCodes: task.exitCodes,
-            parameters: task.parameters
+            parameters: task.parameters,
           }
           taskList.push(paramObj);
         } else {
@@ -210,4 +203,36 @@ export default function apiTask(app: express.Application) {
       });
     }
   });
+
+  function updateParmfile(name: string, env: string) {
+    const task = { task: name, count: config.paramTimeout };
+    const paramFile = `${config.dataDir}/${env}_param.json`;
+    try {
+      const paramList: ParamItem[] = JSON.parse(readFileSync(paramFile, 'latin1'));
+      for (let i = 0; i < paramList.length; i++) {
+        paramList[i].count--;
+      }
+      let index = paramList.findIndex(item => item.task === name);
+      if (index !== -1) {
+        paramList.splice(index, 1, task);
+      } else {
+        paramList.push(task);
+      }
+
+      console.log("Write paramfil");
+      writeFileSync(paramFile, JSON.stringify(paramList.filter((param: any) => param.count > 0)));
+      console.log("Done");
+    } catch (err) {
+      try {
+        console.log("Ingen paramfil - lav en ny");
+        writeFileSync(paramFile, JSON.stringify([task]));
+      } catch (err) {
+        console.log("Den fejlede");
+        mkdir(config.dataDir, (err) => {
+          console.error(`Fejl ved oprettelse af '${config.dataDir}'`);
+        });
+        writeFileSync(paramFile, JSON.stringify([task]));
+      };
+    };
+  }
 }

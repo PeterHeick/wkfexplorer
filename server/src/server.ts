@@ -7,10 +7,11 @@ import apiTask from "./apiTask";
 import { apiConfig, apiVersion } from "./apiConfig";
 import { apiPlan } from "./apiPlan";
 import { apiFile } from "./apiFile";
+import { version } from "../../version.json";
 
 // Når versions nummeret skifter, skal der også rettes i HeaderComponent.vue linje 30.
 // De to versions numre skal følges ad.
-const version = "v1.101";
+
 //const docRoot = "docRoot";
 const docRoot = "testDocRoot";
 const app = express();

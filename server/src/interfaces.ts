@@ -10,6 +10,14 @@ export interface Ivertice {
   dependant?: string;
 }
 
+
+export interface WorkflowResult {
+  workflowItems: WorkflowNode[];
+  parmItems: ParmItem[]
+  count: number;
+  ok: boolean;
+}
+
 export type WorkflowNode = {
   name: string;
   type: string;
@@ -34,6 +42,8 @@ export type WorkflowNode = {
   workflowVertices?: Ivertice[];
   [key: string]: unknown;
 };
+
+export type ParmItem = { task: string; parameter: string };
 
 export type TreeNode =
   {

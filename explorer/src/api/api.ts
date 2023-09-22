@@ -84,7 +84,6 @@ export const api = {
     return fetch(baseUrl + url, options);
   },
 
-  // env eks: "usprod"
   // kaldes fra WorkflowComponent
   getAllWorkflows() {
     console.log(config);
@@ -125,10 +124,10 @@ export const api = {
   },
 
   
-  getPlandir(file: string) {
+  getPlandir(directory: string) {
     const env = config.uacenv.value;
-    console.log("api.getPlandir ", file);
-    const url = `plandir/?file=${file}`;
+    console.log("api.getPlandir ", directory);
+    const url = `plandir/?directory=${directory}`;
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },

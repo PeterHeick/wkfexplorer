@@ -12,6 +12,7 @@ export async function readTask(cfg: Environment[string], task: string): Promise<
   const url = `${baseUrl}/uc/resources/task?taskname=${task}`
   const token = readToken(cfg);
 
+  console.log(`readTask ${task}`);
   const options = {
     method: "GET",
     headers: {
@@ -22,8 +23,6 @@ export async function readTask(cfg: Environment[string], task: string): Promise<
       "Sec-Fetch-Site": "cross-site"
     }
   }
-  // console.log(url);
-  // console.log(options);
   return await fetch(url, options);
 };
 
@@ -32,6 +31,8 @@ export async function updateTask(cfg: Environment[string], body: any) {
   const url = `${baseUrl}/uc/resources/task`
   const token = readToken(cfg);
 
+  body.excludeRelated = true;
+  console.log(`updateTask() `)
   const options = {
     method: "PUT",
     headers: {
@@ -43,8 +44,6 @@ export async function updateTask(cfg: Environment[string], body: any) {
     },
     body: JSON.stringify(body)
   }
-  // console.log(url);
-  // console.log(options);
   return await fetch(url, options);
 };
 
