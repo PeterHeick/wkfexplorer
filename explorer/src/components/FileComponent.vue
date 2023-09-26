@@ -38,13 +38,13 @@ async function fetchData(directoryPath: string) {
 }
 
 const openFileExplorer = () => {
-  api.startExplorer(directory.value);
+  console.log("openFileExploerer")
+  api.startExplorer(directory.value).then(() => fetchData(config.getPlanDir()));
 }
 
 const emitFileClicked = (fileName: string) => {
   emit('planRead', fileName);
 }
-
 
 /*
 watchEffect(() => {

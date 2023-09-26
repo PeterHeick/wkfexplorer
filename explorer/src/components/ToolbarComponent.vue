@@ -39,7 +39,7 @@ let intervalId = 0;
 const updateProgress = ref(0);
 const isDropdownVisible = ref(false);
 
-const emit = defineEmits(["planRead", "envEvent", "missingEvent"]);
+const emit = defineEmits(["planRead", "envEvent", "missingEvent", 'updateParamList']);
 defineProps({ type: String });
 
 // disable button if something is not loaded
@@ -94,6 +94,7 @@ const handleUpdate = async () => {
 
   // data.missing a list of missing tasks if any
   emit("missingEvent", data.missing);
+  emit('updateParamList');
   state.planUpdateInProgress = false;
   clearInterval(intervalId);
   updateProgress.value = 0;

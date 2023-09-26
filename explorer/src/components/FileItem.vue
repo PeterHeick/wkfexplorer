@@ -18,6 +18,7 @@
         :item="child"
         @file-clicked="emitFileClicked"
         @editorFinished="emitEditorFinished"
+        @keydown="handleKeydown"
       />
       <div style="padding-top: 3px">
         <input
@@ -106,7 +107,7 @@ const onEnter = () => {
   if (fileName.value) {
     if (props?.item) {
       const file = `${props.item.path}\\${fileName.value}`;
-      api.startEditor(file);
+      api.startEditor(file).then(() => emitEditorFinished());
     }
 
     fileName.value = '';
@@ -114,6 +115,36 @@ const onEnter = () => {
   }
 };
 
+// Virker ikke den fanger ikke keyDown, der gøres ikke mere ved det med mindre driften ønsker delete file
+const handleKeydown = async (event: { key: string }) => {
+  console.log("Keydown");
+  if (event.key === "Delete" && props?.item) {
+    console.log("Delete Key");
+    deleteFile(props.item.path);
+  }
+};
+
+// Virker ikke
+// Er ikke implementeret færdig, driften ønsker ikke flere rettelser
+const deleteFile = async (file: string) => {
+  console.log("delete file()");
+  const result = await Swal.fire({
+    title: "Er du sikker?",
+    text: "Filen vil blive slettet permanent",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Ja, slet den!",
+    cancelButtonText: "Nej, annuller!",
+  });
+
+  if (result.isConfirmed) {
+    // Kode for at slette filen
+    // ...
+    api.delete(file);
+
+    Swal.fire("Slettet!", "Din fil er blevet slettet.", "success");
+  }
+};
 </script>
 
 <style>

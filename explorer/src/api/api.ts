@@ -146,12 +146,11 @@ export const api = {
     return fetch(baseUrl + url, options)
   },
 
-  /*
+  // Er ikke implementeret færdig, driften ønsker ikke flere rettelser
   delete(file: string) {
-    console.log("api.editor ", file);
+    console.log("api.delete ", file);
     const url = `delete/?fileName=${file}`;
     options.method = "DELETE";
     return fetch(baseUrl + url, options)
   },
-  */
 }

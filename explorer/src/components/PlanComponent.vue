@@ -4,7 +4,7 @@
       <HeaderComponent>Plan explorer</HeaderComponent>
     </div>
     <div class="toolbar">
-      <ToolbarComponent @envEvent="handleEnvEvent" @planRead="handlePlanRead" @missingEvent="handleMissing" type="plan">
+      <ToolbarComponent @envEvent="handleEnvEvent" @planRead="handlePlanRead" @missingEvent="handleMissing"  @updateParamList="updateParamList" type="plan">
       </ToolbarComponent>
     </div>
     <div id="container">
@@ -76,11 +76,16 @@ const handleEnvEvent = async (env: string) => {
   config.uacenv.value = env;
   //config.setEnv(env);
   config.getEnv();
+  updateParamList();
+  missingList.value = [];
+}
+
+const updateParamList = async () => {
+  console.log("updateParamList()");
   const response = await api.getParamList();
   if (response.ok) {
     taskList.value = await response.json();
   }
-  missingList.value = [];
 }
 
 // handlePlanRead => get plan from server (Do something)

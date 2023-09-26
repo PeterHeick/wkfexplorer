@@ -314,7 +314,7 @@ export function fixDates(filename: string) {
         // Gennemgå arrayet og erstat variablerne i tekstfilen
         const value = varObj[attr];
         console.log(`Erstat ${attr} med ${value}`)
-        const variabelErstatning = new RegExp('\\$' + attr, 'gi');
+        const variabelErstatning = new RegExp(`\\$\\{${attr}\\}`, 'gi');
         tekstfilIndhold = tekstfilIndhold.replace(variabelErstatning, value);
       }
     }

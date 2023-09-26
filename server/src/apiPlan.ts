@@ -173,47 +173,7 @@ export function apiPlan(app: express.Application) {
     }
     res.status(201).json(returnStatus);
   })
-
-  app.get("/api/editor", (req: any, res: any) => {
-    console.log('\n--- /api/editor');
-    const fileName = getParm(req, 'fileName');
-
-    if (!existsSync(fileName)) {
-      writeFileSync(fileName, '', 'latin1');
-    }
-    const match = fileName.match(/Uge(\d+)/);
-    if (match) {
-      fixDates(fileName);
-    }
-    const child = spawn(config.editor, [fileName] );
-    child.on('close', () => res.json({}))
-    
-  })
-
-  app.get("/api/explorer", (req: any, res: any) => {
-    console.log('\n--- /api/explorer');
-    const dirName = getParm(req, 'dirName');
-
-    spawn('explorer', [dirName], { detached: true, stdio: 'ignore' });
-    res.status(201).json({});
-  })
-
-  app.get("/api/delete", (req: any, res: any) => {
-    console.log('\n--- /api/delete');
-    const fileName = getParm(req, 'fileName');
-
-    try {
-      unlinkSync('path_to_your_file');
-      console.log('File deleted successfully');
-      res.status(200).json({});
-      return;
-    } catch (err) {
-      console.error('There was an error:', err);
-      res.status(403).json({ "message": "Fejl ved sletning", "details": err });
-      return;
-    }
-  })
-
+ 
   async function handleParmItems(cfg: Environment[string], items: ParmItem[]) {
     console.log(`handleParmItems() items ${JSON.stringify(items)}`);
     for (const item of items) {
