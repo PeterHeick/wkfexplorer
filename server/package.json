@@ -8,7 +8,7 @@
     "plan": "nodemon --exec ts-node src/weekplan.ts",
     "build": "webpack  && npm run copy-to-testServer",
     "start": "nodemon --watch src -e ts --exec npm run build",
-    "copy-to-testServer": "mv dist/server.js I:/EDBGruppe/Projekter/uacwebserver/testServer.js"
+    "copy-to-testServer": "mv dist/server.js I:/EDBGruppe/Projekter/uacwebserver/server.js"
   },
   "author": "",
   "license": "ISC",

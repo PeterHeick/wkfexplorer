@@ -2,7 +2,7 @@
   <div class="file-explorer" style="padding-right: 10px;">
     <span @click="openFileExplorer" class="dirHeader">{{ directory }}</span>
     <ul>
-      <file-item v-for="item in items" :key="item.name" :item="item" @file-clicked="emitFileClicked" @editorFinished="fetchData" />
+      <file-item v-for="item in items" :key="item.name" :item="item" @getPlanFile="emitGetPlanFile" @updateFileExplorer="fetchData" />
     </ul>
   </div>
 </template>
@@ -18,7 +18,7 @@ interface dirEnt {
   path: string,
   type: string
 }
-const emit = defineEmits(['planRead']);
+const emit = defineEmits(['getPlanFile']);
 
 const directory = ref(''); // Initial directory
 const items = ref([] as dirEnt[]); // Files and folders
@@ -42,17 +42,9 @@ const openFileExplorer = () => {
   api.startExplorer(directory.value).then(() => fetchData(config.getPlanDir()));
 }
 
-const emitFileClicked = (fileName: string) => {
-  emit('planRead', fileName);
+const emitGetPlanFile = (fileName: string) => {
+  emit('getPlanFile', fileName);
 }
-
-/*
-watchEffect(() => {
-  const cfg = config.getEnvironment();
-  console.log("watch config.uacenv ", cfg.planDir);
-  fetchData(cfg.planDir);
-});
-*/
 
 watch(() => config.uacenv.value, () => {
   const cfg = config.getEnvironment();

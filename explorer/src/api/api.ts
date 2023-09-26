@@ -30,8 +30,8 @@ export const api = {
     return fetch(baseUrl + url, options)
   },
 
-  getPlanData(file: string) {
-    console.log("api.getPlanData ")
+  getPlan(file: string) {
+    console.log("api.getPlan")
     const env = config.uacenv.value;
     const url = `plan?plan=${file}&uacenv=${env}`;
     options.method = "GET";

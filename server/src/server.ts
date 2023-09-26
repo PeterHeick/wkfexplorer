@@ -13,7 +13,7 @@ import { version } from "../../version.json";
 // De to versions numre skal følges ad.
 
 //const docRoot = "docRoot";
-const docRoot = "testDocRoot";
+const docRoot = "DocRoot";
 const app = express();
 
 app.use(history());

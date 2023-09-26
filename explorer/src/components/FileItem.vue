@@ -16,16 +16,18 @@
         v-for="child in item.children"
         :key="child.name"
         :item="child"
-        @file-clicked="emitFileClicked"
-        @editorFinished="emitEditorFinished"
+        @getPlanFile="emitGetPlanFile"
+        @updateFileExplorer="updateFileExplorer"
         @keydown="handleKeydown"
       />
       <div style="padding-top: 3px">
         <input
+          ref="inputField"
           v-show="item.type === 'folder' && addNewFile"
           type="text"
           v-model="fileName"
           @keyup.enter="onEnter"
+          @blur="addNewFile = false"
         />
       </div>
     </ul>
@@ -35,7 +37,7 @@
 <script lang="ts" setup>
 import { api } from "@/api/api";
 import Swal from "sweetalert2";
-import { defineProps, defineEmits, ref } from "vue";
+import { defineProps, defineEmits, ref, nextTick, watch } from "vue";
 import { config } from "@/store/config";
 
 interface Item {
@@ -47,11 +49,16 @@ interface Item {
 
 let addNewFile = ref(false);
 let fileName = ref("");
+const inputField = ref(null as HTMLInputElement | null);
 const props = defineProps({
   item: Object as () => Item,
 });
 
-const emit = defineEmits(["file-clicked", "editorFinished"]);
+// updateFileExplorer  Opdatere file exploren i right pane på plan siden
+//     fanges i FileComponent.vue og kalder fetchData()
+// file-clicked  fanger når brugeren klikker på en fil eller et katalog (enkelt klik og dobbelt klik)
+
+const emit = defineEmits(["getPlanFile", "updateFileExplorer"]);
 
 let clickCount = 0;
 let timer: number | null = null;
@@ -61,10 +68,10 @@ const fileClicked = () => {
   console.log("click: ", clickCount);
   if (clickCount === 1) {
     timer = setTimeout(() => {
-      if (props?.item && props.item.type === 'file') {
+      if (props?.item && props.item.type === "file") {
         console.log("Pick: ", props.item.path);
-        emitFileClicked(props.item.path);
-      } else if (props?.item && props.item.type === 'folder') {
+        emitGetPlanFile(props.item.path);
+      } else if (props?.item && props.item.type === "folder") {
         console.log("Pick folder: ", props.item.path);
         console.log("addNewFile");
         addNewFile.value = true;
@@ -76,12 +83,12 @@ const fileClicked = () => {
       clearTimeout(timer);
       timer = null;
     }
-    if (props?.item && props.item.type === 'file') {
+    if (props?.item && props.item.type === "file") {
       console.log("Double click: ", props.item.path);
       api.startEditor(props.item.path).then(() => {
-        if (props?.item && props.item.type === 'file') {
+        if (props?.item && props.item.type === "file") {
           console.log(`Editor finished: ${props.item.path}`);
-          emitEditorFinished();
+          updateFileExplorer();
         }
       });
     }
@@ -93,24 +100,24 @@ const resetClick = () => {
   clickCount = 0;
 };
 
-const emitFileClicked = (filePath: string) => {
-  console.log(`emitFileClicked: ${filePath}`);
-  emit("file-clicked", filePath);
+const emitGetPlanFile = (filePath: string) => {
+  console.log(`emitGetPlanFile: ${filePath}`);
+  emit("getPlanFile", filePath);
 };
 
-const emitEditorFinished = () => {
-  console.log(`emitEditorFinished ${config.getPlanDir()}`);
-  emit("editorFinished", config.getPlanDir());
+const updateFileExplorer = () => {
+  console.log(`updateFileExplorer ${config.getPlanDir()}`);
+  emit("updateFileExplorer", config.getPlanDir());
 };
 
 const onEnter = () => {
   if (fileName.value) {
     if (props?.item) {
       const file = `${props.item.path}\\${fileName.value}`;
-      api.startEditor(file).then(() => emitEditorFinished());
+      api.startEditor(file).then(() => updateFileExplorer());
     }
 
-    fileName.value = '';
+    fileName.value = "";
     addNewFile.value = false;
   }
 };
@@ -145,6 +152,20 @@ const deleteFile = async (file: string) => {
     Swal.fire("Slettet!", "Din fil er blevet slettet.", "success");
   }
 };
+
+/*
+nextTick er en metode i Vue, der anvendes til at vente på, at DOM-opdateringerne er færdige.
+Den sikrer, at den kode, der er indesluttet i nextTick, kun eksekveres efter, at Vue's reaktive system har opdateret DOM'en
+*/
+watch(addNewFile, (newValue) => {
+  if (newValue) {
+    nextTick(() => {
+      if (inputField?.value) {
+        inputField.value.focus();
+      }
+    });
+  }
+});
 </script>
 
 <style>

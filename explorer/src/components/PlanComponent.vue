@@ -4,7 +4,7 @@
       <HeaderComponent>Plan explorer</HeaderComponent>
     </div>
     <div class="toolbar">
-      <ToolbarComponent @envEvent="handleEnvEvent" @planRead="handlePlanRead" @missingEvent="handleMissing"  @updateParamList="updateParamList" type="plan">
+      <ToolbarComponent @envEvent="handleEnvEvent" @getPlanFile="handlePlanFileRead" @missingEvent="handleMissing"  @updateParamList="updateParamList" type="plan">
       </ToolbarComponent>
     </div>
     <div id="container">
@@ -35,7 +35,7 @@
         </div>
       </div>
       <div id="right-pane">
-        <FileComponent @planRead="handlePlanRead"></FileComponent>
+        <FileComponent @getPlanFile="handlePlanFileRead"></FileComponent>
       </div>
     </div>
   </div>
@@ -88,14 +88,14 @@ const updateParamList = async () => {
   }
 }
 
-// handlePlanRead => get plan from server (Do something)
-const handlePlanRead = async (file: string) => {
-  console.log("handlePlanRead ", file);
+// handlePlanFileRead => get plan from server (Do something)
+const handlePlanFileRead = async (file: string) => {
+  console.log("handlePlanFileRead ", file);
 
   state.isPlanRead = false;
   missingList.value = [];
   try {
-    const response = await api.getPlanData(file)
+    const response = await api.getPlan(file)
     console.log("response: ", response);
     const data = await response.json();
     console.log("data: ", data);
