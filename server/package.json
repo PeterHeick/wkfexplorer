@@ -6,9 +6,9 @@
   "scripts": {
     "start2": "nodemon --exec ts-node src/server.ts",
     "plan": "nodemon --exec ts-node src/weekplan.ts",
-    "build": "webpack  && npm run copy-to-testServer",
+    "build": "webpack  && npm run copy-to-server",
     "start": "nodemon --watch src -e ts --exec npm run build",
-    "copy-to-testServer": "mv dist/server.js I:/EDBGruppe/Projekter/uacwebserver/server.js"
+    "copy-to-server": "mv dist/server.js I:/EDBGruppe/Projekter/uacwebserver/server.js"
   },
   "author": "",
   "license": "ISC",

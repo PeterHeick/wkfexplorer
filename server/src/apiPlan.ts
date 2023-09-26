@@ -6,6 +6,7 @@ import { handleData, sortPlan, getParm, getWkfByName, fixDates } from "./util";
 import { checkConfig, config } from "./apiConfig";
 import { Environment, ParmItem, WorkflowNode, WorkflowResult } from './interfaces';
 import { spawn } from 'child_process';
+import path from 'path';
 
 export function apiPlan(app: express.Application) {
   let numberOfNodes = 0;
@@ -39,12 +40,11 @@ export function apiPlan(app: express.Application) {
       .then((obj: any) => {
         let { workflowItems, parmItems, count, ok } = obj;
         console.log(`obj.parms: ${parmItems}`)
+
         if (!ok) {
-          res.status(409).json({
-            message: "Fejl plan fil",
-            detail: `Der er en syntaks fejl i ${plan} linje ${count}`,
-            status: 409,
-            ok: false
+          res.status(400).json({
+            message: "Fejl i plan fil",
+            detail: `Der er en syntaks fejl i ${path.basename(plan)} linje ${count}`,
           });
           return
         } else {
@@ -56,12 +56,10 @@ export function apiPlan(app: express.Application) {
         }
       })
       .catch((err: any) => {
-        console.log('Plan ikke fundet ', plan, err);
+        console.log('Fejl ved plan ', plan, err);
         res.status(404).json({
           message: "Plan ikke fundet",
-          detail: `Plan ${plan} blev ikke fundet`,
-          status: 404,
-          ok: false
+          detail: `Plan ${path.basename(plan)} blev ikke fundet`,
         });
       })
 
@@ -117,9 +115,12 @@ export function apiPlan(app: express.Application) {
 
     await deleteOldPlan(cfg, env, currentPlan.workflows)
       .catch((error) => {
-        console.log("Delete Old plan fejlet", error);
-        console.log(error);
         // Det gør ikke noget at den gamle plan ikke kan slettes
+        if (error.code === 'ENOENT') {
+          console.log(`no such file or directory: ${error.path}`);
+        } else {
+          console.log(error);
+        }
       })
 
     const topLevelNames: string[] = sortPlan(currentPlan.workflows);
@@ -173,7 +174,7 @@ export function apiPlan(app: express.Application) {
     }
     res.status(201).json(returnStatus);
   })
- 
+
   async function handleParmItems(cfg: Environment[string], items: ParmItem[]) {
     console.log(`handleParmItems() items ${JSON.stringify(items)}`);
     for (const item of items) {
@@ -356,21 +357,9 @@ export function apiPlan(app: express.Application) {
 
 const deleteOldPlan = async (cfg: Environment[string], env: string, workflows: WorkflowNode[]) => {
   let curWorkflows = [];
-  try {
-    console.log(`deleteOldPlan: ${config.dataDir}/${env}_plan.json`);
-    curWorkflows = JSON.parse(readFileSync(`${config.dataDir}/${env}_plan.json`, 'utf-8'));
-    console.log("Delete current plan ", curWorkflows);
-    try {
-      await deletePlan(cfg, workflows, curWorkflows);
-    } catch (error) {
-      throw error;
-    }
-  } catch (err: any) {
-    throw {
-      message: "Fejl ved læsning af plan",
-      detail: `Current plan ${config.dataDir}/${env}_plan.json findes ikke ${err.message}`,
-    }
-  }
+  console.log(`deleteOldPlan: ${config.dataDir}/${env}_plan.json`);
+  curWorkflows = JSON.parse(readFileSync(`${config.dataDir}/${env}_plan.json`, 'utf-8'));
+  await deletePlan(cfg, workflows, curWorkflows);
 }
 
 async function deletePlan(cfg: Environment[string], workflows: WorkflowNode[], sortedPlan: string[]): Promise<void> {
@@ -460,6 +449,7 @@ async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResul
       handleWorkflowItem(currentWorkflowItem, result.groupMember, result.dependant);
     } else {
       console.log(`No match ${result.parmMatched}`);
+      return ({ workflowItems: {} as WorkflowNode[], parmItems: [], count: lineNumber, ok: false })
     }
   }
 
