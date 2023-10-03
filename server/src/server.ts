@@ -19,8 +19,14 @@ import 'dotenv/config';
 
 //const docRoot = "docRoot";
 const docRoot = "DocRoot";
-const port = process.env.PORT || 8080;
+// const port = process.env.PORT || 54345;
+// const ws_port = process.env.WS_PORT || 54445;
+const host = "localhost";
+const port = 8080;
+const ws_port = 8081;
 const app = express();
+
+console.log(`Current directory: ${process.cwd()}`);
 
 app.use(history());
 app.use(cors());
@@ -37,16 +43,6 @@ app.use(
   })
 );
 
-
-
-/*
-app.get("/", (req, res) => {
-  console.log('\n--- /');
-  console.log(`Send index.html ${docRoot}`);
-  res.sendFile(path.join(docRoot, "index.html"));
-});
-*/
-
 apiVersion(app, version);
 apiConfig(app);
 apiTask(app);
@@ -54,13 +50,18 @@ apiPlan(app);
 apiFile(app);
 
 // start serveren
+/**
+ * Starts the server and listens on the specified port and host.
+ * @param {number} port - The port number to listen on.
+ * @param {string} host - The host name or IP address to bind to.
+ * @returns {void}
+ */
 const server = app.listen(port, () => {
-  console.log(process.cwd());
-  console.log("Server kører på http://localhost:8080/");
+  console.log(`Server kører på http://${host}:${port}/`);
 });
 
-
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocket.Server({ port: ws_port });
+console.log(`WebsocketServer kører på http://${host}:${ws_port}/`);
 let watcher: chokidar.FSWatcher;
 
 wss.on('connection', (ws) => {

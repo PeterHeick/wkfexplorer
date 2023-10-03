@@ -12,6 +12,10 @@ import { exit } from 'process';
 export let config: Config = {} as Config;
 export let localConfig: Config = {} as Config;
 
+/**
+ * Reads the configuration from the config.json file and merges it with the local config file.
+ * @throws {Object} Throws an object with a message and detail property if there is an error reading the config files.
+ */
 function readConfig() {
   let json;
 
@@ -56,6 +60,9 @@ function readConfig() {
   }
 }
 
+/**
+ * Checks if the `config` object is defined and not empty. If it is empty, it reads the configuration from file.
+ */
 export function checkConfig() {
   console.log("checkConfig: ");
   console.log(Object.keys(config).length);
@@ -64,6 +71,10 @@ export function checkConfig() {
   }
 }
 
+/**
+ * Configures the API endpoint for retrieving the application configuration.
+ * @param app - The express application instance.
+ */
 export function apiConfig(app: express.Application) {
   app.get("/api/config", (req: any, res: any) => {
     console.log('\n--- /api/config');
@@ -79,6 +90,11 @@ export function apiConfig(app: express.Application) {
   });
 }
 
+/**
+ * Registers an API version endpoint on the given Express application.
+ * @param app - The Express application to register the endpoint on.
+ * @param version - The version string to include in the response.
+ */
 export function apiVersion(app: express.Application, version: string) {
   app.get("/api/version", (req: Request, res: Response) => {
     console.log('\n--- /');

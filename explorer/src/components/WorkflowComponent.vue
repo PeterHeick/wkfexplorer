@@ -1,3 +1,7 @@
+<!--
+  FILEPATH: h:\projekter\wkfexplorer\explorer\src\components\WorkflowComponent.vue
+  Description: This component is responsible for rendering the workflow explorer page. It contains a header, a toolbar, a tree view, and a task view. The tree view displays the workflow tree, and the task view displays the details of the selected task. The component fetches the workflow data from the API and updates the state accordingly. It also handles environment changes and current node events.
+-->
 <template>
   <div>
     <div class="header">

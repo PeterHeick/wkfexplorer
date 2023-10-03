@@ -6,6 +6,11 @@ import { config } from './apiConfig';
 import { getParm } from './apiPlanUtil';
 
 
+/**
+ * Registers API endpoints related to file operations.
+ * @param app - The express application instance.
+ */
+
 export function apiFile(app: express.Application) {
   app.get('/api/plandir', (req, res) => {
     // Join the provided directory path with the 'public' directory
@@ -33,20 +38,33 @@ export function apiFile(app: express.Application) {
     console.log('\n--- /api/editor');
     const fileName = getParm(req, 'fileName');
 
+    console.log(`apiFile: editor ${fileName}`);
+    /*
     if (!existsSync(fileName)) {
+      console.log(`apiFile: create ${fileName}`);
       writeFileSync(fileName, '', 'latin1');
     }
+    */
     spawn(config.editor, [fileName]);
+    console.log(`apiFile: editor ${fileName} started`);
     const match = fileName.match(/Uge(\d+)/);
+    console.log(`apiFile: editor ${fileName} match ${match}`);
     if (match) {
       try {
         console.log(`apiFile: fixDates ${fileName}`);
         fixDates(fileName);
+        // res.setHeader('Connection', 'close');
         res.status(200).json({});
       } catch (err) {
-        res.status(203).json( err );
+        console.log(`apiFile: fixDates ${fileName} error ${err}`);
+        // res.setHeader('Connection', 'close');
+        res.status(203).json(err);
       }
+      return;
     }
+    // res.setHeader('Connection', 'close');
+    res.status(200).json({});
+    console.log(`apiFile: editor ${fileName} done`);
   })
 
   app.get("/api/explorer", (req: any, res: any) => {

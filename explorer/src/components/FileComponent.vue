@@ -13,6 +13,7 @@ import { ref, onMounted, defineEmits, watch, onBeforeUnmount } from "vue";
 import FileItem from "./FileItem.vue";
 import { config } from "@/store/config";
 import Swal from "sweetalert2";
+import { Environment } from "@/types/interfaces";
 
 interface dirEnt {
   name: string;
@@ -23,8 +24,10 @@ const emit = defineEmits(["getPlanFile"]);
 
 const directory = ref(""); // Initial directory
 const items = ref([] as dirEnt[]); // Files and folders
-const port = process.env.VUE_APP_WEBSOCKET_PORT;
-const host = process.env.VUE_APP_HOST;
+// const port = process.env.VUE_APP_WS_PORT;
+// const host = process.env.VUE_APP_HOST;
+const ws_port = 8081;
+const host = "localhost";
 
 let ws: WebSocket;
 
@@ -55,18 +58,18 @@ const emitGetPlanFile = (fileName: string) => {
 watch(
   () => config.uacenv.value,
   () => {
-    const cfg = config.getEnvironment();
+    const cfg = config.getEnvironment() as Environment;
     console.log("watch config.uacenv ", cfg.planDir);
     fetchData();
   }
 );
 
 onMounted(() => {
-  console.log(`FileComponent.onMounted: port: ${port}, host: ${host}`);
+  console.log(`FileComponent.onMounted: port: ${ws_port}, host: ${host}`);
   fetchData()  // Fetch the data for the initial directory when the component is mounted
     .then(() => {
 
-      ws = new WebSocket(`ws://${host}:${port}`);
+      ws = new WebSocket(`ws://${host}:${ws_port}`);
       ws.addEventListener("message", (msEvent) => {
         const parsedEvent = JSON.parse(msEvent.data);
         console.log(`addEventListener ${JSON.stringify(parsedEvent)}`);

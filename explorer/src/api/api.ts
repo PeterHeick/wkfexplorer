@@ -1,7 +1,18 @@
-import { config } from '@/store/config';
-import Swal from 'sweetalert2';
+/**
+ * This module contains functions for making API requests to the backend server.
+ * @module api
+ */
 
+import { config } from '@/store/config';
+
+/**
+ * The base URL for the API requests.
+ */
 const baseUrl = `http://localhost:8080/api/`;
+
+/**
+ * The default options for the API requests.
+ */
 const options = {
   method: "GET",
   headers: {
@@ -12,43 +23,61 @@ const options = {
   },
 };
 
+/**
+ * An object containing functions for making API requests.
+ */
 export const api = {
 
+  /**
+   * Gets the configuration data from the server.
+   * @returns A Promise that resolves to the configuration data.
+   */
   getConfig() {
-    console.log("api.getConfig ")
-
     const url = 'config';
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },
 
+  /**
+   * Gets the version number of the server.
+   * @returns A Promise that resolves to the version number.
+   */
   getVersion() {
-    console.log("getVersion")
-
     const url = 'version';
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },
 
+  /**
+   * Gets the plan data for a given file from the server.
+   * @param file - The name of the file to get the plan data for.
+   * @returns A Promise that resolves to the plan data.
+   */
   getPlan(file: string) {
-    console.log("api.getPlan")
     const env = config.uacenv.value;
     const url = `plan?plan=${file}&uacenv=${env}`;
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },
 
-  // Kaldt fra handleTaskClick i TreeComponent
+  /**
+   * Gets the task data for a given task name from the server.
+   * @param name - The name of the task to get the data for.
+   * @returns A Promise that resolves to the task data.
+   */
   getTask(name: string) {
-    console.log("api.getTask", name);
     const env = config.uacenv.value;
     const url = `task?taskname=${name}&uacenv=${env}`;
     options.method = "GET";
     return fetch(baseUrl + url, options);
   },
 
+  /**
+   * Updates the task data on the server.
+   * @param body - The updated task data.
+   * @returns A Promise that resolves to the updated task data.
+   */
   updateTask(body: any) {
-    console.log("updateTask api");
     const env = config.uacenv.value;
     const url = `updatetask?uacenv=${env}`;
 
@@ -57,12 +86,9 @@ export const api = {
       method: "PUT",
       body: JSON.stringify(body)
     };
-    console.log(body);
-    console.log(updatedOptions);
 
     return fetch(baseUrl + url, updatedOptions)
       .then((data) => {
-        console.log(data)
         return data
       })
       .catch((error) => {
@@ -70,6 +96,10 @@ export const api = {
       });
   },
 
+  /**
+   * Gets the list of parameters from the server.
+   * @returns A Promise that resolves to the list of parameters.
+   */
   getParamList() {
     const env = config.uacenv.value;
     const url = `parameters?uacenv=${env}`;
@@ -77,6 +107,10 @@ export const api = {
     return fetch(baseUrl + url, options);
   },
 
+  /**
+   * Gets the list of missing parameters from the server.
+   * @returns A Promise that resolves to the list of missing parameters.
+   */
   getMissing() {
     const env = config.uacenv.value;
     const url = `missing?uacenv=${env}`;
@@ -84,70 +118,89 @@ export const api = {
     return fetch(baseUrl + url, options);
   },
 
-  // kaldes fra WorkflowComponent
+  /**
+   * Gets the list of all workflows from the server.
+   * @returns A Promise that resolves to the list of all workflows.
+   */
   getAllWorkflows() {
-    console.log(config);
-    console.log(config.uacenv.value);
     const env = config.uacenv.value;
-    console.log("api.getAllWorkflows ", env);
     const url = `listadv?uacenv=${env}`;
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },
 
-  // Kaldes fra Toolbar
+  /**
+   * Updates the plan data on the server.
+   * @returns A Promise that resolves to the updated plan data.
+   */
   updatePlan() {
-    console.log("updateplan api");
     const env = config.uacenv.value;
-    console.log("api.put ", env);
     const url = `plan?uacenv=${env}`;
     options.method = "PUT";
     return fetch(baseUrl + url, options)
   },
 
-  // Kaldes fra Toolbar
+  /**
+   * Gets the progress data from the server.
+   * @returns A Promise that resolves to the progress data.
+   */
   progress() {
-    console.log("progress api");
     options.method = "GET";
     const url = "progress";
     return fetch(baseUrl + url, options)
   },
 
-  // Kaldes fra Toolbar
+  /**
+   * Deletes the plan data on the server.
+   * @returns A Promise that resolves to the deleted plan data.
+   */
   deletePlan() {
-    console.log("updateplan api");
     const env = config.uacenv.value;
-    console.log("api.delete ", env);
     const url = `plan?uacenv=${env}`;
     options.method = "DELETE";
     return fetch(baseUrl + url, options)
   },
 
+  /**
+   * Gets the plan directory data for a given directory from the server.
+   * @param directory - The name of the directory to get the plan directory data for.
+   * @returns A Promise that resolves to the plan directory data.
+   */
   getPlandir(directory: string) {
     const env = config.uacenv.value;
-    console.log("api.getPlandir ", directory);
     const url = `plandir/?directory=${directory}`;
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },
 
+  /**
+   * Starts the editor for a given file on the server.
+   * @param file - The name of the file to start the editor for.
+   * @returns A Promise that resolves to the editor data.
+   */
   startEditor(file: string) {
-    console.log("api.editor ", file);
     const url = `editor/?fileName=${file}`;
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },
 
+  /**
+   * Starts the explorer for a given directory on the server.
+   * @param file - The name of the directory to start the explorer for.
+   * @returns A Promise that resolves to the explorer data.
+   */
   startExplorer(file: string) {
-    console.log("api.explorer ", file);
     const url = `explorer/?dirName=${file}`;
     options.method = "GET";
     return fetch(baseUrl + url, options)
   },
 
-  // Er ikke implementeret færdig, driften ønsker ikke flere rettelser
+  /**
+   * Deletes a file on the server.
+   * @param file - The name of the file to delete.
+   * @returns A Promise that resolves to the deleted file data.
+   */
   delete(file: string) {
-    console.log("api.delete ", file);
     const url = `delete/?fileName=${file}`;
     options.method = "DELETE";
     return fetch(baseUrl + url, options)

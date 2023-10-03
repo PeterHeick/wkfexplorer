@@ -1,3 +1,19 @@
+<!--
+  FILEPATH: h:\projekter\wkfexplorer\explorer\src\components\explorer\TreeComponent.vue
+  Description: This component is responsible for rendering a tree structure of tasks and workflows.
+  Props:
+    - treeData: An array of TreeNode objects representing the tree structure to be rendered.
+  Emits:
+    - currentNodeEvent: An event emitted when a task node is clicked. It passes the name of the clicked node as a string.
+  Methods:
+    - handleTaskClick: A method that handles the click event on a task node. It logs the clicked node to the console and emits the currentNodeEvent event.
+    - handleCurrentNodeEvent: A method that handles the currentNodeEvent event. It logs the name of the clicked node to the console and emits the currentNodeEvent event.
+    - openNode: A method that sets the isVisible property of a node to true.
+    - handleClick: A method that handles the click event on a workflow node. It toggles the visibility of the node and its children.
+    - isWorkflow: A method that returns true if the given node is a workflow node.
+    - closeSubtree: A recursive method that sets the isVisible property of a node and its children to false.
+    - toggleVisibility: A method that toggles the visibility of a node and its children.
+-->
 <template>
   <ul>
     <li v-for="(node, index) in treeData" :key="index" class="treeList">

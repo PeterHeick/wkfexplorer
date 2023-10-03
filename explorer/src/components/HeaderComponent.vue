@@ -1,18 +1,21 @@
 <template>
   <div class="header" :style="{ backgroundColor: color }">
-    <h3>
-      <slot></slot>
-      <br/>
-      <span style="font-size: small">{{ message }}</span>
-    </h3>
-    <div class="buttons">
-      <router-link to="/" @click="handleClick">
-        <ButtonComponent>Workflows</ButtonComponent>
-      </router-link>
-
-      <router-link to="/plan" @click="handleClick">
-        <ButtonComponent>Plan</ButtonComponent>
-      </router-link>
+    <div class="flex-container">
+      <div class="buttons left">
+        <router-link to="/" @click="handleClick">
+          <ButtonComponent>Workflows</ButtonComponent>
+        </router-link>
+      </div>
+      <h3 class="center">
+        <slot></slot>
+        <br/>
+        <span style="font-size: small">{{ message }}</span>
+      </h3>
+      <div class="buttons right">
+        <router-link to="/plan" @click="handleClick">
+          <ButtonComponent>Plan</ButtonComponent>
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -56,6 +59,7 @@ const updateVersion = async () => {
   }
 
 }
+
 onBeforeMount(() => {
   console.log("HeaderComponent.onBeforeMount: ", color.value);
   updateVersion();
@@ -63,24 +67,26 @@ onBeforeMount(() => {
 </script>
 
 <style scoped>
-.header {
+.flex-container {
   display: flex;
-  height: 50px;
-  width: 100%;
-  height: 100%;
   justify-content: space-between;
-  padding-top: 10px;
-  overflow: visible;
-  cursor: default;
-  border: 2px solid grey;
-}
-
-h3 {
-  padding-left: 10px;
-}
-
-.buttons {
-  display: flex;
   align-items: center;
 }
+
+.left {
+  flex: 1;
+  padding: 30px;
+}
+
+.center {
+  flex: 2;
+  text-align: center;
+}
+
+.right {
+  flex: 1;
+  text-align: right;
+  padding-right: 30px;
+}
+
 </style>

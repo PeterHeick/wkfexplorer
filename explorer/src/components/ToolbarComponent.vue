@@ -127,7 +127,7 @@ onUnmounted(() => {
 
 onBeforeMount(() => {
   console.log("ToolbarComponent onBeforeMount");
-  environmentList.value = config.getEnvironmentList();
+  environmentList.value = config.getEnvironmentList() as string[];
 });
 </script>
 

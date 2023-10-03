@@ -5,6 +5,12 @@ import { homedir } from 'os';
 import path from 'path';
 import { findTopLevel } from './apiPlanUtil';
 
+/**
+ * Reads a token from a file path specified in the configuration object.
+ * @param cfg - The configuration object containing the token file path.
+ * @returns The contents of the token file.
+ * @throws An error object with a message, detail, and status property if the token file cannot be read.
+ */
 export function readToken(cfg: Environment[string]) {
   try {
     const homeDir = homedir();
@@ -30,6 +36,12 @@ export function readToken(cfg: Environment[string]) {
 }
 
 
+/**
+ * Recursively merges two objects into one.
+ * @param target - The target object to merge into.
+ * @param source - The source object to merge from.
+ * @returns The merged object.
+ */
 export function deepMerge(target: any, source: any): any {
   if (typeof source !== 'object' || source === null) {
     return source;
@@ -53,7 +65,7 @@ export function deepMerge(target: any, source: any): any {
   return target;
 }
 
-
+/*
 export function deepMerge4(target: any, source: any) {
   const output = { ...target };
 
@@ -104,14 +116,17 @@ export function deepMerge2(target: any, source: any) {
   }
   return output;
 }
+*/
 
 type WeekPlan = { [ugedag: number]: string };
 const weekDays = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'lørdag'];
 
+
 /**
- * Fixes dates in a given file name by replacing variables with their corresponding values.
- * @param filename - The name of the file to fix dates in.
- * @throws {Object} - Throws an error object if the week number is invalid or if there is an error with variable substitution.
+ * Fixes the dates in the given filename by replacing variables in the content.
+ * @param filename - The name of the file to fix the dates in.
+ * @returns void
+ * @throws An error object with a message and detail property if the week number is invalid.
  */
 export function fixDates(filename: string) {
   console.log("fixDates()");
@@ -150,6 +165,11 @@ export function fixDates(filename: string) {
 
 const mdr = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
 
+/**
+ * Returns the number of weeks in a given year.
+ * @param year The year to calculate the number of weeks for.
+ * @returns The number of weeks in the given year.
+ */
 function numberOfWeeks(year: number): number {
   if (year === 2020 || year === 2026) {
     return 53;
@@ -159,6 +179,12 @@ function numberOfWeeks(year: number): number {
 }
 
 type WeekPlanResult = { ok: boolean; weekPlan?: WeekPlan; error?: string };
+/**
+ * Finds the weekdays of a given week number in a year.
+ * @param year - The year to find the week in.
+ * @param weekNumber - The week number to find the weekdays for.
+ * @returns An object containing a boolean indicating if the operation was successful and an array of the weekdays for the given week number.
+ */
 function findWeekDays(year: string, weekNumber: string): WeekPlanResult {
   console.log("findWeekDays()");
   const weekPlan: WeekPlan = [];
@@ -175,6 +201,11 @@ function findWeekDays(year: string, weekNumber: string): WeekPlanResult {
   return { ok: true, weekPlan };
 }
 
+/**
+ * Populates the given week plan object with dates and corresponding day names.
+ * @param initialDate The initial date to start populating the week plan from.
+ * @param weekPlan The week plan object to populate.
+ */
 function populateWeekPlan(initialDate: Date, weekPlan: WeekPlan) {
   for (let i = 0; i < 7; i++) {
     const nextDay = new Date(initialDate.getTime());
@@ -197,6 +228,12 @@ function populateWeekPlan(initialDate: Date, weekPlan: WeekPlan) {
   }
 }
 
+/**
+ * Returns the initial date of a given week in a given year.
+ * @param year - The year for which to get the initial date.
+ * @param week - The week for which to get the initial date.
+ * @returns The initial date of the given week in the given year.
+ */
 function getInitialDate(year: number, week: number): Date {
   const date = new Date(year, 0, 4);
   const dayOffset = date.getDay() === 0 ? 6 : date.getDay() - 1;
@@ -204,6 +241,11 @@ function getInitialDate(year: number, week: number): Date {
   return date;
 }
 
+/**
+ * Returns an array of objects representing files and folders in the specified directory.
+ * @param dirPath - The path of the directory to search for files and folders.
+ * @returns An array of objects representing files and folders in the specified directory.
+ */
 export function getFiles(dirPath: string): any {
   let items = [];
   const dirents = fs.readdirSync(dirPath, { withFileTypes: true });
@@ -223,6 +265,11 @@ export function getFiles(dirPath: string): any {
 
 }
 
+/**
+ * Replaces variables in a file's content with their corresponding values.
+ * @param filename - The path of the file to modify.
+ * @param varObj - An object containing key-value pairs of variables and their corresponding values.
+ */
 function replaceVariablesInContent(filename: string, varObj: { [key: string]: string; }) {
   const encoding = "latin1";
   let tekstfilIndhold = fs.readFileSync(filename, encoding);

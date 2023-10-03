@@ -84,6 +84,11 @@ const updateParamList = async () => {
     taskList.value = await response.json();
   }
 }
+/**
+ * This function handles reading a plan file from the server.
+ * @param {string} file - The file to be read from the server.
+ * @returns {Promise<void>} - A promise that resolves when the plan is successfully read from the server.
+ */
 
 // handlePlanFileRead => get plan from server (Do something)
 const handlePlanFileRead = async (file: string) => {

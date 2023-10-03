@@ -1,3 +1,7 @@
+/**
+ * Handles tasks and workflows through API endpoints.
+ * @param app - The express application.
+ */
 /*
   Handling of tasks and workflows
 
@@ -12,6 +16,10 @@ import { getParm, handleData } from './apiPlanUtil';
 
 let taskList: WorkflowNode[] = [];
 
+/**
+ * Defines API endpoints for tasks, task parameters, and workflow lists.
+ * @param app - The express application.
+ */
 export default function apiTask(app: express.Application) {
 
   app.get("/api/task", async (req: Request, res: Response) => {
@@ -203,6 +211,11 @@ export default function apiTask(app: express.Application) {
     }
   });
 
+  /**
+   * Updates the parameter file for a given task and environment.
+   * @param name - The name of the task.
+   * @param env - The environment of the task.
+   */
   function updateParmfile(name: string, env: string) {
     const task = { task: name, count: config.paramTimeout };
     const paramFile = `${config.dataDir}/${env}_param.json`;

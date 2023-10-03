@@ -6,6 +6,11 @@ import { Environment, ParmItem, WorkflowNode } from './interfaces';
 import path from 'path';
 import { checkDollarSign, deleteOldPlan, deletePlan, getParm, handleData, readFileAndParseWorkflow, sortPlan } from './apiPlanUtil';
 
+/**
+ * Defines the API routes and handlers for the plan-related functionality.
+ * @param app - The express application instance.
+ */
+
 export function apiPlan(app: express.Application) {
   let numberOfNodes = 0;
   let numberOfNodesProcessed = 0;
@@ -185,6 +190,12 @@ export function apiPlan(app: express.Application) {
     res.status(201).json(returnStatus);
   })
 
+  /**
+   * Handles ParmItems for a given configuration.
+   * @param cfg - The configuration object.
+   * @param items - The array of ParmItems to handle.
+   * @throws Throws an error if an error occurs during the handling of ParmItems.
+   */
   async function handleParmItems(cfg: Environment[string], items: ParmItem[]) {
     console.log(`handleParmItems() items ${JSON.stringify(items)}`);
     for (const item of items) {
@@ -227,6 +238,14 @@ export function apiPlan(app: express.Application) {
     }
   }
 
+  /**
+   * Creates a new plan with the given configuration and workflow names.
+   * @param res - The response object.
+   * @param cfg - The configuration object.
+   * @param topLevelNames - An array of top-level workflow names.
+   * @param status - The status object.
+   * @returns A Promise that resolves when the plan is created.
+   */
   async function createNewPlan(res: Response, cfg: Environment[string], topLevelNames: string[], status: Istatus) {
     // Opret ny plan
     console.log("createNewPlan");

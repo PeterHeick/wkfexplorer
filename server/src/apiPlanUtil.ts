@@ -207,6 +207,14 @@ async function deleteNode(cfg: Environment[string], node: WorkflowNode): Promise
 
 // Det ser ud til at topLevelName ikke bliver brugt.
 // Build TreeNodes from WorkflowNodes
+/**
+ * Parses a workflow and returns the count of nodes.
+ * @param workflow - The workflow to parse.
+ * @param wkf - The workflow node.
+ * @param name - The name of the node.
+ * @param topLevelName - The name of the top level node.
+ * @returns The count of nodes.
+ */
 export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevelName: string): number {
     let wkfNode = getWkfByName(wkf, name);
 
@@ -221,6 +229,7 @@ export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, t
     };
 
     if (!newNode.type || newNode.type === "") {
+        console.log("util.ts: parse: type is empty");
         newNode.type = "taskUnix";
     }
     workflow.push(newNode);
@@ -236,6 +245,12 @@ export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, t
     return count;
 }
 
+/**
+ * Returns the value of the specified parameter from the request query string.
+ * @param request - The request object.
+ * @param parm - The name of the parameter to retrieve.
+ * @returns The value of the specified parameter from the request query string.
+ */
 export function getParm(request: any, parm: string) {
     let p = "";
     p = request.query[parm];
@@ -243,6 +258,12 @@ export function getParm(request: any, parm: string) {
     return p;
 }
 
+/**
+ * Returns the WorkflowNode object with the given name from the provided array of WorkflowNode objects.
+ * @param workflowSet - The array of WorkflowNode objects to search in.
+ * @param name - The name of the WorkflowNode object to find.
+ * @returns The WorkflowNode object with the given name, or an empty object if not found.
+ */
 export function getWkfByName(workflowSet: WorkflowNode[], name: string): WorkflowNode {
     for (const wkfNode of workflowSet) {
         if (wkfNode.name == name) {
@@ -253,6 +274,11 @@ export function getWkfByName(workflowSet: WorkflowNode[], name: string): Workflo
 }
 
 
+/**
+ * Sorts an array of WorkflowNode objects in topological order based on their dependencies.
+ * @param workflows An array of WorkflowNode objects to be sorted.
+ * @returns An array of sorted WorkflowNode objects.
+ */
 export function sortPlan(workflows: WorkflowNode[]) {
     const graph = createGraph(workflows as Task[]);
     let sortedTasks = topologicalSort(graph);
@@ -281,6 +307,11 @@ interface Graph {
     [index: string]: string[];
 }
 
+/**
+ * Performs a topological sort on a given graph.
+ * @param graph - The graph to be sorted.
+ * @returns An array of strings representing the sorted nodes in the graph.
+ */
 function topologicalSort(graph: Graph) {
     const stack: string[] = [];
     const visited: { [index: string]: boolean } = {};
@@ -293,6 +324,11 @@ function topologicalSort(graph: Graph) {
 
     return stack;
 }
+/**
+ * Creates a graph object from an array of tasks.
+ * @param tasks An array of Task objects.
+ * @returns A Graph object representing the dependencies between tasks.
+ */
 function createGraph(tasks: Task[]): Graph {
     const graph: Graph = {};
 
@@ -305,6 +341,13 @@ function createGraph(tasks: Task[]): Graph {
     return graph;
 }
 
+/**
+ * Performs a topological sort on a graph starting from a given vertex.
+ * @param v - The vertex to start the sort from.
+ * @param visited - An object containing the visited vertices.
+ * @param stack - An array containing the sorted vertices.
+ * @param graph - The graph to perform the sort on.
+ */
 function topologicalSortUtil(v: string, visited: { [index: string]: boolean }, stack: string[], graph: Graph) {
     visited[v] = true;
 
@@ -319,6 +362,10 @@ function topologicalSortUtil(v: string, visited: { [index: string]: boolean }, s
     stack.push(v);
 }
 
+/**
+ * Finds the top level workflows from an array of WorkflowNode objects and writes the count of each workflow to a JSON file.
+ * @param workflows An array of WorkflowNode objects.
+ */
 export function findTopLevel(workflows: WorkflowNode[]) {
     console.log("toplevel");
     counter = {};
@@ -348,6 +395,11 @@ export function findTopLevel(workflows: WorkflowNode[]) {
 }
 
 // kaldt fra api/plan og api/listadv
+/**
+ * Handles the given data and returns an array of tree nodes.
+ * @param data An array of WorkflowNode objects.
+ * @returns An array of TreeNode objects.
+ */
 export function handleData(data: WorkflowNode[]): TreeNode[] {
     let workflow: TreeNode[] = [];
     let count = 0;
