@@ -186,7 +186,7 @@ export async function remove_task_from_workflow(cfg: Environment[string], task: 
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/workflow/vertices?workflowname=${workflow}`
   const token = readToken(cfg);
-  console.log(`remove_task ${task} from ${workflow}`);
+  console.log(`  remove_task ${task} from ${workflow}`);
 
   const options = {
     method: "DELETE",

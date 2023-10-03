@@ -18,7 +18,7 @@
             <li v-for="(task, index) in taskList.value" :key="index">
               <div class="paramLinje">
                 <div class="name"> {{ task.name }} </div>
-                <input class="parameter" type="TEXT" :ref="el => { paramFields[index] = el; }" @keyup.enter="handleParamUpdate(task, index)"
+                <input class="parameter" type="TEXT" :ref="el => { if (el) paramFields[index] = el; }" @keyup.enter="handleParamUpdate(task, index)"
                   v-model="task.parameters" />
               </div>
             </li>
@@ -71,11 +71,8 @@ const paramFields = ref<HTMLElement[]>([]);
 
 const handleEnvEvent = async (env: string) => {
   console.log("PlanComponent handleEvent env: ", env);
-  config.loadConfig();
-  config.getEnv();
-  config.uacenv.value = env;
-  //config.setEnv(env);
-  config.getEnv();
+  // config.loadConfig();
+  config.setEnv(env);
   updateParamList();
   missingList.value = [];
 }
@@ -124,6 +121,7 @@ const handlePlanFileRead = async (file: string) => {
 // Handle missing tasks / workflows
 const handleMissing = (list: Array<string>) => {
   console.log("handle missing list ", list);
+  missingList.value = [];
   for (const element of list) {
     missingList.value.push(element);
   }

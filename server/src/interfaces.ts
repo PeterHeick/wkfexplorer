@@ -96,3 +96,8 @@ export interface IuserConfig {
   },
   uacenv: string
 }
+
+export type ThrowEventType = {
+  message: string;
+  detail: string;
+}

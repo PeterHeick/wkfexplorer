@@ -12,23 +12,11 @@
     -->
     <span class="fileItem">{{ item.name }}</span>
     <ul v-if="item.children && item.children.length">
-      <file-item
-        v-for="child in item.children"
-        :key="child.name"
-        :item="child"
-        @getPlanFile="emitGetPlanFile"
-        @updateFileExplorer="updateFileExplorer"
-        @keydown="handleKeydown"
-      />
+      <file-item v-for="child in item.children" :key="child.name" :item="child" @getPlanFile="emitGetPlanFile"
+        @keydown="handleKeydown" />
       <div style="padding-top: 3px">
-        <input
-          ref="inputField"
-          v-show="item.type === 'folder' && addNewFile"
-          type="text"
-          v-model="fileName"
-          @keyup.enter="onEnter"
-          @blur="addNewFile = false"
-        />
+        <input ref="inputField" v-show="item.type === 'folder' && addNewFile" type="text" v-model="fileName"
+          @keyup.enter="onEnter" @blur="addNewFile = false" />
       </div>
     </ul>
   </li>
@@ -54,11 +42,7 @@ const props = defineProps({
   item: Object as () => Item,
 });
 
-// updateFileExplorer  Opdatere file exploren i right pane på plan siden
-//     fanges i FileComponent.vue og kalder fetchData()
-// file-clicked  fanger når brugeren klikker på en fil eller et katalog (enkelt klik og dobbelt klik)
-
-const emit = defineEmits(["getPlanFile", "updateFileExplorer"]);
+const emit = defineEmits(["getPlanFile"]);
 
 let clickCount = 0;
 let timer: number | null = null;
@@ -85,12 +69,22 @@ const fileClicked = () => {
     }
     if (props?.item && props.item.type === "file") {
       console.log("Double click: ", props.item.path);
-      api.startEditor(props.item.path).then(() => {
-        if (props?.item && props.item.type === "file") {
-          console.log(`Editor finished: ${props.item.path}`);
-          updateFileExplorer();
-        }
-      });
+      api.startEditor(props.item.path)
+        .then((response: Response) => {
+          console.log(`StartEditor: ${response.status}`);
+          if (response.status === 203) {
+            return response.json()
+          } else {
+            return null;
+          }
+
+        })
+        .then((msg: { message: string; detail: string }) => {
+          if (msg) {
+            console.log(JSON.stringify(msg));
+            Swal.fire( msg.message , "", "info");
+          } 
+        });
     }
     resetClick();
   }
@@ -105,16 +99,11 @@ const emitGetPlanFile = (filePath: string) => {
   emit("getPlanFile", filePath);
 };
 
-const updateFileExplorer = () => {
-  console.log(`updateFileExplorer ${config.getPlanDir()}`);
-  emit("updateFileExplorer", config.getPlanDir());
-};
-
 const onEnter = () => {
   if (fileName.value) {
     if (props?.item) {
       const file = `${props.item.path}\\${fileName.value}`;
-      api.startEditor(file).then(() => updateFileExplorer());
+      api.startEditor(file);
     }
 
     fileName.value = "";

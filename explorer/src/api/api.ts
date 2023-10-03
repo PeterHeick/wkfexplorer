@@ -69,7 +69,7 @@ export const api = {
         console.log(error);
       });
   },
-  
+
   getParamList() {
     const env = config.uacenv.value;
     const url = `parameters?uacenv=${env}`;
@@ -123,7 +123,6 @@ export const api = {
     return fetch(baseUrl + url, options)
   },
 
-  
   getPlandir(directory: string) {
     const env = config.uacenv.value;
     console.log("api.getPlandir ", directory);

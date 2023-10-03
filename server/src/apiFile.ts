@@ -1,8 +1,9 @@
 import express from 'express';
 import fs, { existsSync, unlinkSync, writeFileSync } from 'fs';
-import { fixDates, getFiles, getParm } from './util';
+import { fixDates, getFiles } from './util';
 import { spawn } from 'child_process';
 import { config } from './apiConfig';
+import { getParm } from './apiPlanUtil';
 
 
 export function apiFile(app: express.Application) {
@@ -35,13 +36,17 @@ export function apiFile(app: express.Application) {
     if (!existsSync(fileName)) {
       writeFileSync(fileName, '', 'latin1');
     }
+    spawn(config.editor, [fileName]);
     const match = fileName.match(/Uge(\d+)/);
     if (match) {
-      fixDates(fileName);
+      try {
+        console.log(`apiFile: fixDates ${fileName}`);
+        fixDates(fileName);
+        res.status(200).json({});
+      } catch (err) {
+        res.status(203).json( err );
+      }
     }
-    const child = spawn(config.editor, [fileName] );
-    child.on('close', () => res.json({}))
-    
   })
 
   app.get("/api/explorer", (req: any, res: any) => {
@@ -49,10 +54,7 @@ export function apiFile(app: express.Application) {
     const dirName = getParm(req, 'dirName');
 
     const child = spawn('explorer', [dirName]);
-    // Denne venter ikke på at windows explorer vinduet lukker,
-    // Windows har en central Explorer-proces, der håndterer skrivebordet og proceslinjen, og som også kan åbne nye fil explorer-vinduer
-    // spawn starter en proces der sender et signal til den centrale, og lukker umiddelbart derefter.
-    child.on('close', () => res.json({}))
+    res.json({})
   })
 
   // Er ikke implementeret færdig, driften ønsker ikke flere rettelser

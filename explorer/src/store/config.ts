@@ -32,20 +32,38 @@ export const config =  {
 
   getEnvironment() {
     console.log("getEnvironment() ", this.uacenv.value);
+    if (!this.configData?.environments) {
+      console.log("getEnvironment() return empty object");
+      return {};
+    }
     return this.configData.environments[this.uacenv.value];
   },
 
   getPlanDir() {
-    console.log(`config.planDir() ${this.uacenv.value} return ${this.configData.environments[this.uacenv.value].planDir}`);
+    console.log(`config.planDir()`);
+    if (!this.configData?.environments) {
+      console.log("getPlanDir() return empty string");
+      return "";
+    }
     return this.configData.environments[this.uacenv.value].planDir;
   },
 
   getEnvironmentList() {
+    if (!this.configData?.environments) {
+      console.log("getEnvironmentList() return empty object");
+      return {};
+    }
     return Object.keys(this.configData.environments);
   },
 
   getBackgroundColor() {
-    console.log("getBackgroundColor ", this.configData.environments[this.uacenv.value].backgroundcolor)
+    console.log("getBackgroundColor ");
+    if (!this.configData?.environments) {
+      console.log("getBackgroundColor() return white");
+      return "white";
+    }
+    console.log("Color ", this.configData.environments[this.uacenv.value].backgroundcolor)
+
     return this.configData.environments[this.uacenv.value].backgroundcolor;
   },
 
@@ -72,7 +90,9 @@ export const config =  {
 
     try {
       const response = await api.getConfig();
+      console.log("api.getConfig() response: ", response);
       const data = await response.json();
+      console.log("api.getConfig() data: ", JSON.stringify(data));
       if (!response.ok) {
         Swal.fire(data.message, data.detail, 'error');
       } else {

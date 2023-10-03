@@ -3,10 +3,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import { INumberDictionary, Ivertice, WorkflowNode, TreeNode, Environment } from './interfaces';
 import { homedir } from 'os';
 import path from 'path';
-
-var id = 0;
-let counter: INumberDictionary = {};
-//let envTable: IStringDictionary = {};
+import { findTopLevel } from './apiPlanUtil';
 
 export function readToken(cfg: Environment[string]) {
   try {
@@ -32,87 +29,6 @@ export function readToken(cfg: Environment[string]) {
   }
 }
 
-export function getWkfByName(workflowSet: WorkflowNode[], name: string): WorkflowNode {
-  for (const wkfNode of workflowSet) {
-    if (wkfNode.name == name) {
-      return wkfNode;
-    }
-  }
-  return {} as WorkflowNode;
-}
-
-export function getParm(request: any, parm: string) {
-  let p = "";
-  p = request.query[parm];
-  console.log("getParm: ", p);
-  return p;
-}
-// kaldt fra api/plan og api/listadv
-export function handleData(data: WorkflowNode[]): TreeNode[] {
-  let workflow: TreeNode[] = [];
-  let count = 0;
-  let sequence: INumberDictionary = {};
-
-  findTopLevel(data);
-
-  console.log("after toplevel");
-  id = 0;
-  for (const wkf of data) {
-    // Only top level nodes
-    // console.log(`util.ts: handleData ${wkf.name}`)
-    if (wkf.name && counter[wkf.name] === 0) {
-      // console.log(`  count: ${count}`)
-      wkf.name = wkf.name.trim().replace(/-/g, "_");
-      // Det ser ud til at topLevelName ikke bliver brugt.
-      let topLevelName = wkf.name;
-      count = parse(workflow, data, wkf.name, topLevelName);
-      sequence[wkf.name] = count;
-    }
-  }
-  // console.log("No of nodes before ", workflow.length);
-  workflow.sort((a: TreeNode, b: TreeNode) => {
-    if (a.name && b.name) {
-      return sequence[b.name] - sequence[a.name];
-    }
-    else {
-      return 0;
-    }
-  });
-
-  // writeFileSync('../sorted.json', JSON.stringify(workflow));
-  return workflow;
-}
-
-// Det ser ud til at topLevelName ikke bliver brugt.
-// Build TreeNodes from WorkflowNodes
-function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevelName: string): number {
-  let wkfNode = getWkfByName(wkf, name);
-
-  id++;
-  let count = 0;
-  let newNode: TreeNode = {
-    id,
-    name,
-    type: wkfNode.type,
-    isVisible: false,
-    workflow: []
-  };
-
-  if (!newNode.type || newNode.type === "") {
-    newNode.type = "taskUnix";
-  }
-  workflow.push(newNode);
-
-  if (wkfNode.workflowVertices) {
-    newNode.workflow = [];
-    wkfNode.workflowVertices.forEach((vertice: Ivertice) => {
-      if (vertice?.task?.value) {
-        count = parse(newNode.workflow, wkf, vertice.task.value, topLevelName) + 1;
-      }
-    })
-  }
-  return count;
-}
 
 export function deepMerge(target: any, source: any): any {
   if (typeof source !== 'object' || source === null) {
@@ -189,162 +105,80 @@ export function deepMerge2(target: any, source: any) {
   return output;
 }
 
-export function sortPlan(workflows: WorkflowNode[]) {
-  const graph = createGraph(workflows as Task[]);
-  let sortedTasks = topologicalSort(graph);
-
-  const workflownames = workflows.filter(task => task.type === 'taskWorkflow').map(task => task.name);
-  if (sortedTasks) {
-    sortedTasks = sortedTasks.filter((task) => workflownames.includes(task));
-  }
-  return sortedTasks;
-}
-
-interface Vertex {
-  task: {
-    value: string;
-  };
-}
-
-interface Task {
-  name: string;
-  type: string;
-  workflowVertices: Vertex[];
-  [key: string]: unknown;
-}
-
-interface Graph {
-  [index: string]: string[];
-}
-
-function topologicalSort(graph: Graph) {
-  const stack: string[] = [];
-  const visited: { [index: string]: boolean } = {};
-
-  for (const node in graph) {
-    if (!visited[node]) {
-      topologicalSortUtil(node, visited, stack, graph);
-    }
-  }
-
-  return stack;
-}
-function createGraph(tasks: Task[]): Graph {
-  const graph: Graph = {};
-
-  for (const task of tasks) {
-    if (task.type === 'taskWorkflow' && task.workflowVertices.length > 0) {
-      graph[task.name] = task.workflowVertices.map(v => v.task.value).filter(Boolean);
-    }
-  }
-
-  return graph;
-}
-
-function topologicalSortUtil(v: string, visited: { [index: string]: boolean }, stack: string[], graph: Graph) {
-  visited[v] = true;
-
-  if (graph[v]) {
-    for (const neighbour of graph[v]) {
-      if (!visited[neighbour]) {
-        topologicalSortUtil(neighbour, visited, stack, graph);
-      }
-    }
-  }
-
-  stack.push(v);
-}
-
-function findTopLevel(workflows: WorkflowNode[]) {
-  console.log("toplevel");
-  counter = {};
-  for (const wkf of workflows) {
-    if (wkf.name) {
-      if (counter[wkf.name] === undefined) {
-        counter[wkf.name] = 0;
-      } else {
-        counter[wkf.name] += 1;
-      }
-    }
-    if (wkf.type === "taskWorkflow") {
-      if (wkf.workflowVertices) {
-        for (const vertice of wkf.workflowVertices) {
-          if (vertice?.task) {
-            if (counter[vertice?.task?.value] === undefined) {
-              counter[vertice.task.value] = 0;
-            } else {
-              counter[vertice.task.value] += 1;
-            }
-          }
-        }
-      }
-    }
-  }
-  writeFileSync('../counter.json', JSON.stringify(counter));
-}
-
-type Ugeplan = { [ugedag: number]: string };
+type WeekPlan = { [ugedag: number]: string };
 const weekDays = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag', 'lørdag'];
 
+/**
+ * Fixes dates in a given file name by replacing variables with their corresponding values.
+ * @param filename - The name of the file to fix dates in.
+ * @throws {Object} - Throws an error object if the week number is invalid or if there is an error with variable substitution.
+ */
 export function fixDates(filename: string) {
   console.log("fixDates()");
-  const yearMatch = filename.match(/(202[0-9])/);
+  const yearMatch = filename.match(/(20[23][0-9])/);
   const weekMatch = filename.match(/Uge(\d+)/);
 
-  if (yearMatch && weekMatch) {
-    const year = yearMatch[1]
-    const week = weekMatch[1];
-    const weekPlan: Ugeplan = findWeekDays(year, week);
-    const encoding = "latin1";
-    let tekstfilIndhold = fs.readFileSync(filename, encoding);
+  if (!yearMatch || !weekMatch) {
+    return;
+  }
 
+  const year = yearMatch[1]
+  const week = weekMatch[1];
+  const weekInfo = findWeekDays(year, week);
+  if (!weekInfo.ok) {
+    console.log("Ugyldigt ugenummer");
+    throw {
+      message: weekInfo.error,
+      detail: weekInfo.error,
+    }
+  }
+  if (weekInfo.weekPlan) {
     const varObj: { [key: string]: string } = {
       ÅR: year,
       UGE: week,
-      FRA: weekPlan[1],
-      TIL: weekPlan[0],
+      FRA: weekInfo.weekPlan[1],
+      TIL: weekInfo.weekPlan[0],
     }
     for (let day = 0; day < 7; day++) {
-      varObj[weekDays[day]] = weekPlan[day]
+      varObj[weekDays[day]] = weekInfo.weekPlan[day]
     }
     console.log(`var obj: ${JSON.stringify(varObj)}`);
 
-    for (const attr in varObj) {
-      if (varObj.hasOwnProperty(attr)) {
-        // Gennemgå arrayet og erstat variablerne i tekstfilen
-        const value = varObj[attr];
-        console.log(`Erstat ${attr} med ${value}`)
-        const variabelErstatning = new RegExp(`\\$\\{${attr}\\}`, 'gi');
-        tekstfilIndhold = tekstfilIndhold.replace(variabelErstatning, value);
-      }
-    }
-    // Skriv det ændrede indhold tilbage i tekstfilen
-    fs.writeFileSync(filename, tekstfilIndhold, encoding);
-  } else {
-    throw {
-      message: "Fejl ved variabel substitution",
-      detail: `Kunne ikke finde år eller uge nr i ${filename}`,
-      status: 400
-    }
+    replaceVariablesInContent(filename, varObj);
   }
 }
 
-const mdr = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun",
-  "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
-function findWeekDays(year: string, weekNumber: string): Ugeplan {
+const mdr = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"]
+
+function numberOfWeeks(year: number): number {
+  if (year === 2020 || year === 2026) {
+    return 53;
+  } else {
+    return 52;
+  }
+}
+
+type WeekPlanResult = { ok: boolean; weekPlan?: WeekPlan; error?: string };
+function findWeekDays(year: string, weekNumber: string): WeekPlanResult {
   console.log("findWeekDays()");
-  const ugeplan: Ugeplan = [];
-  // const ugeplan: Ugeplan = {};
-  const date = new Date(parseInt(year, 10), 0, 4);
-  const dayOffset = date.getDay() === 0 ? 6 : date.getDay() - 1;
+  const weekPlan: WeekPlan = [];
+  const wk = parseInt(weekNumber, 10);
+  const yy = parseInt(year, 10);
 
-  date.setDate(4 - dayOffset);
-  date.setDate(date.getDate() + (parseInt(weekNumber, 10) - 1) * 7);
-  console.log(date.toLocaleDateString());
+  if (wk > numberOfWeeks(yy)) {
+    return { ok: false, error: `Ugyldigt ugenummer ${weekNumber}` };
+  }
 
+  const initialDate = getInitialDate(yy, wk);
+  populateWeekPlan(initialDate, weekPlan);
+
+  return { ok: true, weekPlan };
+}
+
+function populateWeekPlan(initialDate: Date, weekPlan: WeekPlan) {
   for (let i = 0; i < 7; i++) {
-    const nextDay = new Date(date.getTime());
-    nextDay.setDate(date.getDate() + i);
+    const nextDay = new Date(initialDate.getTime());
+    nextDay.setDate(initialDate.getDate() + i);
 
     let dd, mm, yy: string = "";
     const dateRegex = /(\d{1,2})[\/\.](\d{1,2})[\/\.](\d{2,4})/;
@@ -356,15 +190,18 @@ function findWeekDays(year: string, weekNumber: string): Ugeplan {
       yy = match[3];
     }
 
-    // console.log(`${dage[nextDay.getDay()]} ${dd}.${mm}.${yy}`);
-    // ugeplan[dage[nextDay.getDay()]] = `${dd}.${mm}.${yy}`
     if (mm) {
       const mdrnr = parseInt(mm, 10);
-      ugeplan[nextDay.getDay()] = `${dd} ${mdr[mdrnr-1]}`
+      weekPlan[nextDay.getDay()] = `${dd} ${mdr[mdrnr - 1]}`;
     }
   }
+}
 
-  return ugeplan;
+function getInitialDate(year: number, week: number): Date {
+  const date = new Date(year, 0, 4);
+  const dayOffset = date.getDay() === 0 ? 6 : date.getDay() - 1;
+  date.setDate(4 - dayOffset + (week - 1) * 7);
+  return date;
 }
 
 export function getFiles(dirPath: string): any {
@@ -384,4 +221,20 @@ export function getFiles(dirPath: string): any {
 
   return items;
 
+}
+
+function replaceVariablesInContent(filename: string, varObj: { [key: string]: string; }) {
+  const encoding = "latin1";
+  let tekstfilIndhold = fs.readFileSync(filename, encoding);
+
+  for (const attr in varObj) {
+    if (varObj.hasOwnProperty(attr)) {
+      // Gennemgå arrayet og erstat variablerne i tekstfilen
+      const value = varObj[attr];
+      const variabelErstatning = new RegExp(`\\$\\{${attr}\\}`, 'gi');
+      tekstfilIndhold = tekstfilIndhold.replace(variabelErstatning, value);
+    }
+  }
+  // Skriv det ændrede indhold tilbage i tekstfilen
+  fs.writeFileSync(filename, tekstfilIndhold, encoding);
 }

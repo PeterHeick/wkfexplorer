@@ -7,8 +7,8 @@ import express, { Request, Response } from 'express';
 import { mkdir, readFileSync, writeFileSync } from "fs";
 import { fetchWorkflows, readTask, updateTask } from "./uacApi";
 import { checkConfig, config } from "./apiConfig";
-import { getParm, handleData } from './util';
 import { WorkflowNode } from './interfaces';
+import { getParm, handleData } from './apiPlanUtil';
 
 let taskList: WorkflowNode[] = [];
 
@@ -118,8 +118,7 @@ export default function apiTask(app: express.Application) {
       console.log("Read ", paramFile);
       paramList = JSON.parse(readFileSync(paramFile, 'latin1'));
     } catch (e) {
-      console.log("Endnu ingen param.json fil");
-      res.status(200).json(paramList);
+      res.status(200).json([]);
       return;
     }
     console.log("paramList: ", paramList, paramList.length);

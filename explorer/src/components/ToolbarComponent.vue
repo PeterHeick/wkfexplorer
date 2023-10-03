@@ -73,6 +73,7 @@ const handleDelete = async () => {
   }
   Swal.fire("Plan slettet", "", 'success');
   state.planDelete = false;
+  emit('envEvent', selectedItem.value);
 }
 
 const handleUpdate = async () => {
@@ -89,6 +90,7 @@ const handleUpdate = async () => {
     Swal.fire(data.message, data.detail, 'error');
     clearInterval(intervalId);
     state.planUpdateInProgress = false;
+    updateProgress.value = 0;
     return;
   }
 
@@ -105,6 +107,7 @@ const startProgressCounter = async () => {
   intervalId = setInterval(async () => {
     const response = await api.progress();
     const data = await response.json();
+    console.log("progress: ", data.pct);
 
     updateProgress.value = data.pct;
 
