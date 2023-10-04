@@ -11,6 +11,7 @@
         {{ updateProgress.toFixed(0) }} pct
       </div>
     </div>
+    
     <div class="dropdown">
       <button :disabled="disable" @click="toggleDropdown" class="dropbtn">{{ selectedItem }}</button>
       <div v-show="isDropdownVisible" class="dropdown-content">
