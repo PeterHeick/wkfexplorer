@@ -229,7 +229,6 @@ export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, t
     };
 
     if (!newNode.type || newNode.type === "") {
-        console.log("util.ts: parse: type is empty");
         newNode.type = "taskUnix";
     }
     workflow.push(newNode);

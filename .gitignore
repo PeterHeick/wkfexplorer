@@ -25,4 +25,4 @@ deploy.ps1
 save/
 server/dist/tedstServer.js.LICENSE.txt
 server/dist/testServer.js
-
+server/dist/server.js.LICENSE.txt

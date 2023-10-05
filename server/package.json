@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start2": "nodemon --exec ts-node src/server.ts",
+    "start": "nodemon --watch src -e ts --exec webpack",
     "plan": "nodemon --exec ts-node src/weekplan.ts",
     "build": "webpack  && npm run copy-to-server",
-    "start": "nodemon --watch src -e ts --exec npm run build",
+    "start2": "nodemon --exec ts-node src/server.ts",
+    "start3": "nodemon --watch src -e ts --exec npm run build",
     "copy-to-server": "mv dist/server.js I:/EDBGruppe/Projekter/uacwebserver/server.js"
   },
   "author": "",

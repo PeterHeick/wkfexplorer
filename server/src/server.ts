@@ -70,9 +70,9 @@ wss.on('connection', (ws) => {
     const { action, path } = JSON.parse(message.toString());
     console.log(`action: ${action}  path: ${path}`);
 
-    
+
     if (!fs.existsSync(path)) {
-      ws.send(JSON.stringify({ error: {message: `${path} findes ikke`, detail: ""}, status: 404}));
+      ws.send(JSON.stringify({ error: { message: `${path} findes ikke`, detail: "" }, status: 404 }));
       return;
     }
     if (action === 'watch') {
@@ -90,12 +90,16 @@ wss.on('connection', (ws) => {
             console.log(`server: ${event} ${path}`);
             try {
               fixDates(path);
-            } catch (err) {
-              console.log("Fejl ved fixDates: ", err);
+              ws.send(JSON.stringify({ event, path }));
+            } catch (err: any) {
+              if (err.code === 'EPERM') {
+                console.log("Kan ikke opdatere variable. Fejl: ", JSON.stringify(err));
+                return
+              }
+              console.log("Fejl ved fixDates: ", JSON.stringify(err));
               ws.send(JSON.stringify({ error: err, status: 203 }));
             }
           }
-          ws.send(JSON.stringify({ event, path }));
         }
       });
     }

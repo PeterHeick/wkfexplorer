@@ -75,7 +75,7 @@ onMounted(() => {
         console.log(`addEventListener ${JSON.stringify(parsedEvent)}`);
         if (parsedEvent?.status !== 404) fetchData();
         if (parsedEvent.error)
-        Swal.fire(parsedEvent.error.message, parsedEvent.error.detail, "error");
+          Swal.fire("Fixdates fejl", JSON.stringify(parsedEvent.error), "error");
       });
 
       // For at starte overvågning
