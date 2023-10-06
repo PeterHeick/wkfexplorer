@@ -4,11 +4,15 @@
       <HeaderComponent>Plan explorer</HeaderComponent>
     </div>
     <div class="toolbar">
-      <ToolbarComponent @envEvent="handleEnvEvent" @getPlanFile="handlePlanFileRead" @missingEvent="handleMissing"  @updateParamList="updateParamList" type="plan">
+      <ToolbarComponent @envEvent="handleEnvEvent" @getPlanFile="handlePlanFileRead" @missingEvent="handleMissing"
+        @updateParamList="updateParamList" type="plan">
       </ToolbarComponent>
     </div>
     <div id="container">
       <div id="left-pane">
+        <span id="fileheader">
+          {{ fileName }}
+        </span>
         <TreeComponent v-if="state.isPlanRead" :treeData="wkf"></TreeComponent>
       </div>
       <div id="middle">
@@ -18,8 +22,8 @@
             <li v-for="(task, index) in taskList.value" :key="index">
               <div class="paramLinje">
                 <div class="name"> {{ task.name }} </div>
-                <input class="parameter" type="TEXT" :ref="el => { if (el) paramFields[index] = el; }" @keyup.enter="handleParamUpdate(task, index)"
-                  v-model="task.parameters" />
+                <input class="parameter" type="TEXT" :ref="el => { if (el) paramFields[index] = el; }"
+                  @keyup.enter="handleParamUpdate(task, index)" v-model="task.parameters" />
               </div>
             </li>
           </ul>
@@ -68,6 +72,7 @@ const missingList = ref([] as string[]);
 const taskList = reactive({ value: [] as TaskItem[] });
 const show = ref(false);
 const paramFields = ref<HTMLElement[]>([]);
+const fileName = ref("");
 
 const handleEnvEvent = async (env: string) => {
   console.log("PlanComponent handleEvent env: ", env);
@@ -95,6 +100,7 @@ const handlePlanFileRead = async (file: string) => {
   console.log("handlePlanFileRead ", file);
 
   state.isPlanRead = false;
+  fileName.value = file.substring(file.lastIndexOf('\\') + 1);
   missingList.value = [];
   try {
     const response = await api.getPlan(file)
@@ -199,5 +205,12 @@ onBeforeMount(async () => {
 
 .popup[style*="display: none"] {
   opacity: 0;
+}
+
+#fileheader {
+  font-size: 0.8em;
+  text-align: right;
+  padding: 10px 0px 5px 15px;
+  border-bottom: 1px solid lightgray;
 }
 </style>

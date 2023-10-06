@@ -4,7 +4,7 @@ import fs from "fs";
 import cors from "cors";
 import mime from "mime";
 import apiTask from "./apiTask";
-import { apiConfig, apiVersion } from "./apiConfig";
+import { apiConfig, apiVersion, config } from "./apiConfig";
 import { apiPlan } from "./apiPlan";
 import { apiFile } from "./apiFile";
 import { fixDates } from "./util";
@@ -35,9 +35,9 @@ app.use(
   express.static(docRoot, {
     setHeaders: (res: any, path: any) => {
       const contentType = mime.getType(path);
-      console.log(
-        `Middleware Send index.html ${docRoot} ${contentType} ${path}`
-      );
+      // console.log(
+      //   `Middleware Send index.html ${docRoot} ${contentType} ${path}`
+      // );
       res.setHeader("Content-Type", contentType);
     },
   })
@@ -68,38 +68,38 @@ wss.on('connection', (ws) => {
   let initialized = false;
   ws.on('message', (message) => {
     const { action, path } = JSON.parse(message.toString());
-    console.log(`action: ${action}  path: ${path}`);
+    console.log(`action: ${action} planBaseDir: ${config.planBaseDir}`);
 
-
-    if (!fs.existsSync(path)) {
-      ws.send(JSON.stringify({ error: { message: `${path} findes ikke`, detail: "" }, status: 404 }));
+    if (!fs.existsSync(config.planBaseDir)) {
+      ws.send(JSON.stringify({ error: { message: `${config.planBaseDir} findes ikke`, detail: "" }, status: 404 }));
       return;
     }
     if (action === 'watch') {
       if (watcher) {
         watcher.close();
       }
-      watcher = chokidar.watch(path.toString(), { persistent: true });
+      watcher = chokidar.watch(config.planBaseDir, { persistent: true });
       watcher.on('ready', () => {
         initialized = true;  // Flag for at indikere, at den indledende scanning er færdig
       })
       watcher.on('all', (event, path) => {
         if (initialized) {
-          console.log("Watch all: ", JSON.stringify({ event, path }));
-          if (event === 'add' || event === 'change') {
-            console.log(`server: ${event} ${path}`);
+          console.log("Server Watch: ", JSON.stringify({ event, path }));
+          if (event === 'add') {
             try {
               fixDates(path);
-              ws.send(JSON.stringify({ event, path }));
+              // ws.send(JSON.stringify({ event, path }));
             } catch (err: any) {
               if (err.code === 'EPERM') {
                 console.log("Kan ikke opdatere variable. Fejl: ", JSON.stringify(err));
-                return
               }
               console.log("Fejl ved fixDates: ", JSON.stringify(err));
               ws.send(JSON.stringify({ error: err, status: 203 }));
+              return;
             }
           }
+          console.log(`server: Watched ${event} ${path}`);
+          ws.send(JSON.stringify({ event, path }));
         }
       });
     }

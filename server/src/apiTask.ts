@@ -47,8 +47,10 @@ export default function apiTask(app: express.Application) {
       }
       const data = await response.json();
       res.status(200).json(data);
+      return;
     } catch (error: any) {
       res.status(error.status || 500).json(error);
+      return;
     }
   });
 
@@ -83,8 +85,10 @@ export default function apiTask(app: express.Application) {
           const text = await response.text();
           console.log(text);
           res.status(response.status).json({ message: 'Task opdateret', detail: text });
+          return;
         } catch (error: any) {
           res.status(error.status || 500).json(error);
+          return;
         }
       } else {
         if (response.status === 404) {
@@ -108,7 +112,7 @@ export default function apiTask(app: express.Application) {
   });
 
   app.get("/api/parameters", async (req: Request, res: Response) => {
-    console.log('\n--- /api/parameters');
+    console.log('\n--- /api/parameters (task parameters)');
 
     try {
       checkConfig();
@@ -123,13 +127,13 @@ export default function apiTask(app: express.Application) {
 
     let paramList = [];
     try {
-      console.log("Read ", paramFile);
+      console.log("  Read ", paramFile);
       paramList = JSON.parse(readFileSync(paramFile, 'latin1'));
     } catch (e) {
       res.status(200).json([]);
       return;
     }
-    console.log("paramList: ", paramList, paramList.length);
+    // console.log("paramList: ", paramList, paramList.length);
     for (const obj of paramList) {
       try {
         const response = await readTask(cfg, obj.task);
@@ -144,13 +148,12 @@ export default function apiTask(app: express.Application) {
           taskList.push(paramObj);
         } else {
           if (response.status === 404) {
-            console.log(`task listet i paramlist: ${obj.task} er slettet i UAC, (ikke noget problem)`);
-          } else {
-            console.log("response: ", response);
+            console.log(`  task listet i paramlist: ${obj.task} er slettet i UAC, (ikke noget problem)`);
           }
         }
       } catch (error: any) {
         res.status(error.status || 500).json(error);
+        return;
       }
     }
     // console.log("returner tasklist ", taskList);
@@ -164,8 +167,6 @@ export default function apiTask(app: express.Application) {
     try {
       checkConfig();
     } catch (error) {
-      console.log('\n--- checkConfig: /api/listadv error');
-
       res.status(400).json(error);
       return;
     }
@@ -202,12 +203,14 @@ export default function apiTask(app: express.Application) {
       }
       const sorted = handleData(data);
       res.status(200).json(sorted);
+      return;
     } catch (error: any) {
       console.log("listadv: catch ", error);
       res.status(error.status).json({
         message: error.message,
         detail: error.detail
       });
+      return;
     }
   });
 

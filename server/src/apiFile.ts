@@ -16,10 +16,9 @@ export function apiFile(app: express.Application) {
     // Join the provided directory path with the 'public' directory
     const planDir = getParm(req, 'directory');
     console.log("-- /api/plandir ", planDir);
-    console.log(__dirname);
 
     fs.readdir(planDir, { withFileTypes: true }, (err, dirents) => {
-      console.log("readdir ", planDir);
+      console.log("  readdir ", planDir);
       if (err) {
         res.status(500).send('An error occurred while reading the directory.');
         return;
@@ -38,7 +37,7 @@ export function apiFile(app: express.Application) {
     console.log('\n--- /api/editor');
     const fileName = getParm(req, 'fileName');
 
-    console.log(`apiFile: editor ${fileName}`);
+    console.log(`  apiFile: editor ${fileName}`);
     /*
     if (!existsSync(fileName)) {
       console.log(`apiFile: create ${fileName}`);
@@ -46,25 +45,20 @@ export function apiFile(app: express.Application) {
     }
     */
     spawn(config.editor, [fileName]);
-    console.log(`apiFile: editor ${fileName} started`);
     const match = fileName.match(/Uge(\d+)/);
-    console.log(`apiFile: editor ${fileName} match ${match}`);
     if (match) {
       try {
-        console.log(`apiFile: fixDates ${fileName}`);
+        console.log(`  apiFile: fixDates ${fileName}`);
         fixDates(fileName);
-        // res.setHeader('Connection', 'close');
         res.status(200).json({});
       } catch (err) {
-        console.log(`apiFile: fixDates ${fileName} error ${err}`);
-        // res.setHeader('Connection', 'close');
+        console.log(`  apiFile: fixDates ${fileName} error ${err}`);
         res.status(203).json(err);
       }
       return;
     }
     // res.setHeader('Connection', 'close');
     res.status(200).json({});
-    console.log(`apiFile: editor ${fileName} done`);
   })
 
   app.get("/api/explorer", (req: any, res: any) => {
@@ -82,7 +76,7 @@ export function apiFile(app: express.Application) {
 
     try {
       unlinkSync('path_to_your_file');
-      console.log('File deleted successfully');
+      console.log('  File deleted successfully');
       res.status(200).json({});
       return;
     } catch (err) {

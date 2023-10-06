@@ -10,7 +10,7 @@ var id = 0;
 export async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResult> {
     const fileStream = createReadStream(filePath, { encoding: 'utf-8' });
 
-    console.log('readFileAndParseWorkflow ', filePath);
+    console.log('  readFileAndParseWorkflow ', filePath);
     const rl = readline.createInterface({
         input: fileStream,
         crlfDelay: Infinity,
@@ -34,13 +34,13 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
             continue;
         }
 
-        console.log(`Read taskline: ${taskLine}`);
+        // console.log(`    Read taskline: ${taskLine}`);
         const result = parseLine(taskLine);
 
         if (!result.ok) {
             return ({ workflowItems: {} as WorkflowNode[], parmItems: [], count: lineNumber, ok: false })
         }
-        console.log(`result: ${JSON.stringify(result)}`);
+        // console.log(`    result: ${JSON.stringify(result)}`);
 
         count++;
         if (result.parmMatched) {
@@ -50,7 +50,7 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
         } else if (currentWorkflowItem) {
             handleWorkflowItem(currentWorkflowItem, result.groupMember, result.dependant);
         } else {
-            console.log(`No match ${result.parmMatched}`);
+            console.log(`    No match ${result.parmMatched}`);
             return ({ workflowItems: {} as WorkflowNode[], parmItems: [], count: lineNumber, ok: false })
         }
     }
@@ -58,7 +58,7 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
     if (currentWorkflowItem) {
         workflowItems.push(currentWorkflowItem);
     }
-    console.log(`readAndFParseWorkflow Parm Items ${JSON.stringify(parmItems)}`);
+    console.log(`    readAndFParseWorkflow Parm Items ${JSON.stringify(parmItems)}`);
     return { workflowItems, parmItems, count, ok: true };
 }
 
@@ -75,7 +75,7 @@ function handleParm(parmItems: ParmItem[], parmItem: ParmItem) {
 }
 
 function handleWorkflowItem(currentWorkflowItem: WorkflowNode, groupMember: string, dependant: string) {
-    console.log("handleWorkflowItem()");
+    // console.log("  handleWorkflowItem()");
     const item = {
         task: {
             value: groupMember.trim()
@@ -88,7 +88,7 @@ function handleWorkflowItem(currentWorkflowItem: WorkflowNode, groupMember: stri
 }
 
 function handleGroup(currentWorkflowItem: WorkflowNode | null, workflowItems: WorkflowNode[], groupName: string) {
-    console.log(`Add group: ${groupName}`);
+    console.log(`  Add group: ${groupName}`);
     if (currentWorkflowItem) {
         // console.log(`Add group member: ${currentWorkflowItem.name}`);
         workflowItems.push(currentWorkflowItem);
@@ -99,20 +99,20 @@ function handleGroup(currentWorkflowItem: WorkflowNode | null, workflowItems: Wo
         type: "taskWorkflow",
         workflowVertices: [],
     };
-    console.log(`Create currentWorkflowItem: ${currentWorkflowItem.name}`);
+    console.log(`  Create currentWorkflowItem: ${currentWorkflowItem.name}`);
     return currentWorkflowItem;
 }
 
 function parseLine(line: string) {
 
-    console.log("parseLine()");
+    // console.log("  parseLine()");
     // console.log("Try groupName");
     let groupName = "";
     const groupNameMatched = line.match(/^([\wæøåÆØÅ]+):$/);
     if (groupNameMatched) {
         // console.log("groupName matched");
         groupName = groupNameMatched[1];
-        console.log("  ", groupName);
+        // console.log("  ", groupName);
     }
     // console.log(groupNameMatched);
 
@@ -122,8 +122,8 @@ function parseLine(line: string) {
     if (groupMemberMatched) {
         // console.log("groupMember matched");
         groupMember = groupMemberMatched[1];
-        console.log("  ", groupMember);
-        console.log("  ", groupMemberMatched);
+        // console.log("  ", groupMember);
+        // console.log("  ", groupMemberMatched);
     }
     // console.log(groupMemberMatched);
 
@@ -134,8 +134,8 @@ function parseLine(line: string) {
         // console.log("groupMember dependancy matched");
         groupMember = dependanceMatched[1];
         dependant = dependanceMatched[2];
-        console.log(dependanceMatched);
-        console.log(`  groupMember ${groupMember}, dependant ${dependant}`);
+        // console.log(dependanceMatched);
+        // console.log(`  groupMember ${groupMember}, dependant ${dependant}`);
     }
     // console.log(dependanceMatched);
 
@@ -156,7 +156,7 @@ function parseLine(line: string) {
 
 export const deleteOldPlan = async (cfg: Environment[string], env: string, workflows: WorkflowNode[]) => {
     let curWorkflows = [];
-    console.log(`deleteOldPlan: ${config.dataDir}/${env}_plan.json`);
+    console.log(`  deleteOldPlan: ${config.dataDir}/${env}_plan.json`);
     curWorkflows = JSON.parse(readFileSync(`${config.dataDir}/${env}_plan.json`, 'utf-8'));
     await deletePlan(cfg, workflows, curWorkflows);
 }
@@ -170,7 +170,7 @@ export async function deletePlan(cfg: Environment[string], workflows: WorkflowNo
 
 async function deleteNode(cfg: Environment[string], node: WorkflowNode): Promise<void> {
     const name = `${cfg.prefix}_${node.name}_wkf`;
-    console.log(`deleteNode ${cfg.prefix} ${node.name} ${name}`);
+    console.log(`  deleteNode ${cfg.prefix} ${node.name} ${name}`);
     const response = await deleteTask(cfg, name)
     if (response.ok) {
         return
@@ -180,7 +180,7 @@ async function deleteNode(cfg: Environment[string], node: WorkflowNode): Promise
         return;
     }
     if (response.status === 403) {
-        console.log(`Task findes ${name} men må ikke slettes, fjern vertices istedet`);
+        console.log(`    Task findes ${name} men må ikke slettes, fjern vertices istedet`);
         if (node?.workflowVertices) {
             for (const item of node.workflowVertices) {
                 const itemName = `${cfg.prefix}_${item.task.value}_wkf`;
@@ -253,7 +253,6 @@ export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, t
 export function getParm(request: any, parm: string) {
     let p = "";
     p = request.query[parm];
-    console.log("getParm: ", p);
     return p;
 }
 
@@ -366,7 +365,7 @@ function topologicalSortUtil(v: string, visited: { [index: string]: boolean }, s
  * @param workflows An array of WorkflowNode objects.
  */
 export function findTopLevel(workflows: WorkflowNode[]) {
-    console.log("toplevel");
+    console.log("  toplevel");
     counter = {};
     for (const wkf of workflows) {
         if (wkf.name) {
@@ -406,7 +405,7 @@ export function handleData(data: WorkflowNode[]): TreeNode[] {
 
     findTopLevel(data);
 
-    console.log("after toplevel");
+    console.log("  after toplevel");
     id = 0;
     for (const wkf of data) {
         // Only top level nodes

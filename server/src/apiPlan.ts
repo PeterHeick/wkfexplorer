@@ -5,6 +5,7 @@ import { checkConfig, config } from "./apiConfig";
 import { Environment, ParmItem, WorkflowNode } from './interfaces';
 import path from 'path';
 import { checkDollarSign, deleteOldPlan, deletePlan, getParm, handleData, readFileAndParseWorkflow, sortPlan } from './apiPlanUtil';
+import { fixDates } from './util';
 
 /**
  * Defines the API routes and handlers for the plan-related functionality.
@@ -24,7 +25,6 @@ export function apiPlan(app: express.Application) {
   // Plan handling
 
   app.get("/api/progress", (req, res) => {
-    // console.log(`pct: ${numberOfNodesProcessed} / ${numberOfNodes} * 100 ${ numberOfNodesProcessed / numberOfNodes * 100}`);
     res.status(200).json({ pct: numberOfNodesProcessed / numberOfNodes * 100 });
   })
 
@@ -40,8 +40,19 @@ export function apiPlan(app: express.Application) {
       return;
     }
 
+    console.log(`  apiPlan: load ${plan}`);
+    const match = plan.match(/Uge(\d+)/);
+    if (match) {
+      try {
+        console.log(`  apiPlan: fixDates ${plan}`);
+        fixDates(plan);
+      } catch (err) {
+        console.log(`  apiPlan: fixDates ${plan} error ${err}`);
+      }
+    }
+
     if (checkDollarSign(plan)) {
-      console.log(`plan: ${plan} contains $`);
+      console.log(`  plan: ${plan} contains $`);
       res.status(400).json({
         message: "MasterPlan",
         detail: `Kan ikke loade en Master Plan ${path.basename(plan)}`
@@ -52,7 +63,7 @@ export function apiPlan(app: express.Application) {
     readFileAndParseWorkflow(`${plan}`)
       .then((obj: any) => {
         let { workflowItems, parmItems, count, ok } = obj;
-        console.log(`obj.parms: ${parmItems}`)
+        console.log(`  obj.parms: ${parmItems}`)
 
         if (!ok) {
           res.status(400).json({
@@ -69,11 +80,12 @@ export function apiPlan(app: express.Application) {
         }
       })
       .catch((err: any) => {
-        console.log('Fejl ved plan ', plan, err);
+        console.log('  Fejl ved plan ', plan, err);
         res.status(404).json({
           message: "Plan ikke fundet",
           detail: `Plan ${path.basename(plan)} blev ikke fundet`,
         });
+        return;
       })
 
   });
@@ -87,13 +99,13 @@ export function apiPlan(app: express.Application) {
 
     // console.log("topLevelNames1 ", topLevelNames);
     if (topLevelNames) {
-      console.log("Delete new plan");
+      console.log("  Delete new plan");
       try {
         await deletePlan(cfg, currentPlan.workflows, topLevelNames.reverse());
         res.status(200).json({ message: "ok", detail: "Plan slettet" });
         return;
       } catch (error: any) {
-        console.log("Delete fejlet", error);
+        console.log("  Delete fejlet", error);
         res.status(error.status || 500).json(error);
         return;
       }
@@ -131,9 +143,9 @@ export function apiPlan(app: express.Application) {
       .catch((error) => {
         // Det gør ikke noget at den gamle plan ikke kan slettes
         if (error.code === 'ENOENT') {
-          console.log(`no such file or directory: ${error.path}`);
+          console.log(`  no such file or directory: ${error.path}`);
         } else {
-          console.log(error);
+          console.log("  ", error);
         }
       })
 
@@ -147,7 +159,7 @@ export function apiPlan(app: express.Application) {
           writeFileSync(`${config.dataDir}/${env}_plan.json`, JSON.stringify(topLevelNames));
         } catch (e: any) {
           mkdir(config.dataDir, (err) => {
-            console.error(`Fejl ved oprettelse af '${config.dataDir}'`)
+            console.error(`  Fejl ved oprettelse af '${config.dataDir}'`)
           });
           try {
             writeFileSync(`${config.dataDir}/${env}_plan.json`, JSON.stringify(topLevelNames));
@@ -160,7 +172,7 @@ export function apiPlan(app: express.Application) {
           }
         }
       } catch (error: any) {
-        console.log("Delete fejlet", error);
+        console.log("  Delete fejlet", error);
         res.status(error.status || 500).json(error);
         return;
       }
@@ -180,8 +192,8 @@ export function apiPlan(app: express.Application) {
       return;
     }
 
-    console.log("Created");
-    console.log("status ", status);
+    console.log("  Created");
+    console.log("  status ", status);
     // writeFileSync(`${config.dataDir}/${env}_missing.json`, JSON.stringify(Array.from(status.missing)));
     const returnStatus = {
       missing: Array.from(status.missing),
@@ -197,10 +209,10 @@ export function apiPlan(app: express.Application) {
    * @throws Throws an error if an error occurs during the handling of ParmItems.
    */
   async function handleParmItems(cfg: Environment[string], items: ParmItem[]) {
-    console.log(`handleParmItems() items ${JSON.stringify(items)}`);
+    console.log(`  handleParmItems() items ${JSON.stringify(items)}`);
     for (const item of items) {
       const wkfTask = `${cfg.prefix}_${item.task}`;
-      console.log(`handleParms() Task: ${wkfTask}`);
+      console.log(`  handleParms() Task: ${wkfTask}`);
       try {
         const response = await readTask(cfg, wkfTask);
         if (response.ok) {
@@ -208,23 +220,23 @@ export function apiPlan(app: express.Application) {
           task.parameters = item.parameter;
           const res = await updateTask(cfg, task)
           if (!res.ok) {
-            console.log(`Update task response not ok Status: ${res.status}  ${JSON.stringify(res)}`);
+            console.log(`  Update task response not ok Status: ${res.status}  ${JSON.stringify(res)}`);
             throw {
               message: "Noget gik galt",
               detail: res.statusText || 'An error occurred',
             };
           } else {
-            console.log("Update succeed");
+            console.log("  Update succeed");
           }
         } else {
           if (response.status === 404) {
-            console.log(`Task listet i plan: ${wkfTask} findes ikke i UAC`)
+            console.log(`  Task listet i plan: ${wkfTask} findes ikke i UAC`)
             throw {
               message: `Task findes ikke`,
               detail: `Task: ${wkfTask} findes ikke i UAC`
             };
           } else {
-            console.log(`Fejl  i ${wkfTask} ${response.status}`);
+            console.log(`  Fejl  i ${wkfTask} ${response.status}`);
             throw {
               message: `Fejl ved læsning af ${wkfTask}`,
               detail: `Fejlkode: ${response.status}`
@@ -232,7 +244,7 @@ export function apiPlan(app: express.Application) {
           }
         }
       } catch (error: any) {
-        console.log(`Last catch Fejl ${wkfTask} ${JSON.stringify(error)}`);
+        console.log(`  Last catch Fejl ${wkfTask} ${JSON.stringify(error)}`);
         throw error;
       }
     }
@@ -248,7 +260,7 @@ export function apiPlan(app: express.Application) {
    */
   async function createNewPlan(res: Response, cfg: Environment[string], topLevelNames: string[], status: Istatus) {
     // Opret ny plan
-    console.log("createNewPlan");
+    console.log("  createNewPlan");
     numberOfNodesProcessed = 0;
     let vertexMap: { [key: string]: { [key: string]: any } } = {};
     let wkfName = "";
@@ -266,8 +278,8 @@ export function apiPlan(app: express.Application) {
         }
       }
       if (!wkfResponse.ok) {
-        console.log(wkfResponse);
-        console.log("createTask failed");
+        console.log("  ", wkfResponse);
+        console.log("  createTask failed");
         throw {
           message: "Fejl ved create plan",
           detail: wkfResponse.statusText,
@@ -275,7 +287,7 @@ export function apiPlan(app: express.Application) {
         }
       }
 
-      console.log("Progress ", numberOfNodesProcessed, numberOfNodes);
+      console.log("  Progress ", numberOfNodesProcessed, numberOfNodes);
       numberOfNodesProcessed++;
 
       const vstart = config.verticeStart;
@@ -317,7 +329,7 @@ export function apiPlan(app: express.Application) {
               status.missing.add(wkfName)
               continue;
             }
-            console.log("add task to workflow failed ", response.status, response);
+            console.log("  add task to workflow failed ", response.status, response);
             throw {
               message: 'Tilføj task fejlet',
               detail: `Tilføj ${wkfTask} til ${wkfName} fejlet: ${response.statusText}`,
@@ -347,7 +359,7 @@ export function apiPlan(app: express.Application) {
             }
             const resp = await make_edge(cfg, wkfName, sId, dId, vertice.dependant === "");
             if (!resp.ok) {
-              console.log("make edge add task failed ", resp.statusText, resp.status);
+              console.log("  make edge add task failed ", resp.statusText, resp.status);
               throw {
                 message: 'Tilføj afhængighed fejlet',
                 detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${resp.statusText}`,
@@ -360,7 +372,7 @@ export function apiPlan(app: express.Application) {
             if (!firstNode) {
               const response = await make_edge(cfg, wkfName, sourceId, destId, vertice.dependant === "");
               if (!response.ok) {
-                console.log("make edge add task failed ", response.statusText, response.status);
+                console.log("  make edge add task failed ", response.statusText, response.status);
                 throw {
                   message: 'Tilføj afhængighed fejlet',
                   detail: `Tilføj pil fra ${oldWkfTask} til ${wkfTask} fejlet: ${response.statusText}`,

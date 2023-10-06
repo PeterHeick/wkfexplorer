@@ -19,12 +19,12 @@ export let localConfig: Config = {} as Config;
 function readConfig() {
   let json;
 
-  console.log("read global config");
+  console.log("  read global config");
   try {
     json = readFileSync("config.json", "utf-8");
     config = JSON.parse(json);
   } catch (e: any) {
-    console.log("config.json missing ", e.message);
+    console.log("  config.json missing ", e.message);
     if (e.code === "ENOENT") {
       throw {
         message: "Kan ikke finde config.json",
@@ -37,13 +37,13 @@ function readConfig() {
     };
   }
 
-  console.log("read local config ", config.localConfig);
+  console.log("  read local config ", config.localConfig);
   try {
     json = readFileSync(config.localConfig, "utf-8");
     const localConfig = JSON.parse(json);
     deepMerge(config, localConfig);
   } catch (e: any) {
-    console.log("Kan ikke læse local config.json ", e.message);
+    console.log("  Kan ikke læse local config.json ", e.message);
     if (e.code !== "ENOENT") {
       throw {
         message: "Fejl i local config.json",
@@ -64,8 +64,6 @@ function readConfig() {
  * Checks if the `config` object is defined and not empty. If it is empty, it reads the configuration from file.
  */
 export function checkConfig() {
-  console.log("checkConfig: ");
-  console.log(Object.keys(config).length);
   if (!config || (Object.keys(config).length === 0)) {
     readConfig();
   }
@@ -84,7 +82,7 @@ export function apiConfig(app: express.Application) {
       res.status(200).json(config);
     } catch (error) {
       res.status(400).json(error);
-      console.error("Fejl i config.json - webserver stoppet");
+      console.error("  Fejl i config.json - webserver stoppet");
       exit(1);
     }
   });
@@ -97,8 +95,7 @@ export function apiConfig(app: express.Application) {
  */
 export function apiVersion(app: express.Application, version: string) {
   app.get("/api/version", (req: Request, res: Response) => {
-    console.log('\n--- /');
-    console.log(`\n--- Get version ${version}`);
+    console.log(`\n--- api/version ${version}`);
     const obj = { version };
     try {
       res.status(200).json(obj);

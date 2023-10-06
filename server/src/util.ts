@@ -129,7 +129,7 @@ const weekDays = ['Søndag', 'Mandag', 'Tirsdag', 'Onsdag', 'Torsdag', 'Fredag',
  * @throws An error object with a message and detail property if the week number is invalid.
  */
 export function fixDates(filename: string) {
-  console.log("fixDates()");
+  console.log("    fixDates()");
   const yearMatch = filename.match(/(20[23][0-9])/);
   const weekMatch = filename.match(/Uge(\d+)/);
 
@@ -141,7 +141,7 @@ export function fixDates(filename: string) {
   const week = weekMatch[1];
   const weekInfo = findWeekDays(year, week);
   if (!weekInfo.ok) {
-    console.log("Ugyldigt ugenummer");
+    console.log("    Ugyldigt ugenummer");
     throw {
       message: weekInfo.error,
       detail: weekInfo.error,
@@ -157,7 +157,6 @@ export function fixDates(filename: string) {
     for (let day = 0; day < 7; day++) {
       varObj[weekDays[day]] = weekInfo.weekPlan[day]
     }
-    console.log(`var obj: ${JSON.stringify(varObj)}`);
 
     replaceVariablesInContent(filename, varObj);
   }
@@ -186,7 +185,7 @@ type WeekPlanResult = { ok: boolean; weekPlan?: WeekPlan; error?: string };
  * @returns An object containing a boolean indicating if the operation was successful and an array of the weekdays for the given week number.
  */
 function findWeekDays(year: string, weekNumber: string): WeekPlanResult {
-  console.log("findWeekDays()");
+  console.log("    findWeekDays()");
   const weekPlan: WeekPlan = [];
   const wk = parseInt(weekNumber, 10);
   const yy = parseInt(year, 10);
