@@ -27,6 +27,7 @@
       </div>
       <div v-else-if="node.type === 'taskUnix'">
         <span @click="handleTaskClick(node)" style="cursor: pointer" > {{ node.name }}</span>
+        <span v-if="node.comment" class="comment"> ({{ node.comment }}) </span>
       </div>
     </li>
   </ul>
@@ -43,7 +44,6 @@ defineProps({
   }
 })
 const emit = defineEmits(["currentNodeEvent"])
-
 const handleTaskClick = (node: TreeNode) => {
   console.log("HandleTaskClick TreeComponent ", JSON.stringify(node));
   emit("currentNodeEvent", node.name);
@@ -101,5 +101,11 @@ function toggleVisibility(node: TreeNode) {
 
 .wkfempty {
   font-weight: 500;
+}
+
+.comment  {
+  font-size: smaller;
+  color: #555;
+  padding-left: 20px;
 }
 </style>

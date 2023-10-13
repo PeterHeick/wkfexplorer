@@ -40,6 +40,7 @@ export type TreeNode =
   name: string;
   type: string;
   isVisible: boolean;
+  comment?: string;
   workflow: TreeNode[];
 }
 

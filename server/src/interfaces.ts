@@ -8,6 +8,7 @@ export interface Ivertice {
   vertexX?: number;
   vertexY?: number;
   dependant?: string;
+  comment?: string;
 }
 
 
@@ -38,6 +39,7 @@ export type WorkflowNode = {
   startHeld?: boolean;
   exclusiveWithSelf?: boolean;
   agentCluster?: string;
+  comment?: string;
 
   workflowVertices?: Ivertice[];
   [key: string]: unknown;
@@ -51,6 +53,7 @@ export type TreeNode =
     name: string;
     type: string;
     isVisible: boolean;
+    comment: string;
     workflow: TreeNode[];
   }
 

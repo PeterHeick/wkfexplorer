@@ -11,7 +11,7 @@
     <div id="container">
       <div id="left-pane">
         <span id="fileheader">
-          {{ fileName }}
+          {{ fileName.split('\.')[0] }}
         </span>
         <TreeComponent v-if="state.isPlanRead" :treeData="wkf"></TreeComponent>
       </div>

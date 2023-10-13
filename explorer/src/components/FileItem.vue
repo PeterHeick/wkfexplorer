@@ -10,7 +10,7 @@
     </span>
         ... @keydown.delete="onDelete" />
     -->
-    <span class="fileItem">{{ item.name }}</span>
+    <span class="fileItem">{{ item.name.split('\.')[0] }}</span>
     <ul v-if="item.children && item.children.length">
       <file-item v-for="child in item.children" :key="child.name" :item="child" @getPlanFile="emitGetPlanFile"
         @keydown="handleKeydown" />
@@ -43,7 +43,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["getPlanFile"]);
-
 let clickCount = 0;
 let timer: number | null = null;
 

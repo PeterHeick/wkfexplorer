@@ -8,7 +8,8 @@ let counter: INumberDictionary = {};
 var id = 0;
 
 export async function readFileAndParseWorkflow(filePath: string): Promise<WorkflowResult> {
-    const fileStream = createReadStream(filePath, { encoding: 'utf-8' });
+    const fileStream = createReadStream(filePath, { encoding: 'latin1' });
+    //const fileStream = createReadStream(filePath, { encoding: 'utf-8' });
 
     console.log('  readFileAndParseWorkflow ', filePath);
     const rl = readline.createInterface({
@@ -33,6 +34,7 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
         if (taskLine.trim().length === 0) {
             continue;
         }
+        const comment = line.split('#')[1];
 
         // console.log(`    Read taskline: ${taskLine}`);
         const result = parseLine(taskLine);
@@ -48,7 +50,7 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
         } else if (result.groupNameMatched) {
             currentWorkflowItem = handleGroup(currentWorkflowItem, workflowItems, result.groupName);
         } else if (currentWorkflowItem) {
-            handleWorkflowItem(currentWorkflowItem, result.groupMember, result.dependant);
+            handleWorkflowItem(currentWorkflowItem, result.groupMember, result.dependant, comment);
         } else {
             console.log(`    No match ${result.parmMatched}`);
             return ({ workflowItems: {} as WorkflowNode[], parmItems: [], count: lineNumber, ok: false })
@@ -74,13 +76,14 @@ function handleParm(parmItems: ParmItem[], parmItem: ParmItem) {
     }
 }
 
-function handleWorkflowItem(currentWorkflowItem: WorkflowNode, groupMember: string, dependant: string) {
+function handleWorkflowItem(currentWorkflowItem: WorkflowNode, groupMember: string, dependant: string, comment: string) {
     // console.log("  handleWorkflowItem()");
     const item = {
         task: {
             value: groupMember.trim()
         },
-        dependant
+        dependant,
+        comment
     };
     if (item && currentWorkflowItem.workflowVertices) {
         currentWorkflowItem.workflowVertices.push(item);
@@ -215,7 +218,7 @@ async function deleteNode(cfg: Environment[string], node: WorkflowNode): Promise
  * @param topLevelName - The name of the top level node.
  * @returns The count of nodes.
  */
-export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevelName: string): number {
+export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, topLevelName: string, comment: string): number {
     let wkfNode = getWkfByName(wkf, name);
 
     id++;
@@ -225,6 +228,7 @@ export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, t
         name,
         type: wkfNode.type,
         isVisible: false,
+        comment: comment,
         workflow: []
     };
 
@@ -237,7 +241,7 @@ export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, t
         newNode.workflow = [];
         wkfNode.workflowVertices.forEach((vertice: Ivertice) => {
             if (vertice?.task?.value) {
-                count = parse(newNode.workflow, wkf, vertice.task.value, topLevelName) + 1;
+                count = parse(newNode.workflow, wkf, vertice.task.value, topLevelName, vertice.comment as string) + 1;
             }
         })
     }
@@ -415,7 +419,7 @@ export function handleData(data: WorkflowNode[]): TreeNode[] {
             wkf.name = wkf.name.trim().replace(/-/g, "_");
             // Det ser ud til at topLevelName ikke bliver brugt.
             let topLevelName = wkf.name;
-            count = parse(workflow, data, wkf.name, topLevelName);
+            count = parse(workflow, data, wkf.name, topLevelName, "");
             sequence[wkf.name] = count;
         }
     }
