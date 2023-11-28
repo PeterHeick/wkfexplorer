@@ -13,7 +13,7 @@
         <span id="fileheader">
           {{ fileName.split('\.')[0] }}
         </span>
-        <TreeComponent v-if="state.isPlanRead" :treeData="wkf"></TreeComponent>
+        <TreeComponent v-if="state.isPlanRead" :treeData="wkf" :parmItems="parmItems"></TreeComponent>
       </div>
       <div id="middle">
         <div v-if="taskList.value.length > 0">
@@ -52,7 +52,7 @@ import TreeComponent from "@/components/explorer/TreeComponent.vue";
 import FileComponent from "@/components/FileComponent.vue";
 
 import { api } from "@/api/api";
-import { TreeNode } from "@/types/interfaces";
+import { ParmItem, TreeNode } from "@/types/interfaces";
 import { config } from "@/store/config";
 import { state } from "@/store/state";
 import Swal from "sweetalert2";
@@ -68,6 +68,7 @@ interface TaskItem {
 }
 
 let wkf = ref([] as TreeNode[]);
+let parmItems = ref([] as ParmItem[]);
 const missingList = ref([] as string[]);
 const taskList = reactive({ value: [] as TaskItem[] });
 const show = ref(false);
@@ -112,6 +113,7 @@ const handlePlanFileRead = async (file: string) => {
       throw data;
     }
     wkf.value = data.wkf;
+    parmItems = data.parmItems;
     state.isPlanRead = true;
 
   } catch (error: any) {
@@ -126,6 +128,7 @@ const handlePlanFileRead = async (file: string) => {
     Swal.fire(error.message, error.detail, 'error');
     wkf.value = [];
     state.isPlanRead = false;
+    fileName.value = "";
   }
 }
 

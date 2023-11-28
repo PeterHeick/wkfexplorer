@@ -22,6 +22,7 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
     const workflowItems: WorkflowNode[] = [];
     const parmItems: ParmItem[] = [];
     let currentWorkflowItem: WorkflowNode | null = null;
+    let delimiter = "-";
 
     for await (const line of rl) {
 
@@ -35,9 +36,15 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
             continue;
         }
         const comment = line.split('#')[1];
+        const delim = line.match(/^delimiter *= *'(.)'$/i);
+        if (delim)  {
+            delimiter = delim[1];
+            console.log(`    Delimiter: '${delimiter}'`);
+            continue;
+        }
 
         // console.log(`    Read taskline: ${taskLine}`);
-        const result = parseLine(taskLine);
+        const result = parseLine(taskLine, delimiter);
 
         if (!result.ok) {
             return ({ workflowItems: {} as WorkflowNode[], parmItems: [], count: lineNumber, ok: false })
@@ -48,7 +55,7 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
         if (result.parmMatched) {
             handleParm(parmItems, result.parmItem);
         } else if (result.groupNameMatched) {
-            currentWorkflowItem = handleGroup(currentWorkflowItem, workflowItems, result.groupName);
+            currentWorkflowItem = handleGroup(currentWorkflowItem, workflowItems, result.groupName, result.description);
         } else if (currentWorkflowItem) {
             handleWorkflowItem(currentWorkflowItem, result.groupMember, result.dependant, comment);
         } else {
@@ -60,13 +67,12 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
     if (currentWorkflowItem) {
         workflowItems.push(currentWorkflowItem);
     }
-    console.log(`    readAndFParseWorkflow Parm Items ${JSON.stringify(parmItems)}`);
     return { workflowItems, parmItems, count, ok: true };
 }
 
-export const checkDollarSign = (filePath: string): boolean => {
+export const checkMasterPlan = (filePath: string): boolean => {
     const fileContent = readFileSync(filePath, 'utf-8');
-    return fileContent.includes('$');
+    return fileContent.includes('${UGE}') && fileContent.includes('${MANDAG}');
 };
 
 
@@ -90,7 +96,7 @@ function handleWorkflowItem(currentWorkflowItem: WorkflowNode, groupMember: stri
     }
 }
 
-function handleGroup(currentWorkflowItem: WorkflowNode | null, workflowItems: WorkflowNode[], groupName: string) {
+function handleGroup(currentWorkflowItem: WorkflowNode | null, workflowItems: WorkflowNode[], groupName: string, description: string) {
     console.log(`  Add group: ${groupName}`);
     if (currentWorkflowItem) {
         // console.log(`Add group member: ${currentWorkflowItem.name}`);
@@ -99,6 +105,7 @@ function handleGroup(currentWorkflowItem: WorkflowNode | null, workflowItems: Wo
     // console.log("groupName: ", groupName);
     currentWorkflowItem = {
         name: groupName,
+        summary: description,
         type: "taskWorkflow",
         workflowVertices: [],
     };
@@ -106,54 +113,45 @@ function handleGroup(currentWorkflowItem: WorkflowNode | null, workflowItems: Wo
     return currentWorkflowItem;
 }
 
-function parseLine(line: string) {
+function parseLine(line: string, delimiter: string = "-") {
 
-    // console.log("  parseLine()");
-    // console.log("Try groupName");
     let groupName = "";
-    const groupNameMatched = line.match(/^([\wæøåÆØÅ]+):$/);
+    let description = "";
+    const groupNameMatched = line.match(/^([\wæøåÆØÅ]+): *("([^"]*)")?$/);
     if (groupNameMatched) {
-        // console.log("groupName matched");
         groupName = groupNameMatched[1];
-        // console.log("  ", groupName);
+        description = groupNameMatched[3];
+        description = "";    
+        // console.log(`  Group: ${groupName}`);
+        // console.log(`  Description: ${description}`);
     }
-    // console.log(groupNameMatched);
 
-    // console.log("Try groupMember");
     let groupMember = "";
     const groupMemberMatched = line.match(/^([\wæøåÆØÅ]+)$/);
     if (groupMemberMatched) {
-        // console.log("groupMember matched");
         groupMember = groupMemberMatched[1];
-        // console.log("  ", groupMember);
-        // console.log("  ", groupMemberMatched);
     }
-    // console.log(groupMemberMatched);
 
-    // console.log("Try groupMember + dependant");
     let dependant = ""
     const dependanceMatched = line.match(/^([\wæøåÆØÅ]+) *-> *([\wæøåÆØÅ]+)$/);
     if (dependanceMatched) {
-        // console.log("groupMember dependancy matched");
         groupMember = dependanceMatched[1];
         dependant = dependanceMatched[2];
-        // console.log(dependanceMatched);
-        // console.log(`  groupMember ${groupMember}, dependant ${dependant}`);
     }
-    // console.log(dependanceMatched);
 
     let parmItem = { task: "", parameter: "" };
     const parmMatched = line.match(/^([\wæøåÆØÅ]+) *= *(.*)$/);
     if (parmMatched) {
-        // console.log("Parm matched");
         const task = parmMatched[1].trim();
-        const parameter = parmMatched[2].trim();
+        let parameter = parmMatched[2].trim();
+        console.log(`    Parm: ${task} = ${parameter}`);
+        parameter = parameter.replace(new RegExp(delimiter, 'g'), '');
+        console.log(`    Parm: ${task} = ${parameter}`);
         parmItem = { task, parameter };
     }
-    // console.log(parmMatched);
 
     const ok = groupNameMatched || groupMemberMatched || dependanceMatched || parmMatched;
-    return { ok, groupNameMatched, groupMemberMatched, dependanceMatched, parmMatched, groupName, groupMember, dependant, parmItem, }
+    return { ok, groupNameMatched, groupMemberMatched, dependanceMatched, parmMatched, groupName, description, groupMember, dependant, parmItem, }
 }
 
 
@@ -238,7 +236,7 @@ export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, t
     workflow.push(newNode);
 
     if (wkfNode.workflowVertices) {
-        newNode.workflow = [];
+//        newNode.workflow = [];
         wkfNode.workflowVertices.forEach((vertice: Ivertice) => {
             if (vertice?.task?.value) {
                 count = parse(newNode.workflow, wkf, vertice.task.value, topLevelName, vertice.comment as string) + 1;
@@ -426,12 +424,22 @@ export function handleData(data: WorkflowNode[]): TreeNode[] {
     // console.log("No of nodes before ", workflow.length);
     workflow.sort((a: TreeNode, b: TreeNode) => {
         if (a.name && b.name) {
-            return sequence[b.name] - sequence[a.name];
-        }
-        else {
+            return a.name.localeCompare(b.name);
+        } else {
             return 0;
         }
     });
+
+    /*
+        workflow.sort((a: TreeNode, b: TreeNode) => {
+            if (a.name && b.name) {
+                return sequence[b.name] - sequence[a.name];
+            }
+            else {
+                return 0;
+            }
+        });
+        */
 
     // writeFileSync('../sorted.json', JSON.stringify(workflow));
     return workflow;

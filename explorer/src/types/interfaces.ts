@@ -34,6 +34,8 @@ export type WorkflowNode =  {
   [key: string]: unknown;
 } ;
 
+export type ParmItem = { task: string; parameter: string };
+
 export type TreeNode = 
 {
   id: number;

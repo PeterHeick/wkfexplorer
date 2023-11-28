@@ -17,14 +17,19 @@ import 'dotenv/config';
 // Når versions nummeret skifter, skal der også rettes i HeaderComponent.vue linje 30.
 // De to versions numre skal følges ad.
 
-//const docRoot = "docRoot";
-const docRoot = "DocRoot";
+// const docRoot = "testDocRoot";
+let docRoot = "docRoot";
 // const port = process.env.PORT || 54345;
 // const ws_port = process.env.WS_PORT || 54445;
 const host = "localhost";
 const port = 8080;
 const ws_port = 8081;
 const app = express();
+
+if (process.argv.length >= 3) {
+  docRoot = process.argv[2];
+}
+
 
 console.log(`Current directory: ${process.cwd()}`);
 
@@ -58,6 +63,7 @@ apiFile(app);
  */
 const server = app.listen(port, () => {
   console.log(`Server kører på http://${host}:${port}/`);
+  console.log(`docRoot: ${docRoot}`);
 });
 
 const wss = new WebSocket.Server({ port: ws_port });
@@ -66,6 +72,7 @@ let watcher: chokidar.FSWatcher;
 
 wss.on('connection', (ws) => {
   let initialized = false;
+  let isFile = false;
   ws.on('message', (message) => {
     const { action, path } = JSON.parse(message.toString());
     console.log(`action: ${action} planBaseDir: ${config.planBaseDir}`);
@@ -88,7 +95,6 @@ wss.on('connection', (ws) => {
           if (event === 'add') {
             try {
               fixDates(path);
-              // ws.send(JSON.stringify({ event, path }));
             } catch (err: any) {
               if (err.code === 'EPERM') {
                 console.log("Kan ikke opdatere variable. Fejl: ", JSON.stringify(err));

@@ -4,7 +4,7 @@ import { createWorkflow, add_task_to_workflow, make_edge, updateTask, readTask }
 import { checkConfig, config } from "./apiConfig";
 import { Environment, ParmItem, WorkflowNode } from './interfaces';
 import path from 'path';
-import { checkDollarSign, deleteOldPlan, deletePlan, getParm, handleData, readFileAndParseWorkflow, sortPlan } from './apiPlanUtil';
+import { checkMasterPlan, deleteOldPlan, deletePlan, getParm, getWkfByName, handleData, readFileAndParseWorkflow, sortPlan } from './apiPlanUtil';
 import { fixDates } from './util';
 
 /**
@@ -51,7 +51,7 @@ export function apiPlan(app: express.Application) {
       }
     }
 
-    if (checkDollarSign(plan)) {
+    if (checkMasterPlan(plan)) {
       console.log(`  plan: ${plan} contains $`);
       res.status(400).json({
         message: "MasterPlan",
@@ -60,10 +60,10 @@ export function apiPlan(app: express.Application) {
       return;
     }
 
-    readFileAndParseWorkflow(`${plan}`)
+    readFileAndParseWorkflow(plan)
       .then((obj: any) => {
         let { workflowItems, parmItems, count, ok } = obj;
-        console.log(`  obj.parms: ${parmItems}`)
+        console.log(`  obj.parms: ${JSON.stringify(parmItems)}`)
 
         if (!ok) {
           res.status(400).json({
@@ -75,8 +75,9 @@ export function apiPlan(app: express.Application) {
           numberOfNodes = count;
           currentPlan.workflows = workflowItems as WorkflowNode[];
           const sorted = handleData(currentPlan.workflows);
+          console.log(`  sorted: ${sorted.length}`);
           currentPlan.parmItems = parmItems;
-          res.status(200).json({ ok: true, wkf: sorted });
+          res.status(200).json({ ok: true, wkf: sorted, parmItems });
         }
       })
       .catch((err: any) => {
@@ -135,9 +136,8 @@ export function apiPlan(app: express.Application) {
       res.status(400).json(error);
       return;
     }
-
     // Slet gammel plan først, hvis der laves om på planen, ligger der muligvis
-    // nogle workflows som ikke længere er i brug, derfor slettes først den game plan.
+    // nogle workflows som ikke længere er i brug, derfor slettes først den gamle plan.
 
     await deleteOldPlan(cfg, env, currentPlan.workflows)
       .catch((error) => {
@@ -179,7 +179,7 @@ export function apiPlan(app: express.Application) {
     }
 
     try {
-      await createNewPlan(res, cfg, topLevelNames, status);
+      await createNewPlan(res, cfg, currentPlan.workflows, topLevelNames, status);
     } catch (error: any) {
       res.status(error.status).json(error);
       return;
@@ -258,17 +258,20 @@ export function apiPlan(app: express.Application) {
    * @param status - The status object.
    * @returns A Promise that resolves when the plan is created.
    */
-  async function createNewPlan(res: Response, cfg: Environment[string], topLevelNames: string[], status: Istatus) {
+  async function createNewPlan(res: Response, cfg: Environment[string], workflows:  WorkflowNode[], topLevelNames: string[], status: Istatus) {
     // Opret ny plan
     console.log("  createNewPlan");
+    console.log("  topLevelNames ", topLevelNames )
     numberOfNodesProcessed = 0;
     let vertexMap: { [key: string]: { [key: string]: any } } = {};
     let wkfName = "";
     for (const wkf of topLevelNames.reverse()) {
+      const w = getWkfByName(workflows, wkf);
+      console.log(`  createNewPlan ${wkf} summary: ${w.summary}`);
       wkfName = `${cfg.prefix}_${wkf}_wkf`;
       let wkfResponse;
       try {
-        wkfResponse = await createWorkflow(cfg, wkfName)
+        wkfResponse = await createWorkflow(cfg, wkfName, w.summary?w.summary:"" )
       } catch (error: any) {
         res.status(error.status).json(error);
         throw {

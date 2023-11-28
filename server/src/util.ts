@@ -153,6 +153,7 @@ export function fixDates(filename: string) {
       UGE: week,
       FRA: weekInfo.weekPlan[1],
       TIL: weekInfo.weekPlan[0],
+      FILE: path.basename(filename)
     }
     for (let day = 0; day < 7; day++) {
       varObj[weekDays[day]] = weekInfo.weekPlan[day]
@@ -271,7 +272,8 @@ export function getFiles(dirPath: string): any {
  */
 function replaceVariablesInContent(filename: string, varObj: { [key: string]: string; }) {
   const encoding = "latin1";
-  let tekstfilIndhold = fs.readFileSync(filename, encoding);
+  let originalTekstfilIndhold = fs.readFileSync(filename, encoding);
+  let tekstfilIndhold = originalTekstfilIndhold;
 
   for (const attr in varObj) {
     if (varObj.hasOwnProperty(attr)) {
@@ -282,5 +284,7 @@ function replaceVariablesInContent(filename: string, varObj: { [key: string]: st
     }
   }
   // Skriv det ændrede indhold tilbage i tekstfilen
-  fs.writeFileSync(filename, tekstfilIndhold, encoding);
+  if (originalTekstfilIndhold !== tekstfilIndhold) {
+    fs.writeFileSync(filename, tekstfilIndhold, encoding);
+  }
 }

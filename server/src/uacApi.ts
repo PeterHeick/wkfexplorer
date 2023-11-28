@@ -122,11 +122,11 @@ export async function deleteTask(cfg: Environment[string], task: string) {
  * @param name - The name of the workflow to create.
  * @returns A Promise that resolves to a Response object.
  */
-export async function createWorkflow(cfg: Environment[string], name: string): Promise<Response> {
+export async function createWorkflow(cfg: Environment[string], name: string, summary: string): Promise<Response> {
   const baseUrl = `https://${cfg.uachost}:${cfg.uacport}`;
   const url = `${baseUrl}/uc/resources/task`
   const token = readToken(cfg);
-  console.log("createWorkflow", name);
+  console.log("createWorkflow", name, summary);
 
   const response = await readTask(cfg, name);
   // Findes i forvejen
@@ -139,7 +139,7 @@ export async function createWorkflow(cfg: Environment[string], name: string): Pr
     name,
     notes: [],
     opswiseGroups: cfg.business_area,
-    summary: "",
+    summary,
     variables: []
   }
 

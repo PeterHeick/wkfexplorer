@@ -202,6 +202,7 @@ export default function apiTask(app: express.Application) {
         return;
       }
       const sorted = handleData(data);
+      console.log(`   listadv: ${sorted.length} workflows`)
       res.status(200).json(sorted);
       return;
     } catch (error: any) {

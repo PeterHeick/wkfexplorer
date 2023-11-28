@@ -7,8 +7,10 @@
     "start": "nodemon --watch src -e ts --exec webpack",
     "plan": "nodemon --exec ts-node src/weekplan.ts",
     "build": "webpack  && npm run copy-to-server",
+    "testbuild": "webpack  && npm run copy-to-testserver",
     "start2": "nodemon --exec ts-node src/server.ts",
     "start3": "nodemon --watch src -e ts --exec npm run build",
+    "copy-to-testserver": "mv dist/server.js I:/EDBGruppe/Projekter/uacwebserver/testServer.js",
     "copy-to-server": "mv dist/server.js I:/EDBGruppe/Projekter/uacwebserver/server.js"
   },
   "author": "",
@@ -16,6 +18,7 @@
   "dependencies": {
     "@types/cors": "^2.8.13",
     "@types/ws": "^8.5.6",
+    "bufferutil": "^4.0.8",
     "chokidar": "^3.5.3",
     "connect-history-api-fallback": "^2.0.0",
     "cors": "^2.8.5",
@@ -25,6 +28,7 @@
     "js-yaml": "^4.1.0",
     "mime": "^3.0.0",
     "node-fetch": "^3.3.1",
+    "utf-8-validate": "^6.0.3",
     "webpack-node-externals": "^3.0.0",
     "ws": "^8.14.2"
   },
@@ -39,7 +43,7 @@
     "ts-node": "^10.9.1",
     "typedoc": "^0.25.1",
     "typescript": "^5.0.2",
-    "webpack": "^5.80.0",
-    "webpack-cli": "^5.0.2"
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
   }
 }

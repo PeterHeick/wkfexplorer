@@ -19,6 +19,7 @@ interface dirEnt {
   name: string;
   path: string;
   type: string;
+  children?: dirEnt[];
 }
 const emit = defineEmits(["getPlanFile"]);
 
@@ -75,6 +76,12 @@ onMounted(() => {
         console.log(`Event listener aktiveret ${JSON.stringify(parsedEvent)}`);
         if (!parsedEvent.error) {
           fetchData();
+          console.log(`Event ${parsedEvent.event}`);
+          if (parsedEvent.event === "change" && parsedEvent.path.endsWith(".txt") && !parsedEvent.path.includes("MASTER")) {
+
+            console.log(`emitFileEvent ${parsedEvent.path}`);
+            emitGetPlanFile(parsedEvent.path);
+          }
         } else {
           Swal.fire("Watch error fejl", JSON.stringify(parsedEvent.error), "error");
         }
