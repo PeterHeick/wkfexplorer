@@ -21,7 +21,7 @@ interface dirEnt {
   type: string;
   children?: dirEnt[];
 }
-const emit = defineEmits(["getPlanFile"]);
+const emit = defineEmits(["getPlanFile", "deletePlanFile"]);
 
 const directory = ref(""); // Initial directory
 const items = ref([] as dirEnt[]); // Files and folders
@@ -81,7 +81,15 @@ onMounted(() => {
 
             console.log(`emitFileEvent ${parsedEvent.path}`);
             emitGetPlanFile(parsedEvent.path);
+          } else if (parsedEvent.event === "delete") {
+            emit("deletePlanFile", parsedEvent.path);
           }
+          if (parsedEvent.event === "unlink") {
+            const file= parsedEvent.path.substring(parsedEvent.path.lastIndexOf('\\') + 1)
+            console.log("deletePlanFile", parsedEvent.path, file);
+            emit("deletePlanFile", file);
+          }
+
         } else {
           Swal.fire("Watch error fejl", JSON.stringify(parsedEvent.error), "error");
         }

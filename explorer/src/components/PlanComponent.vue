@@ -10,10 +10,10 @@
     </div>
     <div id="container">
       <div id="left-pane">
-        <span id="fileheader">
+        <span id="fileheader" v-if="showLeftPane">
           {{ fileName.split('\.')[0] }}
         </span>
-        <TreeComponent v-if="state.isPlanRead" :treeData="wkf" :parmItems="parmItems"></TreeComponent>
+        <TreeComponent v-if="state.isPlanRead && showLeftPane" :treeData="wkf" :parmItems="parmItems"></TreeComponent>
       </div>
       <div id="middle">
         <div v-if="taskList.value.length > 0">
@@ -39,7 +39,7 @@
         </div>
       </div>
       <div id="right-pane">
-        <FileComponent @getPlanFile="handlePlanFileRead"></FileComponent>
+        <FileComponent @getPlanFile="handlePlanFileRead" @deletePlanFile="handleDeletePlanFile"></FileComponent>
       </div>
     </div>
   </div>
@@ -74,13 +74,22 @@ const taskList = reactive({ value: [] as TaskItem[] });
 const show = ref(false);
 const paramFields = ref<HTMLElement[]>([]);
 const fileName = ref("");
+const showLeftPane = ref(false);
 
 const handleEnvEvent = async (env: string) => {
   console.log("PlanComponent handleEvent env: ", env);
   // config.loadConfig();
   config.setEnv(env);
+  showLeftPane.value = false;
   updateParamList();
   missingList.value = [];
+}
+
+const handleDeletePlanFile = async (file: string) => {
+  console.log("handleDeletePlanFile ", file, fileName.value);
+  if (file === fileName.value) {
+    showLeftPane.value = false;
+  }
 }
 
 const updateParamList = async () => {
@@ -115,6 +124,7 @@ const handlePlanFileRead = async (file: string) => {
     wkf.value = data.wkf;
     parmItems = data.parmItems;
     state.isPlanRead = true;
+    showLeftPane.value = true;
 
   } catch (error: any) {
     console.log("error: ", error);

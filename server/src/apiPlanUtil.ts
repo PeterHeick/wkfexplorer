@@ -1,4 +1,4 @@
-import { createReadStream, readFileSync, writeFileSync } from "fs";
+import { createReadStream, readFileSync, unlinkSync, writeFileSync } from "fs";
 import { WorkflowResult, WorkflowNode, ParmItem, Environment, INumberDictionary, TreeNode, Ivertice } from "./interfaces";
 import * as readline from 'readline';
 import { config } from "./apiConfig";
@@ -37,7 +37,7 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
         }
         const comment = line.split('#')[1];
         const delim = line.match(/^delimiter *= *'(.)'$/i);
-        if (delim)  {
+        if (delim) {
             delimiter = delim[1];
             console.log(`    Delimiter: '${delimiter}'`);
             continue;
@@ -121,7 +121,7 @@ function parseLine(line: string, delimiter: string = "-") {
     if (groupNameMatched) {
         groupName = groupNameMatched[1];
         description = groupNameMatched[3];
-        description = "";    
+        description = "";
         // console.log(`  Group: ${groupName}`);
         // console.log(`  Description: ${description}`);
     }
@@ -155,11 +155,18 @@ function parseLine(line: string, delimiter: string = "-") {
 }
 
 
-export const deleteOldPlan = async (cfg: Environment[string], env: string, workflows: WorkflowNode[]) => {
-    let curWorkflows = [];
-    console.log(`  deleteOldPlan: ${config.dataDir}/${env}_plan.json`);
-    curWorkflows = JSON.parse(readFileSync(`${config.dataDir}/${env}_plan.json`, 'utf-8'));
-    await deletePlan(cfg, workflows, curWorkflows);
+export const deleteOldPlan = async (cfg: Environment[string], env: string, plan: string) => {
+    // let curWorkflows: WorkflowNode[] = [];
+    // let topLevelNames: string[] = [];
+    console.log(`  deleteOldPlan: ${config.dataDir}/${env}_${plan}_plan.json`);
+    try {
+        let { workflows, topLevelNames } = JSON.parse(readFileSync(`${config.dataDir}/${env}_${plan}_plan.json`, 'utf-8'));
+        await deletePlan(cfg, workflows, topLevelNames);
+        // unlinkSync(`${config.dataDir}/${env}_${plan}_plan.json`);
+    }
+    catch (error) {
+        console.log(`  deleteOldPlan: ${config.dataDir}/${env}_${plan}_plan.json findes ikke, så ikke noget at slette`);
+    }
 }
 
 export async function deletePlan(cfg: Environment[string], workflows: WorkflowNode[], sortedPlan: string[]): Promise<void> {
@@ -236,7 +243,7 @@ export function parse(workflow: TreeNode[], wkf: WorkflowNode[], name: string, t
     workflow.push(newNode);
 
     if (wkfNode.workflowVertices) {
-//        newNode.workflow = [];
+        //        newNode.workflow = [];
         wkfNode.workflowVertices.forEach((vertice: Ivertice) => {
             if (vertice?.task?.value) {
                 count = parse(newNode.workflow, wkf, vertice.task.value, topLevelName, vertice.comment as string) + 1;

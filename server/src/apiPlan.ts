@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import {  mkdir, writeFileSync } from "fs";
+import { mkdir, writeFileSync } from "fs";
 import { createWorkflow, add_task_to_workflow, make_edge, updateTask, readTask } from "./uacApi";
 import { checkConfig, config } from "./apiConfig";
 import { Environment, ParmItem, WorkflowNode } from './interfaces';
@@ -139,34 +139,26 @@ export function apiPlan(app: express.Application) {
     // Slet gammel plan først, hvis der laves om på planen, ligger der muligvis
     // nogle workflows som ikke længere er i brug, derfor slettes først den gamle plan.
 
-    await deleteOldPlan(cfg, env, currentPlan.workflows)
-      .catch((error) => {
-        // Det gør ikke noget at den gamle plan ikke kan slettes
-        if (error.code === 'ENOENT') {
-          console.log(`  no such file or directory: ${error.path}`);
-        } else {
-          console.log("  ", error);
-        }
-      })
-
     const topLevelNames: string[] = sortPlan(currentPlan.workflows);
+    const savePlan = topLevelNames[topLevelNames.length - 1];
+    await deleteOldPlan(cfg, env, savePlan);
 
     if (topLevelNames) {
       try {
         await deletePlan(cfg, currentPlan.workflows, topLevelNames.reverse());
         // Gem plan, så vi kan slette den næste gang.
         try {
-          writeFileSync(`${config.dataDir}/${env}_plan.json`, JSON.stringify(topLevelNames));
+          writeFileSync(`${config.dataDir}/${env}_${savePlan}_plan.json`, JSON.stringify({ workflows: currentPlan.workflows, topLevelNames }));
         } catch (e: any) {
           mkdir(config.dataDir, (err) => {
             console.error(`  Fejl ved oprettelse af '${config.dataDir}'`)
           });
           try {
-            writeFileSync(`${config.dataDir}/${env}_plan.json`, JSON.stringify(topLevelNames));
+            writeFileSync(`${config.dataDir}/${env}_${savePlan}_plan.json`, JSON.stringify({ workflows: currentPlan.workflows, topLevelNames }));
           } catch (e: any) {
             res.status(500).json({
               message: "Fejl ved skrivning af plan",
-              detail: `Fejl ved skrivning af ${config.dataDir}/${env}_plan.json, ${e.code}`
+              detail: `Fejl ved skrivning af ${config.dataDir}/${env}_${savePlan}_plan.json, ${e.code}`
             });
             return;
           }
@@ -258,10 +250,10 @@ export function apiPlan(app: express.Application) {
    * @param status - The status object.
    * @returns A Promise that resolves when the plan is created.
    */
-  async function createNewPlan(res: Response, cfg: Environment[string], workflows:  WorkflowNode[], topLevelNames: string[], status: Istatus) {
+  async function createNewPlan(res: Response, cfg: Environment[string], workflows: WorkflowNode[], topLevelNames: string[], status: Istatus) {
     // Opret ny plan
     console.log("  createNewPlan");
-    console.log("  topLevelNames ", topLevelNames )
+    console.log("  topLevelNames ", topLevelNames)
     numberOfNodesProcessed = 0;
     let vertexMap: { [key: string]: { [key: string]: any } } = {};
     let wkfName = "";
@@ -271,7 +263,7 @@ export function apiPlan(app: express.Application) {
       wkfName = `${cfg.prefix}_${wkf}_wkf`;
       let wkfResponse;
       try {
-        wkfResponse = await createWorkflow(cfg, wkfName, w.summary?w.summary:"" )
+        wkfResponse = await createWorkflow(cfg, wkfName, w.summary ? w.summary : "")
       } catch (error: any) {
         res.status(error.status).json(error);
         throw {
