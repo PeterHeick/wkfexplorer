@@ -1,5 +1,5 @@
 <template>
-    <li v-if="item" @click.stop="fileClicked">
+    <li v-if="item" @click.stop="fileClicked" >
       <span v-if="item.type === 'folder'" @click.stop="toggleFolder">📁</span>
       <span v-if="item.type === 'file'">📄</span>
       <span class="fileItem">{{ item.name.split('\.')[0] }}</span>
@@ -19,7 +19,6 @@
   import { api } from "@/api/api";
   import Swal from "sweetalert2";
   import { defineProps, defineEmits, ref, nextTick, watch } from "vue";
-  import { config } from "@/store/config";
   
   interface Item {
     name: string;
@@ -30,7 +29,7 @@
   
   // let addNewFile = ref(false);
   let fileName = ref("");
-  const inputField = ref(null as HTMLInputElement | null);
+  // const inputField = ref(null as HTMLInputElement | null);
   const props = defineProps({
     item: Object as () => Item,
   });
@@ -38,7 +37,7 @@
   const emit = defineEmits(["getPlanFile"]);
   let clickCount = 0;
   let timer: number | null = null;
-  let isFolderOpen = ref(false); // Tilstandsvariabel for at styre om folderen er åben eller lukket
+  let isFolderOpen = ref(false);
   
   const fileClicked = () => {
     clickCount++;

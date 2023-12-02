@@ -13,7 +13,7 @@
         <span id="fileheader" v-if="showLeftPane">
           {{ fileName.split('\.')[0] }}
         </span>
-        <TreeComponent v-if="state.isPlanRead && showLeftPane" :treeData="wkf" :parmItems="parmItems"></TreeComponent>
+        <TreeComponent v-if="state.isPlanRead && showLeftPane" :treeData="wkf" :parmItems="parmItems" :selectedNode="selectedNode"></TreeComponent>
       </div>
       <div id="middle">
         <div v-if="taskList.value.length > 0">
@@ -75,6 +75,7 @@ const show = ref(false);
 const paramFields = ref<HTMLElement[]>([]);
 const fileName = ref("");
 const showLeftPane = ref(false);
+const selectedNode = ref({ id: 0});
 
 const handleEnvEvent = async (env: string) => {
   console.log("PlanComponent handleEvent env: ", env);

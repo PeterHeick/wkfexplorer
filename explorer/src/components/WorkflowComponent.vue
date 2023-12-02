@@ -30,6 +30,7 @@
           v-if="state.isWkfLoaded"
           :treeData="wkf"
           @currentNodeEvent="handleCurrentNodeEvent"
+          :selectedNode="selectedNode"
         >
         </TreeComponent>
       </div>
@@ -58,6 +59,7 @@ import Swal from "sweetalert2";
 
 let wkf = ref([] as TreeNode[]);
 const nodeName = ref("");
+const selectedNode = ref({ id: 0});
 
 const handleEnvEvent = (env: string) => {
   console.log("Skift environment til: ", env);

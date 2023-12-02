@@ -16,21 +16,22 @@
 -->
 <template>
   <ul>
-    <li v-for="(node, index) in treeData" :key="index" class="treeList">
+    <li v-for="(node, index) in  treeData " :key="index" class="treeList">
       <div v-if="node.type === 'taskWorkflow'">
-        <span @click="handleClick(node)" style="background-color: white; cursor: pointer;"
-          :class="node.workflow.length > 0 ? 'workflow' : 'wkfempty'">
+        <span @click="handleClick(node)" style="cursor: pointer;"
+          :class="[{ 'selected': node.id === selectedNode.id }, node.workflow.length > 0 ? 'workflow' : 'wkfempty', 'nodeItem']">
           {{ node.name }}</span>
 
-        <TreeComponent v-if="isWorkflow(node)" v-show="node.isVisible" @open="openNode(node)"
+        <TreeComponent v-if="isWorkflow(node)" v-show="node.isVisible" @open="openNode(node)"  :selectedNode="selectedNode"
           @currentNodeEvent="handleCurrentNodeEvent" :treeData="node.workflow" :parmItems="parmItems">
         </TreeComponent>
       </div>
       <div v-else-if="node.type === 'taskUnix'">
-        <span @click="handleTaskClick(node)" style="cursor: pointer"> {{ node.name }}</span>
+        <span @click="handleTaskClick(node)" style="cursor: pointer" :class="[{ 'selected': node.id === selectedNode.id }, 'nodItem']"> {{ node.name }}</span>
         <span v-if="node.comment" class="comment"> ({{ node.comment }}) </span>
-        <div v-for="(item, itemIndex) in filterTasksByPattern(node.name)" :key="itemIndex" class="no-padding.margin">
-          <span  class="indent">
+        <div v-for="( item, itemIndex ) in  filterTasksByPattern(node.name) " :key="itemIndex"
+          class="no-padding.margin">
+          <span :class="'indent'">
             {{ item.task }} = {{ item.parameter }}
           </span>
         </div>
@@ -53,6 +54,10 @@ const props = defineProps({
   parmItems: {
     type: Array as () => ParmItem[],
     default: () => { return [] as ParmItem[] }
+  },
+  selectedNode: {
+    type: Object as () => {id: Number},
+    default: () => ({id: 0})
   }
 })
 const parmItems = ref(props.parmItems);
@@ -61,6 +66,8 @@ const emit = defineEmits(["currentNodeEvent"])
 const handleTaskClick = (node: TreeNode) => {
   console.log("HandleTaskClick TreeComponent ", JSON.stringify(node));
   emit("currentNodeEvent", node.name);
+  props.selectedNode.id = node.id;
+  console.log("selected: ", JSON.stringify(props.selectedNode.id));
 };
 
 const handleCurrentNodeEvent = (name: string) => {
@@ -79,6 +86,8 @@ const handleClick = (node: TreeNode) => {
   if (node.type === "taskWorkflow") {
     toggleVisibility(node);
   }
+  props.selectedNode.id = node.id;
+  console.log("selected: ", JSON.stringify(props.selectedNode.id));
 };
 
 const isWorkflow = (elem: TreeNode) => {
@@ -149,8 +158,17 @@ function toggleVisibility(node: TreeNode) {
   margin: 0;
   padding: 0;
 }
+
 .indent {
-  margin-left: 20px; /* Juster dette tal efter behov */
+  margin-left: 20px;
+  /* Juster dette tal efter behov */
 }
 
+.selected {
+  background-color: #bcbcbc;
+}
+
+.nodeItem:hover {
+    background-color: #ddd;
+  }
 </style>
