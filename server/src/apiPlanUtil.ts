@@ -35,8 +35,10 @@ export async function readFileAndParseWorkflow(filePath: string): Promise<Workfl
         if (taskLine.trim().length === 0) {
             continue;
         }
+        console.log(`  Read taskline: ${line}`);
         const comment = line.split('#')[1];
-        const delim = line.match(/^delimiter *= *'(.)'$/i);
+        console.log(`comment: ${comment}`);
+        const delim = taskLine.match(/^delimiter *= *'(.)'$/i);
         if (delim) {
             delimiter = delim[1];
             console.log(`    Delimiter: '${delimiter}'`);
@@ -91,6 +93,7 @@ function handleWorkflowItem(currentWorkflowItem: WorkflowNode, groupMember: stri
         dependant,
         comment
     };
+    console.log(`name: ${item.task.value} comment: ${item.comment}`)
     if (item && currentWorkflowItem.workflowVertices) {
         currentWorkflowItem.workflowVertices.push(item);
     }
